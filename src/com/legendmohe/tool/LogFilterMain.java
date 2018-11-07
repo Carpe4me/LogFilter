@@ -148,6 +148,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
     // 对应menu的index，必须从0开始
     public static final int PARSER_TYPE_LOGCAT = 0;
     public static final int PARSER_TYPE_BIGO_DEV_LOG = 1;
+    public static final int PARSER_TYPE_BIGO_XLOG = 2;
 
     JLabel m_tfStatus;
     IndicatorPanel m_ipIndicator;
@@ -404,16 +405,6 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         netMenu.add(diffMenu);
 
         JMenu parserMenu = new JMenu("Parser");
-        JRadioButtonMenuItem logcatParserMenu = new JRadioButtonMenuItem("Logcat Parser", mainFrame.m_parserType == PARSER_TYPE_LOGCAT);
-        logcatParserMenu.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                if (e.getStateChange() == ItemEvent.SELECTED) {
-                    mainFrame.m_iLogParser = new LogCatParser();
-                    mainFrame.m_parserType = PARSER_TYPE_LOGCAT;
-                }
-            }
-        });
         parserMenu.addMenuListener(new MenuListener() {
             @Override
             public void menuSelected(MenuEvent e) {
@@ -431,6 +422,17 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
 
             }
         });
+
+        JRadioButtonMenuItem logcatParserMenu = new JRadioButtonMenuItem("Logcat Parser", mainFrame.m_parserType == PARSER_TYPE_LOGCAT);
+        logcatParserMenu.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    mainFrame.m_iLogParser = new LogCatParser();
+                    mainFrame.m_parserType = PARSER_TYPE_LOGCAT;
+                }
+            }
+        });
         parserMenu.add(logcatParserMenu);
 
         JRadioButtonMenuItem bigoParserMenu = new JRadioButtonMenuItem("BigoDevLog Parser", mainFrame.m_parserType == PARSER_TYPE_BIGO_DEV_LOG);
@@ -443,13 +445,25 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
                 }
             }
         });
+        parserMenu.add(bigoParserMenu);
+
+        JRadioButtonMenuItem bigoXLogParserMenu = new JRadioButtonMenuItem("BigoXLog Parser", mainFrame.m_parserType == PARSER_TYPE_BIGO_XLOG);
+        bigoXLogParserMenu.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    mainFrame.m_iLogParser = new BigoDevLogParser();
+                    mainFrame.m_parserType = PARSER_TYPE_BIGO_XLOG;
+                }
+            }
+        });
+        parserMenu.add(bigoXLogParserMenu);
 
         // 就这样放进去就可以了。。。
         ButtonGroup parserBG = new ButtonGroup();
         parserBG.add(logcatParserMenu);
         parserBG.add(bigoParserMenu);
-
-        parserMenu.add(bigoParserMenu);
+        parserBG.add(bigoXLogParserMenu);
 
         JMenu viewMenu = initAndGetViewMenu(mainFrame);
 
@@ -704,6 +718,9 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         switch (m_parserType) {
             case PARSER_TYPE_BIGO_DEV_LOG:
                 m_iLogParser = new BigoDevLogParser();
+                break;
+            case PARSER_TYPE_BIGO_XLOG:
+                m_iLogParser = new BigoXLogParser();
                 break;
             case PARSER_TYPE_LOGCAT:
             default:

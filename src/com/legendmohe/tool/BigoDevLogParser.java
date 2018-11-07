@@ -21,7 +21,7 @@ public class BigoDevLogParser extends AbstractLogParser {
     Group 4.	30-39	`160985949`
     Group 5.	41-79	`SplashFragment:## navigate to MainPage`
      */
-    final private Pattern mLogPattern = Pattern.compile("\\[(\\d+)\\]\\[(\\w+)\\]\\[(.+)\\((\\d+)\\)\\](.+?):(.+)");
+    final private Pattern mLogPattern = Pattern.compile("\\[(\\d+)\\]\\[(\\w+)\\]\\[(.+?)\\((\\d+)\\)\\](.+?):(.+)");
 
     @Override
     public LogInfo parseLog(String strText) {
