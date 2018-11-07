@@ -32,7 +32,7 @@ public class BigoDevLogParser extends AbstractLogParser {
                 String line = matcher.group(1);
                 String level = matcher.group(2);
                 String date = matcher.group(3);
-                String unkonwn = matcher.group(4);
+                String unknown = matcher.group(4);
                 String tag = matcher.group(5);
                 String msg = matcher.group(6);
 

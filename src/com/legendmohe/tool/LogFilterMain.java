@@ -8,21 +8,102 @@ import com.legendmohe.tool.diff.DiffService;
 import com.legendmohe.tool.view.DumpsysViewDialog;
 import com.legendmohe.tool.view.PackageViewDialog;
 
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.EventQueue;
+import java.awt.FileDialog;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.HeadlessException;
+import java.awt.Insets;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetEvent;
+import java.awt.dnd.DropTargetListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
+import java.awt.event.InputEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowStateListener;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
+import java.util.Random;
+import java.util.StringTokenizer;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTextField;
+import javax.swing.JToggleButton;
+import javax.swing.KeyStroke;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
-import javax.swing.event.*;
-import java.awt.*;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.dnd.*;
-import java.awt.event.*;
-import java.io.*;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 
 public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.BaseLogTableListener {
     private static final long serialVersionUID = 1L;
@@ -63,6 +144,10 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
 
     private static final String DIFF_PROGRAM_PATH = "C:\\Program Files\\KDiff3\\kdiff3.exe";
     private static final String CALC_PROGRAM_PATH = "calc";
+
+    // 对应menu的index，必须从0开始
+    public static final int PARSER_TYPE_LOGCAT = 0;
+    public static final int PARSER_TYPE_BIGO_DEV_LOG = 1;
 
     JLabel m_tfStatus;
     IndicatorPanel m_ipIndicator;
@@ -194,6 +279,9 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
     static RecentFileMenu m_recentMenu;
 
     @FieldSaveState
+    int m_parserType = PARSER_TYPE_LOGCAT;
+
+    @FieldSaveState
     int[] m_colWidths = LogFilterTableModel.DEFULT_WIDTH;
 
     @FieldSaveState
@@ -315,65 +403,43 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         diffMenu.add(sDisconnectDiffMenuItem);
         netMenu.add(diffMenu);
 
-//        JMenu streamMenu = new JMenu("Stream");
-//        JCheckBoxMenuItem btaCBM = new JCheckBoxMenuItem("BTA event code", true);
-//        btaCBM.addItemListener(new ItemListener() {
-//            @Override
-//            public void itemStateChanged(ItemEvent e) {
-//                ProcessorConfig.BTAEventEnable = (e.getStateChange() == ItemEvent.SELECTED);
-//                mainFrame.m_iLogParser.loadProcessorFromConfig();
-//            }
-//        });
-//        streamMenu.add(btaCBM);
-//
-//        JCheckBoxMenuItem adapterStateCBM = new JCheckBoxMenuItem("Bluetooth adapter state", true);
-//        adapterStateCBM.addItemListener(new ItemListener() {
-//            @Override
-//            public void itemStateChanged(ItemEvent e) {
-//                ProcessorConfig.BluetoothAdapterStateEnable = (e.getStateChange() == ItemEvent.SELECTED);
-//                mainFrame.m_iLogParser.loadProcessorFromConfig();
-//            }
-//        });
-//        streamMenu.add(adapterStateCBM);
-//
-//        JCheckBoxMenuItem headsetStateCBM = new JCheckBoxMenuItem("Bluetooth headset state", false);
-//        headsetStateCBM.addItemListener(new ItemListener() {
-//            @Override
-//            public void itemStateChanged(ItemEvent e) {
-//                ProcessorConfig.HeadsetStateEnable = (e.getStateChange() == ItemEvent.SELECTED);
-//                mainFrame.m_iLogParser.loadProcessorFromConfig();
-//            }
-//        });
-//        streamMenu.add(headsetStateCBM);
-//
-//        JCheckBoxMenuItem cievCBM = new JCheckBoxMenuItem("Bluetooth headset CIEV event", false);
-//        cievCBM.addItemListener(new ItemListener() {
-//            @Override
-//            public void itemStateChanged(ItemEvent e) {
-//                ProcessorConfig.HFPCIEVEnable = (e.getStateChange() == ItemEvent.SELECTED);
-//                mainFrame.m_iLogParser.loadProcessorFromConfig();
-//            }
-//        });
-//        streamMenu.add(cievCBM);
-
         JMenu parserMenu = new JMenu("Parser");
-        JRadioButtonMenuItem logcatParserMenu = new JRadioButtonMenuItem("Logcat Parser", true);
+        JRadioButtonMenuItem logcatParserMenu = new JRadioButtonMenuItem("Logcat Parser", mainFrame.m_parserType == PARSER_TYPE_LOGCAT);
         logcatParserMenu.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
                     mainFrame.m_iLogParser = new LogCatParser();
+                    mainFrame.m_parserType = PARSER_TYPE_LOGCAT;
                 }
+            }
+        });
+        parserMenu.addMenuListener(new MenuListener() {
+            @Override
+            public void menuSelected(MenuEvent e) {
+                JMenuItem menuItem = parserMenu.getItem(mainFrame.m_parserType);
+                menuItem.setSelected(true);
+            }
+
+            @Override
+            public void menuDeselected(MenuEvent e) {
+
+            }
+
+            @Override
+            public void menuCanceled(MenuEvent e) {
+
             }
         });
         parserMenu.add(logcatParserMenu);
 
-        JRadioButtonMenuItem bigoParserMenu = new JRadioButtonMenuItem("BigoDevLog Parser", false);
+        JRadioButtonMenuItem bigoParserMenu = new JRadioButtonMenuItem("BigoDevLog Parser", mainFrame.m_parserType == PARSER_TYPE_BIGO_DEV_LOG);
         bigoParserMenu.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
                     mainFrame.m_iLogParser = new BigoDevLogParser();
+                    mainFrame.m_parserType = PARSER_TYPE_BIGO_DEV_LOG;
                 }
             }
         });
@@ -559,6 +625,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         loadUI();
         loadColor();
         loadCmd();
+        loadParser();
         initDiffService();
 
         KeyboardFocusManager.getCurrentKeyboardFocusManager()
@@ -630,6 +697,18 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
             }
         } catch (Exception e) {
             System.out.println(e);
+        }
+    }
+
+    private void loadParser() {
+        switch (m_parserType) {
+            case PARSER_TYPE_BIGO_DEV_LOG:
+                m_iLogParser = new BigoDevLogParser();
+                break;
+            case PARSER_TYPE_LOGCAT:
+            default:
+                m_iLogParser = new LogCatParser();
+                break;
         }
     }
 
@@ -1431,7 +1510,6 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         m_tmLogTableModel = new LogFilterTableModel();
         m_tmLogTableModel.setData(m_arLogInfoAll);
         m_tbLogTable = new LogTable(m_tmLogTableModel, this);
-        m_iLogParser = new LogCatParser();
         m_logScrollVPane = new JScrollPane(m_tbLogTable);
         mainLogPanel.add(m_logScrollVPane, BorderLayout.CENTER);
 
@@ -1994,8 +2072,8 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
                                 m_nChangedFilter = STATUS_READY;
                                 m_tmLogTableModel.setData(m_arLogInfoFiltered);
                                 m_ipIndicator.setData(m_arLogInfoFiltered,
-                                                m_hmMarkedInfoFiltered,
-                                                m_hmErrorFiltered);
+                                        m_hmMarkedInfoFiltered,
+                                        m_hmErrorFiltered);
                                 LogInfo latestInfo = getLogTable().getLatestSelectedLogInfo();
                                 if (latestInfo != null) {
                                     int i = 0;
@@ -2029,6 +2107,10 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         clearData();
         getLogTable().clearSelection();
         getSubTable().clearSelection();
+        // 自动切换到logcatparser
+        m_parserType = PARSER_TYPE_LOGCAT;
+        m_iLogParser = new LogCatParser();
+
         m_thProcess = new Thread(new Runnable() {
             public void run() {
                 try {
@@ -2256,8 +2338,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
                 m_selectedDevice = null;
                 String[] cmd = getADBValidCmd();
                 addDevicesToListModelFromCmd(cmd, (DefaultListModel<TargetDevice>) m_lDeviceList.getModel());
-            }
-            else if (e.getSource().equals(m_btnSetFont)) {
+            } else if (e.getSource().equals(m_btnSetFont)) {
                 getLogTable().setFontSize(Integer.parseInt(m_tfFontSize
                         .getText()));
                 getSubTable().setFontSize(Integer.parseInt(m_tfFontSize
@@ -2344,39 +2425,32 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
                         && m_chkEnableFind.isSelected()) {
                     getLogTable().setFilterFind(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                }
-                else if (arg0.getDocument()
+                } else if (arg0.getDocument()
                         .equals(m_tfRemoveWord.getDocument())
                         && m_chkEnableRemove.isSelected()) {
                     getLogTable().SetFilterRemove(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                }
-                else if (arg0.getDocument().equals(m_tfShowPid.getDocument())
+                } else if (arg0.getDocument().equals(m_tfShowPid.getDocument())
                         && m_chkEnableShowPid.isSelected()) {
                     getLogTable().SetFilterShowPid(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                }
-                else if (arg0.getDocument().equals(m_tfShowTid.getDocument())
+                } else if (arg0.getDocument().equals(m_tfShowTid.getDocument())
                         && m_chkEnableShowTid.isSelected()) {
                     getLogTable().SetFilterShowTid(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                }
-                else if (arg0.getDocument().equals(m_tfShowTag.getDocument())
+                } else if (arg0.getDocument().equals(m_tfShowTag.getDocument())
                         && m_chkEnableShowTag.isSelected()) {
                     getLogTable().SetFilterShowTag(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                }
-                else if (arg0.getDocument().equals(m_tfRemoveTag.getDocument())
+                } else if (arg0.getDocument().equals(m_tfRemoveTag.getDocument())
                         && m_chkEnableRemoveTag.isSelected()) {
                     getLogTable().SetFilterRemoveTag(arg0.getDocument().getText(
                             0, arg0.getDocument().getLength()));
-                }
-                else if (arg0.getDocument().equals(m_tfBookmarkTag.getDocument())
+                } else if (arg0.getDocument().equals(m_tfBookmarkTag.getDocument())
                         && m_chkEnableBookmarkTag.isSelected()) {
                     getLogTable().SetFilterBookmarkTag(arg0.getDocument().getText(
                             0, arg0.getDocument().getLength()));
-                }
-                else if (arg0.getDocument().equals(m_tfHighlight.getDocument())
+                } else if (arg0.getDocument().equals(m_tfHighlight.getDocument())
                         && m_chkEnableHighlight.isSelected()) {
                     getLogTable().SetHighlight(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
@@ -2437,8 +2511,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
                             arg0.getDocument().getLength()));
                     getSubTable().SetHighlight(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                }
-                else if (arg0.getDocument().equals(m_tfSearch.getDocument())) {
+                } else if (arg0.getDocument().equals(m_tfSearch.getDocument())) {
                     getLogTable().SetSearchHighlight(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
                     getSubTable().SetSearchHighlight(arg0.getDocument().getText(0,
@@ -2493,8 +2566,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
                             arg0.getDocument().getLength()));
                     getSubTable().SetHighlight(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                }
-                else if (arg0.getDocument().equals(m_tfSearch.getDocument())) {
+                } else if (arg0.getDocument().equals(m_tfSearch.getDocument())) {
                     getLogTable().SetSearchHighlight(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
                     getSubTable().SetSearchHighlight(arg0.getDocument().getText(0,
