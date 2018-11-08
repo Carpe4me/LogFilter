@@ -1,14 +1,28 @@
-package com.legendmohe.tool;
+package com.legendmohe.tool.logtable;
 
+import com.legendmohe.tool.INotiEvent;
+import com.legendmohe.tool.LogFilterMain;
+import com.legendmohe.tool.LogInfo;
+import com.legendmohe.tool.T;
 import com.legendmohe.tool.diff.DiffService;
 
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.table.TableColumn;
-import java.awt.*;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
+import javax.swing.AbstractAction;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableColumnModelEvent;
+import javax.swing.event.TableColumnModelListener;
+import javax.swing.table.TableColumn;
 
 public class LogTable extends BaseLogTable {
     private static final long serialVersionUID = 1L;
@@ -32,14 +46,14 @@ public class LogTable extends BaseLogTable {
 
                 if (SwingUtilities.isLeftMouseButton(e)) {
                     if (e.getClickCount() == 2) {
-                        if (column != LogFilterTableModel.COMUMN_BOOKMARK) {
+                        if (column != LogFilterTableModel.COLUMN_BOOKMARK) {
                             LogInfo logInfo = ((LogFilterTableModel) getModel()).getRow(row);
                             logInfo.setMarked(!logInfo.isMarked());
                             mBaseLogTableListener.markLogInfo(row, logInfo.getLine() - 1, logInfo.isMarked());
                         }
                     } else if (m_bAltPressed) {
                         LogInfo logInfo = ((LogFilterTableModel) getModel()).getRow(row);
-                        if (column == LogFilterTableModel.COMUMN_TAG) {
+                        if (column == LogFilterTableModel.COLUMN_TAG) {
                             if (m_strTagShow.contains("|" + logInfo.getData(column))) {
                                 m_strTagShow = m_strTagShow.replace("|" + logInfo.getData(column), "");
                             } else if (m_strTagShow.contains((String) logInfo.getData(column))) {
@@ -48,7 +62,7 @@ public class LogTable extends BaseLogTable {
                                 m_strTagShow += "|" + logInfo.getData(column);
                             }
                             mBaseLogTableListener.notiEvent(new INotiEvent.EventParam(INotiEvent.TYPE.EVENT_CHANGE_FILTER_SHOW_TAG));
-                        } else if (column == LogFilterTableModel.COMUMN_TIME) {
+                        } else if (column == LogFilterTableModel.COLUMN_TIME) {
                             mBaseLogTableListener.notiEvent(
                                     new INotiEvent.EventParam(INotiEvent.TYPE.EVENT_CHANGE_FILTER_FROM_TIME, logInfo.getTime())
                             );
@@ -71,10 +85,10 @@ public class LogTable extends BaseLogTable {
                     T.d("m_bAltPressed = " + m_bAltPressed);
                     if (m_bAltPressed) {
                         LogInfo logInfo = ((LogFilterTableModel) getModel()).getRow(row);
-                        if (column == LogFilterTableModel.COMUMN_TAG) {
+                        if (column == LogFilterTableModel.COLUMN_TAG) {
                             m_strTagRemove += "|" + logInfo.getData(column);
                             mBaseLogTableListener.notiEvent(new INotiEvent.EventParam(INotiEvent.TYPE.EVENT_CHANGE_FILTER_REMOVE_TAG));
-                        } else if (column == LogFilterTableModel.COMUMN_TIME) {
+                        } else if (column == LogFilterTableModel.COLUMN_TIME) {
                             mBaseLogTableListener.notiEvent(
                                     new INotiEvent.EventParam(INotiEvent.TYPE.EVENT_CHANGE_FILTER_TO_TIME, logInfo.getTime())
                             );
@@ -198,7 +212,7 @@ public class LogTable extends BaseLogTable {
         JMenuItem compareMenuItem = new JMenuItem(new AbstractAction("compare with selected in connected LogFilter") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String target = getFormatSelectedRows(new int[]{LogFilterTableModel.COMUMN_LINE, LogFilterTableModel.COMUMN_DATE});
+                String target = getFormatSelectedRows(new int[]{LogFilterTableModel.COLUMN_LINE, LogFilterTableModel.COLUMN_DATE});
                 if (target != null && target.length() != 0) {
                     if (mDiffService != null) {
                         mDiffService.writeDiffCommand(
@@ -226,7 +240,7 @@ public class LogTable extends BaseLogTable {
     }
 
     public boolean isCellEditable(int row, int column) {
-        return column == LogFilterTableModel.COMUMN_BOOKMARK;
+        return column == LogFilterTableModel.COLUMN_BOOKMARK;
     }
 
     public DiffService getDiffService() {

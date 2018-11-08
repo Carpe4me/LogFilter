@@ -1,13 +1,40 @@
-package com.legendmohe.tool;
+package com.legendmohe.tool.logtable;
 
-import javax.swing.*;
-import javax.swing.table.*;
-import java.awt.*;
-import java.awt.event.*;
+import com.legendmohe.tool.ILogRenderResolver;
+import com.legendmohe.tool.INotiEvent;
+import com.legendmohe.tool.LogInfo;
+import com.legendmohe.tool.T;
+import com.legendmohe.tool.Utils;
+import com.legendmohe.tool.parser.LogCatParser;
+
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.text.ParseException;
 import java.util.BitSet;
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.swing.JComponent;
+import javax.swing.JTable;
+import javax.swing.JViewport;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
+import javax.swing.table.DefaultTableColumnModel;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableModel;
 
 /**
  * Created by xinyu.he on 2016/1/28.
@@ -32,7 +59,7 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
     protected long mFilterFromTime = -1;
 
     public int mMaxShownCol = 0;
-    public int mMinShownCol = LogFilterTableModel.COMUMN_MAX - 1;
+    public int mMinShownCol = LogFilterTableModel.COLUMN_MAX - 1;
     protected int mMaxSelectedRow;
     protected int mMinSelectedRow;
     protected LogInfo m_latestSelectLogInfo;
@@ -52,7 +79,7 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
         m_strTagBookmark = "";
         m_strFilterRemove = "";
         m_strFilterFind = "";
-        m_arbShow = new boolean[LogFilterTableModel.COMUMN_MAX];
+        m_arbShow = new boolean[LogFilterTableModel.COLUMN_MAX];
         mHistoryEnable = true;
         init();
         setColumnWidth();
@@ -337,7 +364,7 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
         }
         for (int col : column)
             target.remove(col);
-        target.add(LogFilterTableModel.COMUMN_LINE);
+        target.add(LogFilterTableModel.COLUMN_LINE);
 
         int[] result = new int[target.size()];
         int i = 0;
@@ -348,7 +375,7 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
     }
 
     public void copySelectedRows() {
-        Utils.sendContentToClipboard(getFormatSelectedRows(new int[]{LogFilterTableModel.COMUMN_LINE}));
+        Utils.sendContentToClipboard(getFormatSelectedRows(new int[]{LogFilterTableModel.COLUMN_LINE}));
     }
 
     public String getFormatSelectedRows(int[] exceptColumnIndex) {
@@ -376,7 +403,7 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
             for (int j = 0; j < m_arbShow.length; j++) {
                 if (m_arbShow[j] && maxColWidth[j] != 0) {
                     StringBuilder strTemp = new StringBuilder(String.valueOf(getValueAt(rowsSelected[i], j)).trim());
-                    if (j != LogFilterTableModel.COMUMN_MESSAGE) {
+                    if (j != LogFilterTableModel.COLUMN_MESSAGE) {
                         int len = strTemp.length();
                         for (int k = 0; k < maxColWidth[j] - len; k++)
                             strTemp.append(" ");
@@ -401,35 +428,35 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
         m_bAltPressed = false;
     }
 
-    void setFilterFind(String strFind) {
+    public void setFilterFind(String strFind) {
         m_strFilterFind = strFind;
     }
 
-    void SetFilterRemove(String strRemove) {
+    public void SetFilterRemove(String strRemove) {
         m_strFilterRemove = strRemove;
     }
 
-    void SetFilterShowTag(String strShowTag) {
+    public void SetFilterShowTag(String strShowTag) {
         m_strTagShow = strShowTag;
     }
 
-    void SetFilterShowPid(String strShowPid) {
+    public void SetFilterShowPid(String strShowPid) {
         m_strPidShow = strShowPid;
     }
 
-    void SetFilterShowTid(String strShowTid) {
+    public void SetFilterShowTid(String strShowTid) {
         m_strTidShow = strShowTid;
     }
 
-    void SetHighlight(String strHighlight) {
+    public void SetHighlight(String strHighlight) {
         m_strHighlight = strHighlight;
     }
 
-    void SetSearchHighlight(String strHighlight) {
+    public void SetSearchHighlight(String strHighlight) {
         m_strSearchHighlight = strHighlight;
     }
 
-    void SetFilterRemoveTag(String strRemoveTag) {
+    public void SetFilterRemoveTag(String strRemoveTag) {
         m_strTagRemove = strRemoveTag;
     }
 
@@ -444,7 +471,7 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
 
     public void setValueAt(Object aValue, int row, int column) {
         LogInfo logInfo = ((LogFilterTableModel) getModel()).getRow(row);
-        if (column == LogFilterTableModel.COMUMN_BOOKMARK) {
+        if (column == LogFilterTableModel.COLUMN_BOOKMARK) {
             logInfo.setBookmark((String) aValue);
             mBaseLogTableListener.onSetBookmark(logInfo.getLine() - 1, (String) aValue);
         }
@@ -574,7 +601,7 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
         return mFilterToTime;
     }
 
-    void gotoNextBookmark() {
+    public void gotoNextBookmark() {
         int nSeletectRow = getSelectedRow();
         Rectangle parent = getVisibleRect();
 
@@ -596,7 +623,7 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
         }
     }
 
-    void gotoPreBookmark() {
+    public void gotoPreBookmark() {
         int nSeletectRow = getSelectedRow();
         Rectangle parent = getVisibleRect();
 
@@ -618,7 +645,7 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
         }
     }
 
-    void gotoNextSearchResult() {
+    public void gotoNextSearchResult() {
         if (m_strSearchHighlight == null || m_strSearchHighlight.length() == 0)
             return;
 
@@ -643,7 +670,7 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
         }
     }
 
-    void gotoPreSearchResult() {
+    public void gotoPreSearchResult() {
         if (m_strSearchHighlight == null || m_strSearchHighlight.length() == 0)
             return;
         int nSeletectRow = getSelectedRow();

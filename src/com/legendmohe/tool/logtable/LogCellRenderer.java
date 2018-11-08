@@ -1,10 +1,18 @@
-package com.legendmohe.tool;
+package com.legendmohe.tool.logtable;
 
-import javax.swing.*;
+import com.legendmohe.tool.ILogRenderResolver;
+import com.legendmohe.tool.LogColor;
+import com.legendmohe.tool.LogInfo;
+
+import java.awt.Color;
+import java.awt.Component;
+import java.util.StringTokenizer;
+
+import javax.swing.BorderFactory;
+import javax.swing.JComponent;
+import javax.swing.JTable;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableCellRenderer;
-import java.awt.*;
-import java.util.StringTokenizer;
 
 /**
  * Created by xinyu.he on 2016/1/22.
@@ -150,8 +158,8 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
             strText = remakeFind(strText, mResolver.GetHighlight(), "#00FF00", true);
         }
 
-        if (nIndex == LogFilterTableModel.COMUMN_MESSAGE || nIndex == LogFilterTableModel.COMUMN_TAG) {
-            String strFind = nIndex == LogFilterTableModel.COMUMN_MESSAGE ? mResolver.GetFilterFind() : mResolver.GetFilterShowTag();
+        if (nIndex == LogFilterTableModel.COLUMN_MESSAGE || nIndex == LogFilterTableModel.COLUMN_TAG) {
+            String strFind = nIndex == LogFilterTableModel.COLUMN_MESSAGE ? mResolver.GetFilterFind() : mResolver.GetFilterShowTag();
             strText = remakeFind(strText, strFind, "#FF0000", false);
         }
 

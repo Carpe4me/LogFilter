@@ -1,4 +1,4 @@
-package com.legendmohe.tool.stream;
+package com.legendmohe.tool.processor;
 
 /**
  * Created by xinyu.he on 2016/1/6.

@@ -5,8 +5,17 @@ import com.legendmohe.tool.annotation.FieldSaveState;
 import com.legendmohe.tool.annotation.StateSaver;
 import com.legendmohe.tool.annotation.TextFieldSaveState;
 import com.legendmohe.tool.diff.DiffService;
+import com.legendmohe.tool.logtable.BaseLogTable;
+import com.legendmohe.tool.logtable.LogFilterTableModel;
+import com.legendmohe.tool.logtable.LogTable;
+import com.legendmohe.tool.logtable.SubLogTable;
+import com.legendmohe.tool.parser.BigoDevLogParser;
+import com.legendmohe.tool.parser.BigoXLogParser;
+import com.legendmohe.tool.parser.ILogParser;
+import com.legendmohe.tool.parser.LogCatParser;
 import com.legendmohe.tool.view.DumpsysViewDialog;
 import com.legendmohe.tool.view.PackageViewDialog;
+import com.legendmohe.tool.view.RecentFileMenu;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -105,7 +114,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
-public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.BaseLogTableListener {
+public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.BaseLogTableListener, IDiffCmdHandler {
     private static final long serialVersionUID = 1L;
 
     static final String LOGFILTER = "LogFilter";
@@ -283,7 +292,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
     int m_parserType = PARSER_TYPE_LOGCAT;
 
     @FieldSaveState
-    int[] m_colWidths = LogFilterTableModel.DEFULT_WIDTH;
+    int[] m_colWidths = LogFilterTableModel.DEFAULT_WIDTH;
 
     @FieldSaveState
     private String m_strLastDir;
@@ -582,13 +591,13 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         mSplitPane.setDividerLocation(mSplitPaneDividerLocation);
     }
 
-    String makeFilename() {
+    private String makeFilename() {
         Date now = new Date();
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_HHmmss");
         return OUTPUT_LOG_DIR + File.separator + "LogFilter_" + format.format(now) + ".txt";
     }
 
-    void exit() {
+    private void exit() {
         if (m_Process != null)
             m_Process.destroy();
         if (m_thProcess != null)
@@ -609,7 +618,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
     /**
      * @throws HeadlessException
      */
-    public LogFilterMain() {
+    private LogFilterMain() {
         super();
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
@@ -1696,6 +1705,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         m_tbLogTable.requestFocus();
     }
 
+    @Override
     public void searchKeyword(String keyword) {
         m_tfSearch.setText(keyword);
     }
@@ -2604,47 +2614,47 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
 
 
     private void loadTableColumnState() {
-        for (int nIndex = 0; nIndex < LogFilterTableModel.COMUMN_MAX; nIndex++) {
+        for (int nIndex = 0; nIndex < LogFilterTableModel.COLUMN_MAX; nIndex++) {
             LogFilterTableModel.setColumnWidth(nIndex, m_colWidths[nIndex]);
         }
         m_colWidths = LogFilterTableModel.ColWidth;
 
-        getLogTable().showColumn(LogFilterTableModel.COMUMN_BOOKMARK,
+        getLogTable().showColumn(LogFilterTableModel.COLUMN_BOOKMARK,
                 m_chkClmBookmark.isSelected());
-        getLogTable().showColumn(LogFilterTableModel.COMUMN_LINE,
+        getLogTable().showColumn(LogFilterTableModel.COLUMN_LINE,
                 m_chkClmLine.isSelected());
-        getLogTable().showColumn(LogFilterTableModel.COMUMN_DATE,
+        getLogTable().showColumn(LogFilterTableModel.COLUMN_DATE,
                 m_chkClmDate.isSelected());
-        getLogTable().showColumn(LogFilterTableModel.COMUMN_TIME,
+        getLogTable().showColumn(LogFilterTableModel.COLUMN_TIME,
                 m_chkClmTime.isSelected());
-        getLogTable().showColumn(LogFilterTableModel.COMUMN_LOGLV,
+        getLogTable().showColumn(LogFilterTableModel.COLUMN_LOGLV,
                 m_chkClmLogLV.isSelected());
-        getLogTable().showColumn(LogFilterTableModel.COMUMN_PID,
+        getLogTable().showColumn(LogFilterTableModel.COLUMN_PID,
                 m_chkClmPid.isSelected());
-        getLogTable().showColumn(LogFilterTableModel.COMUMN_THREAD,
+        getLogTable().showColumn(LogFilterTableModel.COLUMN_THREAD,
                 m_chkClmThread.isSelected());
-        getLogTable().showColumn(LogFilterTableModel.COMUMN_TAG,
+        getLogTable().showColumn(LogFilterTableModel.COLUMN_TAG,
                 m_chkClmTag.isSelected());
-        getLogTable().showColumn(LogFilterTableModel.COMUMN_MESSAGE,
+        getLogTable().showColumn(LogFilterTableModel.COLUMN_MESSAGE,
                 m_chkClmMessage.isSelected());
 
-        getSubTable().showColumn(LogFilterTableModel.COMUMN_BOOKMARK,
+        getSubTable().showColumn(LogFilterTableModel.COLUMN_BOOKMARK,
                 m_chkClmBookmark.isSelected());
-        getSubTable().showColumn(LogFilterTableModel.COMUMN_LINE,
+        getSubTable().showColumn(LogFilterTableModel.COLUMN_LINE,
                 m_chkClmLine.isSelected());
-        getSubTable().showColumn(LogFilterTableModel.COMUMN_DATE,
+        getSubTable().showColumn(LogFilterTableModel.COLUMN_DATE,
                 m_chkClmDate.isSelected());
-        getSubTable().showColumn(LogFilterTableModel.COMUMN_TIME,
+        getSubTable().showColumn(LogFilterTableModel.COLUMN_TIME,
                 m_chkClmTime.isSelected());
-        getSubTable().showColumn(LogFilterTableModel.COMUMN_LOGLV,
+        getSubTable().showColumn(LogFilterTableModel.COLUMN_LOGLV,
                 m_chkClmLogLV.isSelected());
-        getSubTable().showColumn(LogFilterTableModel.COMUMN_PID,
+        getSubTable().showColumn(LogFilterTableModel.COLUMN_PID,
                 m_chkClmPid.isSelected());
-        getSubTable().showColumn(LogFilterTableModel.COMUMN_THREAD,
+        getSubTable().showColumn(LogFilterTableModel.COLUMN_THREAD,
                 m_chkClmThread.isSelected());
-        getSubTable().showColumn(LogFilterTableModel.COMUMN_TAG,
+        getSubTable().showColumn(LogFilterTableModel.COLUMN_TAG,
                 m_chkClmTag.isSelected());
-        getSubTable().showColumn(LogFilterTableModel.COMUMN_MESSAGE,
+        getSubTable().showColumn(LogFilterTableModel.COLUMN_MESSAGE,
                 m_chkClmMessage.isSelected());
     }
 
@@ -2665,49 +2675,49 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
             } else if (check.equals(m_chkFatal)) {
                 setLogLV(LogInfo.LOG_LV_FATAL, check.isSelected());
             } else if (check.equals(m_chkClmBookmark)) {
-                getLogTable().showColumn(LogFilterTableModel.COMUMN_BOOKMARK,
+                getLogTable().showColumn(LogFilterTableModel.COLUMN_BOOKMARK,
                         check.isSelected());
-                getSubTable().showColumn(LogFilterTableModel.COMUMN_BOOKMARK,
+                getSubTable().showColumn(LogFilterTableModel.COLUMN_BOOKMARK,
                         check.isSelected());
             } else if (check.equals(m_chkClmLine)) {
-                getLogTable().showColumn(LogFilterTableModel.COMUMN_LINE,
+                getLogTable().showColumn(LogFilterTableModel.COLUMN_LINE,
                         check.isSelected());
-                getSubTable().showColumn(LogFilterTableModel.COMUMN_LINE,
+                getSubTable().showColumn(LogFilterTableModel.COLUMN_LINE,
                         check.isSelected());
             } else if (check.equals(m_chkClmDate)) {
-                getLogTable().showColumn(LogFilterTableModel.COMUMN_DATE,
+                getLogTable().showColumn(LogFilterTableModel.COLUMN_DATE,
                         check.isSelected());
-                getSubTable().showColumn(LogFilterTableModel.COMUMN_DATE,
+                getSubTable().showColumn(LogFilterTableModel.COLUMN_DATE,
                         check.isSelected());
             } else if (check.equals(m_chkClmTime)) {
-                getLogTable().showColumn(LogFilterTableModel.COMUMN_TIME,
+                getLogTable().showColumn(LogFilterTableModel.COLUMN_TIME,
                         check.isSelected());
-                getSubTable().showColumn(LogFilterTableModel.COMUMN_TIME,
+                getSubTable().showColumn(LogFilterTableModel.COLUMN_TIME,
                         check.isSelected());
             } else if (check.equals(m_chkClmLogLV)) {
-                getLogTable().showColumn(LogFilterTableModel.COMUMN_LOGLV,
+                getLogTable().showColumn(LogFilterTableModel.COLUMN_LOGLV,
                         check.isSelected());
-                getSubTable().showColumn(LogFilterTableModel.COMUMN_LOGLV,
+                getSubTable().showColumn(LogFilterTableModel.COLUMN_LOGLV,
                         check.isSelected());
             } else if (check.equals(m_chkClmPid)) {
-                getLogTable().showColumn(LogFilterTableModel.COMUMN_PID,
+                getLogTable().showColumn(LogFilterTableModel.COLUMN_PID,
                         check.isSelected());
-                getSubTable().showColumn(LogFilterTableModel.COMUMN_PID,
+                getSubTable().showColumn(LogFilterTableModel.COLUMN_PID,
                         check.isSelected());
             } else if (check.equals(m_chkClmThread)) {
-                getLogTable().showColumn(LogFilterTableModel.COMUMN_THREAD,
+                getLogTable().showColumn(LogFilterTableModel.COLUMN_THREAD,
                         check.isSelected());
-                getSubTable().showColumn(LogFilterTableModel.COMUMN_THREAD,
+                getSubTable().showColumn(LogFilterTableModel.COLUMN_THREAD,
                         check.isSelected());
             } else if (check.equals(m_chkClmTag)) {
-                getLogTable().showColumn(LogFilterTableModel.COMUMN_TAG,
+                getLogTable().showColumn(LogFilterTableModel.COLUMN_TAG,
                         check.isSelected());
-                getSubTable().showColumn(LogFilterTableModel.COMUMN_TAG,
+                getSubTable().showColumn(LogFilterTableModel.COLUMN_TAG,
                         check.isSelected());
             } else if (check.equals(m_chkClmMessage)) {
-                getLogTable().showColumn(LogFilterTableModel.COMUMN_MESSAGE,
+                getLogTable().showColumn(LogFilterTableModel.COLUMN_MESSAGE,
                         check.isSelected());
-                getSubTable().showColumn(LogFilterTableModel.COMUMN_MESSAGE,
+                getSubTable().showColumn(LogFilterTableModel.COLUMN_MESSAGE,
                         check.isSelected());
             } else if (check.equals(m_chkEnableFind)
                     || check.equals(m_chkEnableRemove)
@@ -2825,7 +2835,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
 
             @Override
             public void onFliterPidSelected(String value) {
-                String pidShow = m_tbLogTable.m_strPidShow;
+                String pidShow = m_tbLogTable.GetFilterShowPid();
                 if (pidShow.contains("|" + value)) {
                     pidShow = pidShow.replace("|" + value, "");
                 } else if (pidShow.contains(value)) {
@@ -2833,7 +2843,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
                 } else {
                     pidShow += "|" + value;
                 }
-                m_tbLogTable.m_strPidShow = pidShow;
+                m_tbLogTable.SetFilterShowPid(pidShow);
                 LogFilterMain.this.notiEvent(new INotiEvent.EventParam(INotiEvent.TYPE.EVENT_CHANGE_FILTER_SHOW_PID));
             }
         });
@@ -2896,6 +2906,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         mStateSaver.load(file.getAbsolutePath());
     }
 
+    @Override
     public void refreshDiffMenuBar() {
         if (mDiffService.getDiffServiceType() == DiffService.DiffServiceType.AS_SERVER) {
             if (mDiffService.isDiffConnected()) {
@@ -2908,6 +2919,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         }
     }
 
+    @Override
     public void refreshUIWithDiffState() {
         if (!mDiffService.isDiffConnected()) {
             mSyncScrollCheckBox.setEnabled(false);
@@ -2944,13 +2956,15 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         return m_tSublogTable;
     }
 
+    @Override
     public void searchSimilar(String cmd) {
         m_tbLogTable.searchSimilarForward(cmd);
     }
 
+    @Override
     public void compareWithSelectedRows(String targetRows) {
         String fmtRows = m_tbLogTable.getFormatSelectedRows(
-                new int[]{LogFilterTableModel.COMUMN_LINE, LogFilterTableModel.COMUMN_TIME}
+                new int[]{LogFilterTableModel.COLUMN_LINE, LogFilterTableModel.COLUMN_TIME}
         );
         if (fmtRows == null || fmtRows.length() == 0) {
             return;
@@ -2990,6 +3004,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         }
     };
 
+    @Override
     public void enableSyncScroll(boolean enable) {
         mSyncScrollEnable = enable;
         if (mSyncScrollEnable) {
@@ -3006,6 +3021,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         mSyncScrollSelected = enable;
     }
 
+    @Override
     public void handleScrollVSyncEvent(String cmd) {
         JScrollBar scrollBar = m_logScrollVPane.getVerticalScrollBar();
         int scrollChanged = Integer.valueOf(cmd);
@@ -3031,19 +3047,23 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         }
     }
 
+    @Override
     public void handleSelectedForwardSyncEvent(String cmd) {
         m_tbLogTable.searchSimilarForward(cmd);
     }
 
+    @Override
     public void handleSelectedBackwardSyncEvent(String cmd) {
         m_tbLogTable.searchSimilarBackward(cmd);
     }
+
+    ///////////////////////////////////interface///////////////////////////////////
 
     private enum FileType {
         LOGFILE, MODEFILE
     }
 
-    public class TargetDevice {
+    private static class TargetDevice {
         String code;
         String product;
         String model;

@@ -1,4 +1,7 @@
-package com.legendmohe.tool;
+package com.legendmohe.tool.parser;
+
+import com.legendmohe.tool.LogColor;
+import com.legendmohe.tool.LogInfo;
 
 import java.awt.Color;
 

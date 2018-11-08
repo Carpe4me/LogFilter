@@ -1,4 +1,6 @@
-package com.legendmohe.tool;
+package com.legendmohe.tool.logtable;
+
+import com.legendmohe.tool.LogInfo;
 
 /**
  * Created by xinyu.he on 2016/1/14.

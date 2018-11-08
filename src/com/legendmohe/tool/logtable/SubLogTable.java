@@ -1,10 +1,20 @@
-package com.legendmohe.tool;
+package com.legendmohe.tool.logtable;
 
-import javax.swing.*;
-import java.awt.*;
+import com.legendmohe.tool.INotiEvent;
+import com.legendmohe.tool.LogFilterMain;
+import com.legendmohe.tool.LogInfo;
+import com.legendmohe.tool.T;
+
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
+import javax.swing.AbstractAction;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 
 public class SubLogTable extends BaseLogTable {
     private static final long serialVersionUID = 1L;
@@ -24,7 +34,7 @@ public class SubLogTable extends BaseLogTable {
                 int column = columnAtPoint(p);
                 if (SwingUtilities.isLeftMouseButton(e)) {
                     if (e.getClickCount() == 2) {
-                        if (column != LogFilterTableModel.COMUMN_BOOKMARK) {
+                        if (column != LogFilterTableModel.COLUMN_BOOKMARK) {
                             LogInfo logInfo = ((LogFilterTableModel) getModel()).getRow(row);
                             showInfoInLogTable(logInfo);
                         }
@@ -119,6 +129,6 @@ public class SubLogTable extends BaseLogTable {
     }
 
     public boolean isCellEditable(int row, int column) {
-        return column == LogFilterTableModel.COMUMN_BOOKMARK;
+        return column == LogFilterTableModel.COLUMN_BOOKMARK;
     }
 }

@@ -1,8 +1,9 @@
 package com.legendmohe.tool.diff;
 
+import com.legendmohe.tool.IDiffCmdHandler;
 import com.legendmohe.tool.LogFilterMain;
-import com.legendmohe.tool.json.JSONObject;
 import com.legendmohe.tool.T;
+import com.legendmohe.tool.json.JSONObject;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -14,13 +15,13 @@ public class DiffService {
 
     private DiffServer mDiffServer;
     private DiffClient mDiffClient;
-    private LogFilterMain mLogFilterMain;
+    private IDiffCmdHandler mCmdHandler;
 
     private DiffServiceType mDiffServiceType;
     private boolean mIsDiffConnected;
 
     public DiffService(LogFilterMain mainPanel, int serverPort) {
-        mLogFilterMain = mainPanel;
+        mCmdHandler = mainPanel;
         setupDiffServer(serverPort);
     }
 
@@ -35,8 +36,8 @@ public class DiffService {
             mDiffServiceType = DiffServiceType.AS_CLIENT;
             mIsDiffConnected = true;
 
-            mLogFilterMain.refreshUIWithDiffState();
-            mLogFilterMain.refreshDiffMenuBar();
+            mCmdHandler.refreshUIWithDiffState();
+            mCmdHandler.refreshDiffMenuBar();
         }
 
         @Override
@@ -44,8 +45,8 @@ public class DiffService {
             mDiffServiceType = null;
             mIsDiffConnected = false;
 
-            mLogFilterMain.refreshUIWithDiffState();
-            mLogFilterMain.refreshDiffMenuBar();
+            mCmdHandler.refreshUIWithDiffState();
+            mCmdHandler.refreshDiffMenuBar();
         }
     };
 
@@ -60,14 +61,14 @@ public class DiffService {
         public void onClientConnected(Socket clientSocket) {
             mDiffServiceType = DiffServiceType.AS_SERVER;
             mIsDiffConnected = true;
-            mLogFilterMain.refreshUIWithDiffState();
+            mCmdHandler.refreshUIWithDiffState();
         }
 
         @Override
         public void onClientDisconnected(Socket clientSocket) {
             mDiffServiceType = null;
             mIsDiffConnected = false;
-            mLogFilterMain.refreshUIWithDiffState();
+            mCmdHandler.refreshUIWithDiffState();
         }
     };
 
@@ -110,17 +111,17 @@ public class DiffService {
         String cmd = responseJson.getString("cmd");
         T.d("receive type:" + type + " cmd:" + cmd);
         if (type.equals(DiffServiceCmdType.SYNC_SCROLL_V.toString())) {
-            mLogFilterMain.handleScrollVSyncEvent(cmd);
+            mCmdHandler.handleScrollVSyncEvent(cmd);
         } else if (type.equals(DiffServiceCmdType.FIND.toString())) {
-            mLogFilterMain.searchKeyword(cmd);
+            mCmdHandler.searchKeyword(cmd);
         } else if (type.equals(DiffServiceCmdType.FIND_SIMILAR.toString())) {
-            mLogFilterMain.searchSimilar(cmd);
+            mCmdHandler.searchSimilar(cmd);
         } else if (type.equals(DiffServiceCmdType.COMPARE.toString())) {
-            mLogFilterMain.compareWithSelectedRows(cmd);
+            mCmdHandler.compareWithSelectedRows(cmd);
         } else if (type.equals(DiffServiceCmdType.SYNC_SELECTED_FORWARD.toString())) {
-            mLogFilterMain.handleSelectedForwardSyncEvent(cmd);
+            mCmdHandler.handleSelectedForwardSyncEvent(cmd);
         } else if (type.equals(DiffServiceCmdType.SYNC_SELECTED_BACKWARD.toString())) {
-            mLogFilterMain.handleSelectedBackwardSyncEvent(cmd);
+            mCmdHandler.handleSelectedBackwardSyncEvent(cmd);
         }
         return null;
     }
@@ -151,6 +152,8 @@ public class DiffService {
     public DiffServiceType getDiffServiceType() {
         return mDiffServiceType;
     }
+
+    //////////////////////////////////////////////////////////////////////
 
     public enum DiffServiceType {
         AS_CLIENT, AS_SERVER

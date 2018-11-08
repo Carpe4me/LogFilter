@@ -1,6 +1,8 @@
-package com.legendmohe.tool;
+package com.legendmohe.tool.parser;
 
-import java.awt.*;
+import com.legendmohe.tool.LogInfo;
+
+import java.awt.Color;
 
 /**
  * 负责逐行解析log

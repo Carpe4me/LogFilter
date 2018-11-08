@@ -1,6 +1,8 @@
 package com.legendmohe.tool;
 
-import java.awt.*;
+import com.legendmohe.tool.logtable.LogFilterTableModel;
+
+import java.awt.Color;
 
 public class LogInfo {
     public static final int LOG_LV_VERBOSE = 1;
@@ -44,23 +46,23 @@ public class LogInfo {
 
     public Object getData(int nColumn) {
         switch (nColumn) {
-            case LogFilterTableModel.COMUMN_LINE:
+            case LogFilterTableModel.COLUMN_LINE:
                 return getLine();
-            case LogFilterTableModel.COMUMN_DATE:
+            case LogFilterTableModel.COLUMN_DATE:
                 return getDate();
-            case LogFilterTableModel.COMUMN_TIME:
+            case LogFilterTableModel.COLUMN_TIME:
                 return getTime();
-            case LogFilterTableModel.COMUMN_LOGLV:
+            case LogFilterTableModel.COLUMN_LOGLV:
                 return getLogLV();
-            case LogFilterTableModel.COMUMN_PID:
+            case LogFilterTableModel.COLUMN_PID:
                 return getPid();
-            case LogFilterTableModel.COMUMN_THREAD:
+            case LogFilterTableModel.COLUMN_THREAD:
                 return getThread();
-            case LogFilterTableModel.COMUMN_TAG:
+            case LogFilterTableModel.COLUMN_TAG:
                 return getTag();
-            case LogFilterTableModel.COMUMN_BOOKMARK:
+            case LogFilterTableModel.COLUMN_BOOKMARK:
                 return getBookmark();
-            case LogFilterTableModel.COMUMN_MESSAGE:
+            case LogFilterTableModel.COLUMN_MESSAGE:
                 return getMessage();
         }
         return null;

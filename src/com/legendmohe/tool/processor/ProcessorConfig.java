@@ -1,4 +1,4 @@
-package com.legendmohe.tool;
+package com.legendmohe.tool.processor;
 
 /**
  * Created by legendmohe on 16/1/24.

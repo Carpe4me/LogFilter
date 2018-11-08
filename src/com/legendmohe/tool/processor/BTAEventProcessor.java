@@ -1,16 +1,17 @@
-package com.legendmohe.tool.stream;
+package com.legendmohe.tool.processor;
 
 import com.legendmohe.tool.LogInfo;
-import com.legendmohe.tool.Utils;
 import com.legendmohe.tool.T;
+import com.legendmohe.tool.Utils;
 import com.legendmohe.tool.json.JSONArray;
 import com.legendmohe.tool.json.JSONObject;
 
-import javax.xml.bind.DatatypeConverter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.xml.bind.DatatypeConverter;
 
 /**
  * Created by xinyu.he on 2016/1/6.

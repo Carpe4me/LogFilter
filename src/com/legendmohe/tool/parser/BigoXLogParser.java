@@ -1,4 +1,7 @@
-package com.legendmohe.tool;
+package com.legendmohe.tool.parser;
+
+import com.legendmohe.tool.LogInfo;
+import com.legendmohe.tool.T;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

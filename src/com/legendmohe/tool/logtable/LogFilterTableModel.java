@@ -1,31 +1,35 @@
-package com.legendmohe.tool;
+package com.legendmohe.tool.logtable;
 
-import javax.swing.table.AbstractTableModel;
+import com.legendmohe.tool.LogInfo;
+import com.legendmohe.tool.T;
+
 import java.util.ArrayList;
 
+import javax.swing.table.AbstractTableModel;
+
 public class LogFilterTableModel extends AbstractTableModel {
-    static final int COMUMN_LINE = 0;
-    static final int COMUMN_DATE = 1;
-    static final int COMUMN_TIME = 2;
-    static final int COMUMN_LOGLV = 3;
-    static final int COMUMN_PID = 4;
-    static final int COMUMN_THREAD = 5;
-    static final int COMUMN_TAG = 6;
-    static final int COMUMN_BOOKMARK = 7;
-    static final int COMUMN_MESSAGE = 8;
-    public static final int COMUMN_MAX = 9;
+    public static final int COLUMN_LINE = 0;
+    public static final int COLUMN_DATE = 1;
+    public static final int COLUMN_TIME = 2;
+    public static final int COLUMN_LOGLV = 3;
+    public static final int COLUMN_PID = 4;
+    public static final int COLUMN_THREAD = 5;
+    public static final int COLUMN_TAG = 6;
+    public static final int COLUMN_BOOKMARK = 7;
+    public static final int COLUMN_MESSAGE = 8;
+    public static final int COLUMN_MAX = 9;
 
     private static final long serialVersionUID = 1L;
 
     public static String ColName[] = {"Line", "Date", "Time", "LogLV", "Pid", "Thread", "Tag", "Bookmark", "Message"};
     public static int ColWidth[] = {50, 50, 100, 20, 50, 50, 100, 100, 600};
-    public static int DEFULT_WIDTH[] = {50, 50, 100, 20, 50, 50, 100, 100, 600};
+    public static int DEFAULT_WIDTH[] = {50, 50, 100, 20, 50, 50, 100, 100, 600};
 
     ArrayList<LogInfo> m_arData;
 
     public static void setColumnWidth(int nColumn, int nWidth) {
         T.d("nWidth = " + nWidth);
-        if (nWidth >= DEFULT_WIDTH[nColumn])
+        if (nWidth >= DEFAULT_WIDTH[nColumn])
             ColWidth[nColumn] = nWidth;
     }
 

@@ -1,4 +1,4 @@
-package com.legendmohe.tool;/*
+package com.legendmohe.tool.view;/*
 RecentFileMenu.java - menu to store and display recently used files.
  
  Copyright  (C) 2005 Hugues Johnson
@@ -18,13 +18,15 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.LineNumberReader;
+
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 
 /**
  * A menu used to store and display recently used files.
