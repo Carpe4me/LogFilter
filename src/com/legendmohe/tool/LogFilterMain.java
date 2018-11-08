@@ -118,7 +118,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
     private static final long serialVersionUID = 1L;
 
     static final String LOGFILTER = "LogFilter";
-    static final String VERSION = "Version 1.8.1";
+    static final String VERSION = "Version 1.9.0";
     static final String OUTPUT_LOG_DIR = "log";
     static final String CONFIG_BASE_DIR = "conf";
     final String COMBO_ANDROID = "Android          ";
@@ -816,17 +816,39 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         }
     }
 
-    void addDesc(String strMessage) {
+    /*
+            // F2 上一个标签 F3 下一个标签
+            // ctrl + F2 标记行（可多选）
+            // ctrl + F 搜索关键词
+            // F4 上一个搜索结果 F5 下一个搜索结果
+            // ctrl + H 高亮关键词
+            // ctrl + W 过滤msg关键词
+            // ctrl + T 过滤tag关键词
+            // ctrl + B 聚焦到log table
+            // alt + 左箭头 上一个历史行 alt + 右箭头 下一个历史行
+     */
+    void addDesc() {
+        appendDescToTable(VERSION);
+        appendDescToTable("");
+        appendDescToTable("Xinyu.he fork from https://github.com/iookill/LogFilter");
+        appendDescToTable("");
+        appendDescToTable("<Hot key>");
+        appendDescToTable("F2 上一个标签 F3 下一个标签");
+        appendDescToTable("ctrl + F2 标记行（可多选）");
+        appendDescToTable("ctrl + F 搜索关键词");
+        appendDescToTable("F4 上一个搜索结果 F5 下一个搜索结果");
+        appendDescToTable("trl + H 高亮关键词");
+        appendDescToTable("ctrl + W 过滤msg关键词");
+        appendDescToTable("ctrl + T 过滤tag关键词");
+        appendDescToTable("ctrl + B 聚焦到log table");
+        appendDescToTable("alt + 左箭头 上一个历史行 alt + 右箭头 下一个历史行");
+    }
+
+    private void appendDescToTable(String strMessage) {
         LogInfo logInfo = new LogInfo();
         logInfo.setLine(m_arLogInfoAll.size() + 1);
         logInfo.setMessage(strMessage);
         m_arLogInfoAll.add(logInfo);
-    }
-
-    void addDesc() {
-        addDesc(VERSION);
-        addDesc("");
-        addDesc("Xinyu.he fork from https://github.com/iookill/LogFilter");
     }
 
     public void markLogInfo(int nIndex, int nLine, boolean bBookmark) {
@@ -1869,6 +1891,8 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         m_bPauseADB = false;
     }
 
+    ///////////////////////////////////parser///////////////////////////////////
+
     void startFileParse() {
         m_thWatchFile = new Thread(new Runnable() {
             public void run() {
@@ -2359,6 +2383,8 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         return m_bUserFilter;
     }
 
+    //////////////////////////////////////////////////////////////////////
+
     ActionListener m_alButtonListener = new ActionListener() {
         public void actionPerformed(ActionEvent e) {
             if (e.getSource().equals(m_btnDevice)) {
@@ -2733,12 +2759,24 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         }
     };
 
+    ///////////////////////////////////热键///////////////////////////////////
+
     private KeyEventDispatcher mKeyEventDispatcher = new KeyEventDispatcher() {
         @Override
         public boolean dispatchKeyEvent(KeyEvent e) {
             if (!LogFilterMain.this.isFocused()) {
                 return false;
             }
+
+            // F2 上一个标签 F3 下一个标签
+            // ctrl + F2 标记行（可多选）
+            // ctrl + F 搜索关键词
+            // F4 上一个搜索结果 F5 下一个搜索结果
+            // ctrl + H 高亮关键词
+            // ctrl + W 过滤msg关键词
+            // ctrl + T 过滤tag关键词
+            // ctrl + B 聚焦到log table
+            // alt + 左箭头 上一个历史行 alt + 右箭头 下一个历史行
             boolean altPressed = ((e.getModifiers() & InputEvent.ALT_MASK) == InputEvent.ALT_MASK);
             boolean ctrlPressed = ((e.getModifiers() & InputEvent.CTRL_MASK) == InputEvent.CTRL_MASK);
             switch (e.getKeyCode()) {
@@ -2803,6 +2841,8 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
             return false;
         }
     };
+
+    ///////////////////////////////////对话框///////////////////////////////////
 
     public void openFileBrowserToLoad(FileType type) {
         FileDialog fd = new FileDialog(this, "File open", FileDialog.LOAD);
@@ -2905,6 +2945,8 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         }
         mStateSaver.load(file.getAbsolutePath());
     }
+
+    ///////////////////////////////////diff///////////////////////////////////
 
     @Override
     public void refreshDiffMenuBar() {
