@@ -71,6 +71,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
 import java.util.StringTokenizer;
@@ -159,6 +160,19 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
     public static final int PARSER_TYPE_BIGO_DEV_LOG = 1;
     public static final int PARSER_TYPE_BIGO_XLOG = 2;
 
+    private static final Map<Integer, ILogParser> sTypeToParserMap = new HashMap<>();
+    private static final Map<Integer, String> sTypeToParserNameMap = new HashMap<>();
+
+    {
+        sTypeToParserMap.put(PARSER_TYPE_LOGCAT, new LogCatParser());
+        sTypeToParserMap.put(PARSER_TYPE_BIGO_DEV_LOG, new BigoDevLogParser());
+        sTypeToParserMap.put(PARSER_TYPE_BIGO_XLOG, new BigoXLogParser());
+
+        sTypeToParserNameMap.put(PARSER_TYPE_LOGCAT, "logcat");
+        sTypeToParserNameMap.put(PARSER_TYPE_BIGO_DEV_LOG, "bigo dev log");
+        sTypeToParserNameMap.put(PARSER_TYPE_BIGO_XLOG, "bigo xlog");
+    }
+
     JLabel m_tfStatus;
     IndicatorPanel m_ipIndicator;
     ArrayList<LogInfo> m_arLogInfoAll;
@@ -177,7 +191,6 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
     JTextField m_tfSearch;
     @TextFieldSaveState
     JTextField m_tfHighlight;
-
     @TextFieldSaveState
     JTextField m_tfFindWord;
     @TextFieldSaveState
@@ -192,6 +205,12 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
     JTextField m_tfShowTid;
     @TextFieldSaveState
     JTextField m_tfBookmarkTag;
+    @TextFieldSaveState
+    JTextField m_tfFontSize;
+
+    private JTextField m_tfFromTimeTag;
+    private JTextField m_tfToTimeTag;
+    private JTextField m_TfGoto;
 
     // Device
     JButton m_btnDevice;
@@ -254,10 +273,6 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
     @CheckBoxSaveState
     JCheckBox m_chkClmMessage;
 
-    @TextFieldSaveState
-    JTextField m_tfFontSize;
-    // JTextField m_tfProcessCmd;
-
     JComboBox<String> m_comboEncode;
     //    JComboBox m_jcFontType;
     JButton m_btnRun;
@@ -303,14 +318,13 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
     public DiffService mDiffService;
     private JLabel m_tfDiffPort;
     private JLabel m_tfDiffState;
+    private JLabel m_tfParserType;
     private JCheckBox mSyncScrollCheckBox;
     private JCheckBox mSyncSelectedCheckBox;
     private boolean mSyncScrollEnable;
     private boolean mSyncScrollSelected;
 
     private final StateSaver mStateSaver;
-    private JTextField m_tfFromTimeTag;
-    private JTextField m_tfToTimeTag;
     private JSplitPane mSplitPane;
     @FieldSaveState
     private int mSplitPaneDividerLocation = -1;
@@ -437,8 +451,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
             @Override
             public void itemStateChanged(ItemEvent e) {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
-                    mainFrame.m_iLogParser = new LogCatParser();
-                    mainFrame.m_parserType = PARSER_TYPE_LOGCAT;
+                    mainFrame.switchToLogParser(PARSER_TYPE_LOGCAT);
                 }
             }
         });
@@ -449,8 +462,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
             @Override
             public void itemStateChanged(ItemEvent e) {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
-                    mainFrame.m_iLogParser = new BigoDevLogParser();
-                    mainFrame.m_parserType = PARSER_TYPE_BIGO_DEV_LOG;
+                    mainFrame.switchToLogParser(PARSER_TYPE_BIGO_DEV_LOG);
                 }
             }
         });
@@ -461,8 +473,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
             @Override
             public void itemStateChanged(ItemEvent e) {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
-                    mainFrame.m_iLogParser = new BigoDevLogParser();
-                    mainFrame.m_parserType = PARSER_TYPE_BIGO_XLOG;
+                    mainFrame.switchToLogParser(PARSER_TYPE_BIGO_XLOG);
                 }
             }
         });
@@ -636,6 +647,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
 
         setDnDListener();
         addChangeListener();
+        addUndoListener();
         startFilterParse();
 
         setVisible(true);
@@ -724,18 +736,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
     }
 
     private void loadParser() {
-        switch (m_parserType) {
-            case PARSER_TYPE_BIGO_DEV_LOG:
-                m_iLogParser = new BigoDevLogParser();
-                break;
-            case PARSER_TYPE_BIGO_XLOG:
-                m_iLogParser = new BigoXLogParser();
-                break;
-            case PARSER_TYPE_LOGCAT:
-            default:
-                m_iLogParser = new LogCatParser();
-                break;
-        }
+        switchToLogParser(m_parserType);
     }
 
     void loadColor() {
@@ -1100,6 +1101,22 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         });
     }
 
+    private void addUndoListener() {
+        Utils.makeUndoable(m_tfSearch);
+        Utils.makeUndoable(m_tfHighlight);
+        Utils.makeUndoable(m_tfFindWord);
+        Utils.makeUndoable(m_tfRemoveWord);
+        Utils.makeUndoable(m_tfShowTag);
+        Utils.makeUndoable(m_tfRemoveTag);
+        Utils.makeUndoable(m_tfShowPid);
+        Utils.makeUndoable(m_tfShowTid);
+        Utils.makeUndoable(m_tfBookmarkTag);
+        Utils.makeUndoable(m_tfFontSize);
+        Utils.makeUndoable(m_TfGoto);
+        Utils.makeUndoable(m_tfToTimeTag);
+        Utils.makeUndoable(m_tfFromTimeTag);
+    }
+
     Component getFilterPanel() {
         m_chkEnableFind = new JCheckBox();
         m_chkEnableRemove = new JCheckBox();
@@ -1448,12 +1465,12 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         m_comboEncode.addItem("Local");
 
         JLabel jlGoto = new JLabel("Goto : ");
-        final JTextField tfGoto = new JTextField(6);
-        tfGoto.setHorizontalAlignment(SwingConstants.RIGHT);
-        tfGoto.addCaretListener(new CaretListener() {
+        m_TfGoto = new JTextField(6);
+        m_TfGoto.setHorizontalAlignment(SwingConstants.RIGHT);
+        m_TfGoto.addCaretListener(new CaretListener() {
             public void caretUpdate(CaretEvent e) {
                 try {
-                    int nIndex = Integer.parseInt(tfGoto.getText()) - 1;
+                    int nIndex = Integer.parseInt(m_TfGoto.getText()) - 1;
                     getLogTable().showRowCenterIfNotInRect(nIndex, true);
                 } catch (Exception err) {
                 }
@@ -1506,7 +1523,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         optionWest.add(jlEncode);
         optionWest.add(m_comboEncode);
         optionWest.add(jlGoto);
-        optionWest.add(tfGoto);
+        optionWest.add(m_TfGoto);
 
         optionWest.add(preHistoryButton);
         optionWest.add(nextHistoryButton);
@@ -1540,10 +1557,12 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         m_tfDiffPort.setBorder(border);
         m_tfDiffState = new JLabel("disconnected");
         m_tfDiffState.setBorder(border);
-
+        m_tfParserType = new JLabel("");
+        m_tfParserType.setBorder(border);
 
         tfPanel.add(m_tfDiffState, constraints);
         tfPanel.add(m_tfDiffPort, constraints);
+        tfPanel.add(m_tfParserType, constraints);
         tfPanel.add(m_tfStatus, constraints);
 
         mainP.add(tfPanel, BorderLayout.EAST);
@@ -2159,8 +2178,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         getLogTable().clearSelection();
         getSubTable().clearSelection();
         // 自动切换到logcatparser
-        m_parserType = PARSER_TYPE_LOGCAT;
-        m_iLogParser = new LogCatParser();
+        switchToLogParser(PARSER_TYPE_LOGCAT);
 
         m_thProcess = new Thread(new Runnable() {
             public void run() {
@@ -3097,6 +3115,14 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
     @Override
     public void handleSelectedBackwardSyncEvent(String cmd) {
         m_tbLogTable.searchSimilarBackward(cmd);
+    }
+
+    ///////////////////////////////////logParser///////////////////////////////////
+
+    private void switchToLogParser(int parserType) {
+        m_iLogParser = sTypeToParserMap.get(parserType);
+        m_parserType = parserType;
+        m_tfParserType.setText(sTypeToParserNameMap.get(parserType));
     }
 
     ///////////////////////////////////interface///////////////////////////////////
