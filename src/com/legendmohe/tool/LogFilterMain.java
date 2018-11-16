@@ -641,9 +641,10 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         Container pane = getContentPane();
         pane.setLayout(new BorderLayout());
 
-        pane.add(getOptionPanel(), BorderLayout.NORTH);
+
+        JSplitPane mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, getOptionPanel(), getLogPanel());
+        pane.add(mainSplitPane, BorderLayout.CENTER);
         pane.add(getStatusPanel(), BorderLayout.SOUTH);
-        pane.add(getLogPanel(), BorderLayout.CENTER);
 
         setDnDListener();
         addChangeListener();
@@ -1169,7 +1170,8 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
 
         jpMain.add(jpWordFilter, BorderLayout.NORTH);
 
-        JPanel jpTagFilter = new JPanel(new GridLayout(5, 1));
+        JPanel jpTagFilter = new JPanel();
+        jpTagFilter.setLayout(new BoxLayout(jpTagFilter, BoxLayout.Y_AXIS));
         jpTagFilter.setBorder(BorderFactory.createTitledBorder("Tag filter"));
 
         JPanel jpPidTid = new JPanel(new GridLayout(1, 2));
@@ -1346,10 +1348,10 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         m_chkClmMessage = new JCheckBox();
 
         JPanel jpMain = new JPanel();
-        jpMain.setLayout(new BoxLayout(jpMain, BoxLayout.PAGE_AXIS));
+        jpMain.setLayout(new BoxLayout(jpMain, BoxLayout.X_AXIS));
 
         JPanel jpLogFilter = new JPanel();
-        jpLogFilter.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
+        jpLogFilter.setLayout(new GridLayout(3, 2));
         jpLogFilter.setBorder(BorderFactory.createTitledBorder("Log filter"));
         m_chkVerbose.setText("Verbose");
         m_chkVerbose.setSelected(true);
@@ -1371,7 +1373,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         jpLogFilter.add(m_chkFatal);
 
         JPanel jpShowColumn = new JPanel();
-        jpShowColumn.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
+        jpShowColumn.setLayout(new GridLayout(5, 2));
         jpShowColumn.setBorder(BorderFactory.createTitledBorder("Show column"));
         m_chkClmBookmark.setText("Mark");
         m_chkClmBookmark.setToolTipText("Bookmark");
@@ -1403,45 +1405,40 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
 
         jpMain.add(jpLogFilter);
         jpMain.add(jpShowColumn);
-        jpMain.add(getHighlightPanel());
-        jpMain.add(getSearchPanel());
         return jpMain;
     }
 
-    JPanel getToolPanel() {
-        JPanel jpTool = new JPanel();
-        jpTool.setLayout(new GridLayout(5, 1, 2, 2));
-        jpTool.setBorder(BorderFactory.createTitledBorder("Tools"));
-        jpTool.setMinimumSize(new Dimension(80, 0));
-        jpTool.setPreferredSize(new Dimension(80, 0));
-
-        JButton calcButton = new JButton("Calc");
-        calcButton.setMargin(new Insets(0, 0, 0, 0));
-        calcButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    Utils.runCmd(new String[]{CALC_PROGRAM_PATH});
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
-            }
-        });
-
-        jpTool.add(calcButton);
-        return jpTool;
-    }
+//    JPanel getToolPanel() {
+//        JPanel jpTool = new JPanel();
+//        jpTool.setLayout(new GridLayout(5, 1, 2, 2));
+//        jpTool.setBorder(BorderFactory.createTitledBorder("Tools"));
+//        jpTool.setMinimumSize(new Dimension(80, 0));
+//        jpTool.setPreferredSize(new Dimension(80, 0));
+//
+//        JButton calcButton = new JButton("Calc");
+//        calcButton.setMargin(new Insets(0, 0, 0, 0));
+//        calcButton.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                try {
+//                    Utils.runCmd(new String[]{CALC_PROGRAM_PATH});
+//                } catch (IOException e1) {
+//                    e1.printStackTrace();
+//                }
+//            }
+//        });
+//
+//        jpTool.add(calcButton);
+//        return jpTool;
+//    }
 
     Component getOptionFilter() {
-        JPanel optionFilter = new JPanel(new BorderLayout());
+        JPanel optionFilter = new JPanel();
+        optionFilter.setLayout(new BoxLayout(optionFilter, BoxLayout.Y_AXIS));
 
-        optionFilter.add(getDevicePanel(), BorderLayout.WEST);
-        optionFilter.add(getFilterPanel(), BorderLayout.CENTER);
-
-        JPanel aPanel = new JPanel(new BorderLayout());
-        aPanel.add(getCheckPanel(), BorderLayout.WEST);
-        aPanel.add(getToolPanel(), BorderLayout.EAST);
-        optionFilter.add(aPanel, BorderLayout.EAST);
+        optionFilter.add(getDevicePanel());
+        optionFilter.add(getFilterPanel());
+        optionFilter.add(getCheckPanel());
 
         return optionFilter;
     }
@@ -1529,16 +1526,16 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         optionWest.add(nextHistoryButton);
 
         optionMenu.add(optionWest, BorderLayout.CENTER);
+
+        JPanel searchPanel = new JPanel(new GridLayout(1, 2));
+        searchPanel.add(getHighlightPanel());
+        searchPanel.add(getSearchPanel());
+        optionMenu.add(searchPanel, BorderLayout.SOUTH);
         return optionMenu;
     }
 
     Component getOptionPanel() {
-        JPanel optionMain = new JPanel(new BorderLayout());
-
-        optionMain.add(getOptionFilter(), BorderLayout.CENTER);
-        optionMain.add(getOptionMenu(), BorderLayout.SOUTH);
-
-        return optionMain;
+        return getOptionFilter();
     }
 
     Component getStatusPanel() {
@@ -1572,13 +1569,16 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
 
     Component getLogPanel() {
         JPanel mainLogPanel = new JPanel(new BorderLayout());
-        mainLogPanel.add(getBookmarkPanel(), BorderLayout.WEST);
+
+        mainLogPanel.add(getOptionMenu(), BorderLayout.NORTH);
 
         m_tmLogTableModel = new LogFilterTableModel();
         m_tmLogTableModel.setData(m_arLogInfoAll);
         m_tbLogTable = new LogTable(m_tmLogTableModel, this);
         m_logScrollVPane = new JScrollPane(m_tbLogTable);
         mainLogPanel.add(m_logScrollVPane, BorderLayout.CENTER);
+
+        mainLogPanel.add(getBookmarkPanel(), BorderLayout.WEST);
 
         m_tSubLogTableModel = new LogFilterTableModel();
         m_tSubLogTableModel.setData(m_arSubLogInfoAll);

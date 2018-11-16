@@ -8,11 +8,7 @@
   <component name="ChangeListManager">
     <list default="true" readonly="true" id="3aecea0d-fcd6-41ed-8cea-e55b4a19285a" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RecentFile.ini" beforeDir="false" afterPath="$PROJECT_DIR$/RecentFile.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/conf/LogFilterColor.ini" beforeDir="false" afterPath="$PROJECT_DIR$/conf/LogFilterColor.ini" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/legendmohe/tool/LogFilterMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/legendmohe/tool/LogFilterMain.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/legendmohe/tool/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/legendmohe/tool/Utils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/legendmohe/tool/parser/LogCatParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/legendmohe/tool/parser/LogCatParser.java" afterDir="false" />
     </list>
     <ignored path="LogFilter-master.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -52,90 +48,91 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="LogFilterMain.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="LogFilterMain.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/LogFilterMain.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="217">
-              <caret line="1113" column="41" selection-start-line="1113" selection-start-column="41" selection-end-line="1113" selection-end-column="41" />
+            <state relative-caret-position="304">
+              <caret line="1368" column="36" lean-forward="true" selection-start-line="1368" selection-start-column="36" selection-end-line="1368" selection-end-column="36" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#18073#18074#0" expanded="true" />
                 <element signature="e#18133#18134#0" expanded="true" />
-                <element signature="e#25988#25989#0" expanded="true" />
-                <element signature="e#26035#26036#0" expanded="true" />
+                <element signature="e#22629#22753#0" expanded="true" />
+                <element signature="e#22752#22753#0" expanded="true" />
                 <element signature="e#32259#32260#0" expanded="true" />
                 <element signature="e#32325#32326#0" expanded="true" />
-                <element signature="e#49109#49110#0" expanded="true" />
-                <element signature="e#49177#49178#0" expanded="true" />
-                <element signature="e#49700#49701#0" expanded="true" />
-                <element signature="e#49767#49768#0" expanded="true" />
-                <element signature="e#50087#50088#0" expanded="true" />
-                <element signature="e#50155#50156#0" expanded="true" />
-                <element signature="e#56941#56942#0" expanded="true" />
-                <element signature="e#56999#57000#0" expanded="true" />
-                <element signature="e#57273#57274#0" expanded="true" />
-                <element signature="e#57334#57335#0" expanded="true" />
+                <element signature="e#58448#58449#0" expanded="true" />
+                <element signature="e#58488#58489#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="JTextField.java" pinned="false" current-in-tab="false">
-        <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/javax/swing/JTextField.java">
+      <file leaf-file-name="JSplitPane.java" pinned="false" current-in-tab="false">
+        <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/javax/swing/JSplitPane.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="195">
-              <caret line="163" column="13" selection-start-line="163" selection-start-column="13" selection-end-line="163" selection-end-column="13" />
+              <caret line="113" column="28" selection-start-line="113" selection-start-column="28" selection-end-line="113" selection-end-column="28" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ILogParser.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/parser/ILogParser.java">
+      <file leaf-file-name="BoxLayout.java" pinned="false" current-in-tab="false">
+        <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/javax/swing/BoxLayout.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="190">
-              <caret line="12" column="12" selection-start-line="12" selection-start-column="12" selection-end-line="12" selection-end-column="12" />
+            <state relative-caret-position="520">
+              <caret line="162" column="28" selection-start-line="162" selection-start-column="28" selection-end-line="162" selection-end-column="28" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Container.java" pinned="false" current-in-tab="false">
+        <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/java/awt/Container.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="195">
+              <caret line="971" column="16" selection-start-line="971" selection-start-column="16" selection-end-line="971" selection-end-column="16" />
               <folding>
-                <element signature="imports" expanded="true" />
+                <element signature="e#37566#37567#0" expanded="true" />
+                <element signature="e#37612#37613#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="LogCatParser.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/parser/LogCatParser.java">
+      <file leaf-file-name="BorderLayout.java" pinned="false" current-in-tab="false">
+        <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/java/awt/BorderLayout.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="323">
-              <caret line="17" column="39" lean-forward="true" selection-start-line="17" selection-start-column="39" selection-end-line="17" selection-end-column="39" />
+            <state relative-caret-position="520">
+              <caret line="350" column="11" selection-start-line="350" selection-start-column="11" selection-end-line="350" selection-end-column="11" />
               <folding>
-                <element signature="imports" expanded="true" />
+                <element signature="e#11133#11134#0" expanded="true" />
+                <element signature="e#11159#11160#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ProcessorConfig.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/processor/ProcessorConfig.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="209">
-              <caret line="11" selection-start-line="11" selection-end-line="11" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="README.md" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/README.md">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="171">
-              <caret line="9" selection-start-line="9" selection-end-line="9" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="BaseLogTable.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="BaseLogTable.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/logtable/BaseLogTable.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="210">
-              <caret line="21" column="16" selection-start-line="21" selection-start-column="16" selection-end-line="21" selection-end-column="16" />
+            <state relative-caret-position="395">
+              <caret line="409" column="31" selection-start-line="409" selection-start-column="24" selection-end-line="409" selection-end-column="31" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="JFrame.java" pinned="false" current-in-tab="false">
+        <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/javax/swing/JFrame.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="278">
+              <caret line="670" column="21" selection-start-line="670" selection-start-column="21" selection-end-line="670" selection-end-column="21" />
+              <folding>
+                <element signature="e#23469#23470#0" expanded="true" />
+                <element signature="e#23522#23523#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -143,17 +140,8 @@
       <file leaf-file-name="Utils.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/Utils.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="463">
-              <caret line="146" column="35" selection-start-line="146" selection-start-column="23" selection-end-line="146" selection-end-column="35" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SubLogTable.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/logtable/SubLogTable.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="76">
-              <caret line="98" column="76" selection-start-line="98" selection-start-column="76" selection-end-line="98" selection-end-column="76" />
+            <state relative-caret-position="64">
+              <caret line="151" selection-start-line="151" selection-end-line="151" />
             </state>
           </provider>
         </entry>
@@ -161,8 +149,17 @@
       <file leaf-file-name="LogTable.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/logtable/LogTable.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="186">
-              <caret line="158" selection-start-line="158" selection-end-line="158" />
+            <state relative-caret-position="414">
+              <caret line="158" column="32" lean-forward="true" selection-start-line="158" selection-start-column="32" selection-end-line="158" selection-end-column="32" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="workspace.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/.idea/workspace.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="190">
+              <caret line="19" column="31" selection-start-line="19" selection-start-column="31" selection-end-line="19" selection-end-column="31" />
             </state>
           </provider>
         </entry>
@@ -180,10 +177,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>tool</find>
-      <find>loadProcessorFromConfig</find>
-      <find>dumpofservice</find>
-      <find>mMessagePostProcessor</find>
       <find>JRadioButtonMenuItem</find>
       <find>m_iLogParser =</find>
       <find>ready</find>
@@ -209,7 +202,11 @@
       <find>textfi</find>
       <find>textfield</find>
       <find>JTextField</find>
+      <find>DefaultDialerCache</find>
       <find>m_tfSearch</find>
+      <find>wordf</find>
+      <find>copy c</find>
+      <find>mSplitPane</find>
     </findStrings>
     <replaceStrings>
       <replace>COLUMN_</replace>
@@ -329,6 +326,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
@@ -370,7 +368,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
       <pane id="AndroidView" />
     </panes>
   </component>
@@ -810,7 +807,14 @@
       <option name="project" value="LOCAL" />
       <updated>1541662846813</updated>
     </task>
-    <option name="localTasksCounter" value="36" />
+    <task id="LOCAL-00036" summary="添加undo/redo支持&#10;添加parsertype显示（状态栏）">
+      <created>1541993832482</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1541993832482</updated>
+    </task>
+    <option name="localTasksCounter" value="37" />
     <servers />
   </component>
   <component name="TodoView">
@@ -835,28 +839,28 @@
       <window_info anchor="right" id="Maven Projects" order="6" weight="0.3295129" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.26767093" />
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.32097334" />
-      <window_info anchor="right" id="Coverage" order="4" side_tool="true" weight="0.33136413" />
       <window_info anchor="bottom" id="Terminal" order="7" weight="0.32893" />
       <window_info id="Designer" order="2" />
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49880952" visible="true" weight="0.22610097" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49880952" visible="true" weight="0.22932331" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.3314021" />
       <window_info id="Learn" order="2" />
       <window_info id="Structure" order="1" sideWeight="0.5011905" side_tool="true" weight="0.19011815" />
       <window_info id="UI Designer" order="2" />
       <window_info active="true" anchor="bottom" id="Debug" order="3" sideWeight="0.4942029" visible="true" weight="0.28852838" />
       <window_info id="Favorites" order="2" sideWeight="0.5086806" side_tool="true" weight="0.25" />
-      <window_info anchor="right" id="Capture Analysis" order="4" />
       <window_info id="Capture Tool" order="2" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.3989432" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.3989432" />
       <window_info id="Image Layers" order="2" />
+      <window_info anchor="bottom" id="Analyze Dataflow to" order="8" weight="0.32893" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="right" id="Ant Build" order="5" weight="0.25" />
+      <window_info anchor="right" id="Coverage" order="4" side_tool="true" weight="0.33136413" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="right" id="Theme Preview" order="4" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="1" weight="0.25" />
       <window_info anchor="bottom" id="SVN Repositories" order="7" weight="0.32893" />
-      <window_info anchor="bottom" id="Analyze Dataflow to" order="8" weight="0.32893" />
+      <window_info anchor="right" id="Capture Analysis" order="4" />
     </layout>
   </component>
   <component name="UnknownFeatures">
@@ -914,7 +918,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="add sublog table" />
     <MESSAGE value="add sublog table&#10;extract fields" />
     <MESSAGE value="fix splitpane" />
     <MESSAGE value="change table selection style&#10;fix timestamp bug&#10;..." />
@@ -939,20 +942,13 @@
     <MESSAGE value="add bigo xlog" />
     <MESSAGE value="调整项目目录结构 代码结构" />
     <MESSAGE value="添加hot key说明" />
-    <option name="LAST_COMMIT_MESSAGE" value="添加hot key说明" />
+    <MESSAGE value="添加undo/redo支持&#10;添加parsertype显示（状态栏）" />
+    <option name="LAST_COMMIT_MESSAGE" value="添加undo/redo支持&#10;添加parsertype显示（状态栏）" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/com/legendmohe/tool/parser/LogCatParser.java</url>
-          <line>55</line>
-          <properties />
-          <option name="timeStamp" value="384" />
-        </line-breakpoint>
-      </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
@@ -973,26 +969,101 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/LogFilterMain.java">
       <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="18905">
+          <caret line="1116" column="44" selection-start-line="1116" selection-start-column="44" selection-end-line="1116" selection-end-column="44" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#18073#18074#0" expanded="true" />
+            <element signature="e#18133#18134#0" expanded="true" />
+            <element signature="e#22629#22753#0" expanded="true" />
+            <element signature="e#22752#22753#0" expanded="true" />
+            <element signature="e#32259#32260#0" expanded="true" />
+            <element signature="e#32325#32326#0" expanded="true" />
+            <element signature="e#58448#58449#0" expanded="true" />
+            <element signature="e#58488#58489#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/RecentFile.ini">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/javax/swing/JTextField.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3097">
+          <caret line="163" column="13" selection-start-line="163" selection-start-column="13" selection-end-line="163" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/parser/ILogParser.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="190">
+          <caret line="12" column="12" selection-start-line="12" selection-start-column="12" selection-end-line="12" selection-end-column="12" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/parser/LogCatParser.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="95">
+          <caret line="17" column="39" lean-forward="true" selection-start-line="17" selection-start-column="39" selection-end-line="17" selection-end-column="39" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/logtable/BaseLogTable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="399">
+          <caret line="21" column="16" selection-start-line="21" selection-start-column="16" selection-end-line="21" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/Utils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2356">
+          <caret line="147" column="35" selection-start-line="147" selection-start-column="23" selection-end-line="147" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/logtable/SubLogTable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1596">
+          <caret line="98" column="76" selection-start-line="98" selection-start-column="76" selection-end-line="98" selection-end-column="76" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/logtable/LogTable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2584">
+          <caret line="158" selection-start-line="158" selection-end-line="158" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.idea/workspace.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="190">
+          <caret line="10" column="8" selection-start-line="10" selection-start-column="8" selection-end-line="10" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/LogFilterMain.java">
+      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="28595">
           <caret line="1633" column="61" selection-start-line="1633" selection-start-column="61" selection-end-line="1633" selection-end-column="61" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#18073#18074#0" expanded="true" />
             <element signature="e#18133#18134#0" expanded="true" />
-            <element signature="e#25988#25989#0" expanded="true" />
-            <element signature="e#26035#26036#0" expanded="true" />
+            <element signature="e#22629#22753#0" expanded="true" />
+            <element signature="e#22752#22753#0" expanded="true" />
             <element signature="e#32259#32260#0" expanded="true" />
             <element signature="e#32325#32326#0" expanded="true" />
-            <element signature="e#49109#49110#0" expanded="true" />
-            <element signature="e#49177#49178#0" expanded="true" />
-            <element signature="e#49700#49701#0" expanded="true" />
-            <element signature="e#49767#49768#0" expanded="true" />
-            <element signature="e#50087#50088#0" expanded="true" />
-            <element signature="e#50155#50156#0" expanded="true" />
-            <element signature="e#56941#56942#0" expanded="true" />
-            <element signature="e#56999#57000#0" expanded="true" />
-            <element signature="e#57273#57274#0" expanded="true" />
-            <element signature="e#57334#57335#0" expanded="true" />
+            <element signature="e#58448#58449#0" expanded="true" />
+            <element signature="e#58488#58489#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1067,20 +1138,12 @@
             <element signature="imports" expanded="true" />
             <element signature="e#18073#18074#0" expanded="true" />
             <element signature="e#18133#18134#0" expanded="true" />
-            <element signature="e#25988#25989#0" expanded="true" />
-            <element signature="e#26035#26036#0" expanded="true" />
+            <element signature="e#22629#22753#0" expanded="true" />
+            <element signature="e#22752#22753#0" expanded="true" />
             <element signature="e#32259#32260#0" expanded="true" />
             <element signature="e#32325#32326#0" expanded="true" />
-            <element signature="e#49109#49110#0" expanded="true" />
-            <element signature="e#49177#49178#0" expanded="true" />
-            <element signature="e#49700#49701#0" expanded="true" />
-            <element signature="e#49767#49768#0" expanded="true" />
-            <element signature="e#50087#50088#0" expanded="true" />
-            <element signature="e#50155#50156#0" expanded="true" />
-            <element signature="e#56941#56942#0" expanded="true" />
-            <element signature="e#56999#57000#0" expanded="true" />
-            <element signature="e#57273#57274#0" expanded="true" />
-            <element signature="e#57334#57335#0" expanded="true" />
+            <element signature="e#58448#58449#0" expanded="true" />
+            <element signature="e#58488#58489#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1156,20 +1219,12 @@
             <element signature="imports" expanded="true" />
             <element signature="e#18073#18074#0" expanded="true" />
             <element signature="e#18133#18134#0" expanded="true" />
-            <element signature="e#25988#25989#0" expanded="true" />
-            <element signature="e#26035#26036#0" expanded="true" />
+            <element signature="e#22629#22753#0" expanded="true" />
+            <element signature="e#22752#22753#0" expanded="true" />
             <element signature="e#32259#32260#0" expanded="true" />
             <element signature="e#32325#32326#0" expanded="true" />
-            <element signature="e#49109#49110#0" expanded="true" />
-            <element signature="e#49177#49178#0" expanded="true" />
-            <element signature="e#49700#49701#0" expanded="true" />
-            <element signature="e#49767#49768#0" expanded="true" />
-            <element signature="e#50087#50088#0" expanded="true" />
-            <element signature="e#50155#50156#0" expanded="true" />
-            <element signature="e#56941#56942#0" expanded="true" />
-            <element signature="e#56999#57000#0" expanded="true" />
-            <element signature="e#57273#57274#0" expanded="true" />
-            <element signature="e#57334#57335#0" expanded="true" />
+            <element signature="e#58448#58449#0" expanded="true" />
+            <element signature="e#58488#58489#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1245,20 +1300,12 @@
             <element signature="imports" expanded="true" />
             <element signature="e#18073#18074#0" expanded="true" />
             <element signature="e#18133#18134#0" expanded="true" />
-            <element signature="e#25988#25989#0" expanded="true" />
-            <element signature="e#26035#26036#0" expanded="true" />
+            <element signature="e#22629#22753#0" expanded="true" />
+            <element signature="e#22752#22753#0" expanded="true" />
             <element signature="e#32259#32260#0" expanded="true" />
             <element signature="e#32325#32326#0" expanded="true" />
-            <element signature="e#49109#49110#0" expanded="true" />
-            <element signature="e#49177#49178#0" expanded="true" />
-            <element signature="e#49700#49701#0" expanded="true" />
-            <element signature="e#49767#49768#0" expanded="true" />
-            <element signature="e#50087#50088#0" expanded="true" />
-            <element signature="e#50155#50156#0" expanded="true" />
-            <element signature="e#56941#56942#0" expanded="true" />
-            <element signature="e#56999#57000#0" expanded="true" />
-            <element signature="e#57273#57274#0" expanded="true" />
-            <element signature="e#57334#57335#0" expanded="true" />
+            <element signature="e#58448#58449#0" expanded="true" />
+            <element signature="e#58488#58489#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1334,20 +1381,12 @@
             <element signature="imports" expanded="true" />
             <element signature="e#18073#18074#0" expanded="true" />
             <element signature="e#18133#18134#0" expanded="true" />
-            <element signature="e#25988#25989#0" expanded="true" />
-            <element signature="e#26035#26036#0" expanded="true" />
+            <element signature="e#22629#22753#0" expanded="true" />
+            <element signature="e#22752#22753#0" expanded="true" />
             <element signature="e#32259#32260#0" expanded="true" />
             <element signature="e#32325#32326#0" expanded="true" />
-            <element signature="e#49109#49110#0" expanded="true" />
-            <element signature="e#49177#49178#0" expanded="true" />
-            <element signature="e#49700#49701#0" expanded="true" />
-            <element signature="e#49767#49768#0" expanded="true" />
-            <element signature="e#50087#50088#0" expanded="true" />
-            <element signature="e#50155#50156#0" expanded="true" />
-            <element signature="e#56941#56942#0" expanded="true" />
-            <element signature="e#56999#57000#0" expanded="true" />
-            <element signature="e#57273#57274#0" expanded="true" />
-            <element signature="e#57334#57335#0" expanded="true" />
+            <element signature="e#58448#58449#0" expanded="true" />
+            <element signature="e#58488#58489#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1426,20 +1465,12 @@
             <element signature="imports" expanded="true" />
             <element signature="e#18073#18074#0" expanded="true" />
             <element signature="e#18133#18134#0" expanded="true" />
-            <element signature="e#25988#25989#0" expanded="true" />
-            <element signature="e#26035#26036#0" expanded="true" />
+            <element signature="e#22629#22753#0" expanded="true" />
+            <element signature="e#22752#22753#0" expanded="true" />
             <element signature="e#32259#32260#0" expanded="true" />
             <element signature="e#32325#32326#0" expanded="true" />
-            <element signature="e#49109#49110#0" expanded="true" />
-            <element signature="e#49177#49178#0" expanded="true" />
-            <element signature="e#49700#49701#0" expanded="true" />
-            <element signature="e#49767#49768#0" expanded="true" />
-            <element signature="e#50087#50088#0" expanded="true" />
-            <element signature="e#50155#50156#0" expanded="true" />
-            <element signature="e#56941#56942#0" expanded="true" />
-            <element signature="e#56999#57000#0" expanded="true" />
-            <element signature="e#57273#57274#0" expanded="true" />
-            <element signature="e#57334#57335#0" expanded="true" />
+            <element signature="e#58448#58449#0" expanded="true" />
+            <element signature="e#58488#58489#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1510,20 +1541,12 @@
             <element signature="imports" expanded="true" />
             <element signature="e#18073#18074#0" expanded="true" />
             <element signature="e#18133#18134#0" expanded="true" />
-            <element signature="e#25988#25989#0" expanded="true" />
-            <element signature="e#26035#26036#0" expanded="true" />
+            <element signature="e#22629#22753#0" expanded="true" />
+            <element signature="e#22752#22753#0" expanded="true" />
             <element signature="e#32259#32260#0" expanded="true" />
             <element signature="e#32325#32326#0" expanded="true" />
-            <element signature="e#49109#49110#0" expanded="true" />
-            <element signature="e#49177#49178#0" expanded="true" />
-            <element signature="e#49700#49701#0" expanded="true" />
-            <element signature="e#49767#49768#0" expanded="true" />
-            <element signature="e#50087#50088#0" expanded="true" />
-            <element signature="e#50155#50156#0" expanded="true" />
-            <element signature="e#56941#56942#0" expanded="true" />
-            <element signature="e#56999#57000#0" expanded="true" />
-            <element signature="e#57273#57274#0" expanded="true" />
-            <element signature="e#57334#57335#0" expanded="true" />
+            <element signature="e#58448#58449#0" expanded="true" />
+            <element signature="e#58488#58489#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1581,20 +1604,12 @@
             <element signature="imports" expanded="true" />
             <element signature="e#18073#18074#0" expanded="true" />
             <element signature="e#18133#18134#0" expanded="true" />
-            <element signature="e#25988#25989#0" expanded="true" />
-            <element signature="e#26035#26036#0" expanded="true" />
+            <element signature="e#22629#22753#0" expanded="true" />
+            <element signature="e#22752#22753#0" expanded="true" />
             <element signature="e#32259#32260#0" expanded="true" />
             <element signature="e#32325#32326#0" expanded="true" />
-            <element signature="e#49109#49110#0" expanded="true" />
-            <element signature="e#49177#49178#0" expanded="true" />
-            <element signature="e#49700#49701#0" expanded="true" />
-            <element signature="e#49767#49768#0" expanded="true" />
-            <element signature="e#50087#50088#0" expanded="true" />
-            <element signature="e#50155#50156#0" expanded="true" />
-            <element signature="e#56941#56942#0" expanded="true" />
-            <element signature="e#56999#57000#0" expanded="true" />
-            <element signature="e#57273#57274#0" expanded="true" />
-            <element signature="e#57334#57335#0" expanded="true" />
+            <element signature="e#58448#58449#0" expanded="true" />
+            <element signature="e#58488#58489#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1652,20 +1667,12 @@
             <element signature="imports" expanded="true" />
             <element signature="e#18073#18074#0" expanded="true" />
             <element signature="e#18133#18134#0" expanded="true" />
-            <element signature="e#25988#25989#0" expanded="true" />
-            <element signature="e#26035#26036#0" expanded="true" />
+            <element signature="e#22629#22753#0" expanded="true" />
+            <element signature="e#22752#22753#0" expanded="true" />
             <element signature="e#32259#32260#0" expanded="true" />
             <element signature="e#32325#32326#0" expanded="true" />
-            <element signature="e#49109#49110#0" expanded="true" />
-            <element signature="e#49177#49178#0" expanded="true" />
-            <element signature="e#49700#49701#0" expanded="true" />
-            <element signature="e#49767#49768#0" expanded="true" />
-            <element signature="e#50087#50088#0" expanded="true" />
-            <element signature="e#50155#50156#0" expanded="true" />
-            <element signature="e#56941#56942#0" expanded="true" />
-            <element signature="e#56999#57000#0" expanded="true" />
-            <element signature="e#57273#57274#0" expanded="true" />
-            <element signature="e#57334#57335#0" expanded="true" />
+            <element signature="e#58448#58449#0" expanded="true" />
+            <element signature="e#58488#58489#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1756,9 +1763,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-9353" />
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/RecentFile.ini">
-      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/LogFilter-master.userlibraries">
       <provider selected="true" editor-type-id="text-editor" />
@@ -2103,71 +2107,123 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/parser/LogCatParser.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="17" column="39" lean-forward="true" selection-start-line="17" selection-start-column="39" selection-end-line="17" selection-end-column="39" />
+        <state relative-caret-position="95">
+          <caret line="17" column="39" selection-start-line="17" selection-start-column="39" selection-end-line="17" selection-end-column="39" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/logtable/LogTable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="186">
-          <caret line="158" selection-start-line="158" selection-end-line="158" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/logtable/SubLogTable.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="76">
+        <state relative-caret-position="1596">
           <caret line="98" column="76" selection-start-line="98" selection-start-column="76" selection-end-line="98" selection-end-column="76" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/logtable/BaseLogTable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="21" column="16" selection-start-line="21" selection-start-column="16" selection-end-line="21" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/Utils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="463">
-          <caret line="146" column="35" selection-start-line="146" selection-start-column="23" selection-end-line="146" selection-end-column="35" />
         </state>
       </provider>
     </entry>
     <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/javax/swing/JTextField.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
+        <state relative-caret-position="2413">
           <caret line="163" column="13" selection-start-line="163" selection-start-column="13" selection-end-line="163" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/RecentFile.ini">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.idea/workspace.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="190">
+          <caret line="19" column="31" selection-start-line="19" selection-start-column="31" selection-end-line="19" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/javax/swing/JFrame.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="278">
+          <caret line="670" column="21" selection-start-line="670" selection-start-column="21" selection-end-line="670" selection-end-column="21" />
+          <folding>
+            <element signature="e#23469#23470#0" expanded="true" />
+            <element signature="e#23522#23523#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/java/awt/BorderLayout.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="520">
+          <caret line="350" column="11" selection-start-line="350" selection-start-column="11" selection-end-line="350" selection-end-column="11" />
+          <folding>
+            <element signature="e#11133#11134#0" expanded="true" />
+            <element signature="e#11159#11160#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/java/awt/Container.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="971" column="16" selection-start-line="971" selection-start-column="16" selection-end-line="971" selection-end-column="16" />
+          <folding>
+            <element signature="e#37566#37567#0" expanded="true" />
+            <element signature="e#37612#37613#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/javax/swing/JSplitPane.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="113" column="28" selection-start-line="113" selection-start-column="28" selection-end-line="113" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/Utils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="64">
+          <caret line="151" selection-start-line="151" selection-end-line="151" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/javax/swing/BoxLayout.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="520">
+          <caret line="162" column="28" selection-start-line="162" selection-start-column="28" selection-end-line="162" selection-end-column="28" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/LogFilterMain.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="217">
-          <caret line="1113" column="41" selection-start-line="1113" selection-start-column="41" selection-end-line="1113" selection-end-column="41" />
+        <state relative-caret-position="304">
+          <caret line="1368" column="36" lean-forward="true" selection-start-line="1368" selection-start-column="36" selection-end-line="1368" selection-end-column="36" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#18073#18074#0" expanded="true" />
             <element signature="e#18133#18134#0" expanded="true" />
-            <element signature="e#25988#25989#0" expanded="true" />
-            <element signature="e#26035#26036#0" expanded="true" />
+            <element signature="e#22629#22753#0" expanded="true" />
+            <element signature="e#22752#22753#0" expanded="true" />
             <element signature="e#32259#32260#0" expanded="true" />
             <element signature="e#32325#32326#0" expanded="true" />
-            <element signature="e#49109#49110#0" expanded="true" />
-            <element signature="e#49177#49178#0" expanded="true" />
-            <element signature="e#49700#49701#0" expanded="true" />
-            <element signature="e#49767#49768#0" expanded="true" />
-            <element signature="e#50087#50088#0" expanded="true" />
-            <element signature="e#50155#50156#0" expanded="true" />
-            <element signature="e#56941#56942#0" expanded="true" />
-            <element signature="e#56999#57000#0" expanded="true" />
-            <element signature="e#57273#57274#0" expanded="true" />
-            <element signature="e#57334#57335#0" expanded="true" />
+            <element signature="e#58448#58449#0" expanded="true" />
+            <element signature="e#58488#58489#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/logtable/LogTable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="414">
+          <caret line="158" column="32" lean-forward="true" selection-start-line="158" selection-start-column="32" selection-end-line="158" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/logtable/BaseLogTable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="395">
+          <caret line="409" column="31" selection-start-line="409" selection-start-column="24" selection-end-line="409" selection-end-column="31" />
+          <folding>
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
