@@ -429,39 +429,39 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
     }
 
     public void setFilterFind(String strFind) {
-        m_strFilterFind = strFind;
+        m_strFilterFind = strFind.trim();
     }
 
     public void SetFilterRemove(String strRemove) {
-        m_strFilterRemove = strRemove;
+        m_strFilterRemove = strRemove.trim();
     }
 
     public void SetFilterShowTag(String strShowTag) {
-        m_strTagShow = strShowTag;
+        m_strTagShow = strShowTag.trim();
     }
 
     public void SetFilterShowPid(String strShowPid) {
-        m_strPidShow = strShowPid;
+        m_strPidShow = strShowPid.trim();
     }
 
     public void SetFilterShowTid(String strShowTid) {
-        m_strTidShow = strShowTid;
+        m_strTidShow = strShowTid.trim();
     }
 
     public void SetHighlight(String strHighlight) {
-        m_strHighlight = strHighlight;
+        m_strHighlight = strHighlight.trim();
     }
 
     public void SetSearchHighlight(String strHighlight) {
-        m_strSearchHighlight = strHighlight;
+        m_strSearchHighlight = strHighlight.trim();
     }
 
     public void SetFilterRemoveTag(String strRemoveTag) {
-        m_strTagRemove = strRemoveTag;
+        m_strTagRemove = strRemoveTag.trim();
     }
 
     public void SetFilterBookmarkTag(String strTagBookmark) {
-        m_strTagBookmark = strTagBookmark;
+        m_strTagBookmark = strTagBookmark.trim();
     }
 
     public void setFontSize(int nFontSize) {

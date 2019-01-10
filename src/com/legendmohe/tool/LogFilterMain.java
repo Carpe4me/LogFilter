@@ -1241,36 +1241,6 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
 
         jpMain.add(jpTagFilter, BorderLayout.CENTER);
 
-        JPanel jpActionPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
-        JButton clearFieldBtn = new JButton("Clean Filter");
-        clearFieldBtn.setMargin(new Insets(0, 0, 0, 0));
-        clearFieldBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                m_tfFindWord.setText("");
-                m_tfRemoveWord.setText("");
-                m_tfShowTag.setText("");
-                m_tfRemoveTag.setText("");
-                m_tfShowPid.setText("");
-                m_tfShowTid.setText("");
-                m_tfBookmarkTag.setText("");
-            }
-        });
-        jpActionPanel.add(clearFieldBtn);
-
-        JButton followBtn = new JButton("Follow");
-        followBtn.setMargin(new Insets(0, 0, 0, 0));
-        followBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int endLine = m_tmLogTableModel.getRowCount();
-                updateTable(endLine - 1, true);
-            }
-        });
-        jpActionPanel.add(followBtn);
-
-        jpMain.add(jpActionPanel, BorderLayout.SOUTH);
-
         return jpMain;
     }
 
@@ -1512,6 +1482,34 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
             }
         });
 
+        JPanel jpActionPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
+        JButton clearFieldBtn = new JButton("Clean Filter");
+        clearFieldBtn.setMargin(new Insets(0, 0, 0, 0));
+        clearFieldBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                m_tfFindWord.setText("");
+                m_tfRemoveWord.setText("");
+                m_tfShowTag.setText("");
+                m_tfRemoveTag.setText("");
+                m_tfShowPid.setText("");
+                m_tfShowTid.setText("");
+                m_tfBookmarkTag.setText("");
+            }
+        });
+        jpActionPanel.add(clearFieldBtn);
+
+        JButton followBtn = new JButton("Follow");
+        followBtn.setMargin(new Insets(0, 0, 0, 0));
+        followBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int endLine = m_tmLogTableModel.getRowCount();
+                updateTable(endLine - 1, true);
+            }
+        });
+        jpActionPanel.add(followBtn);
+
         optionWest.add(mSyncScrollCheckBox);
         optionWest.add(mSyncSelectedCheckBox);
         optionWest.add(jlFont);
@@ -1521,9 +1519,9 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         optionWest.add(m_comboEncode);
         optionWest.add(jlGoto);
         optionWest.add(m_TfGoto);
-
         optionWest.add(preHistoryButton);
         optionWest.add(nextHistoryButton);
+        optionWest.add(jpActionPanel);
 
         optionMenu.add(optionWest, BorderLayout.CENTER);
 
