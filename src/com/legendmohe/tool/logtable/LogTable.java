@@ -177,6 +177,24 @@ public class LogTable extends BaseLogTable {
                 }
             }
         });
+        JMenuItem showInSubTable = new JMenuItem(new AbstractAction("show in mark table") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int[] selectedRows = getSelectedRows();
+                for (int selectedRow : selectedRows) {
+                    LogInfo logInfo = ((LogFilterTableModel) getModel()).getRow(selectedRow);
+
+//                    logInfo.setMarked(!logInfo.isMarked());
+                    mBaseLogTableListener.showInMarkTable(selectedRow, logInfo.getLine() - 1);
+                }
+            }
+        });
+        JMenuItem showRow = new JMenuItem(new AbstractAction("show row") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mBaseLogTableListener.showRowsContent(getFormatSelectedRows(new int[]{}));
+            }
+        });
         JMenuItem findInDiffMenuItem = new JMenuItem(new AbstractAction("find in connected LogFilter") {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -225,8 +243,10 @@ public class LogTable extends BaseLogTable {
         });
 
         menuPopup.add(markMenuItem);
-        menuPopup.add(copyRowToClipboard);
+        menuPopup.add(showInSubTable);
+        menuPopup.add(showRow);
         menuPopup.add(copycolumnToClipboard);
+        menuPopup.add(copyRowToClipboard);
         if (mDiffService != null && mDiffService.isDiffConnected()) {
             if (getSelectedRowCount() == 1) {
                 menuPopup.add(findInDiffMenuItem);

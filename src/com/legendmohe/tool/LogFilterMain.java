@@ -16,6 +16,7 @@ import com.legendmohe.tool.parser.LogCatParser;
 import com.legendmohe.tool.view.DumpsysViewDialog;
 import com.legendmohe.tool.view.PackageViewDialog;
 import com.legendmohe.tool.view.RecentFileMenu;
+import com.legendmohe.tool.view.RowsContentDialog;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -853,22 +854,22 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         m_arLogInfoAll.add(logInfo);
     }
 
-    public void markLogInfo(int nIndex, int nLine, boolean bBookmark) {
+    public void markLogInfo(int nIndex, int line, boolean isMark) {
         synchronized (FILTER_LOCK) {
-            LogInfo logInfo = m_arLogInfoAll.get(nLine);
-            logInfo.setMarked(bBookmark);
-            m_arLogInfoAll.set(nLine, logInfo);
+            LogInfo logInfo = m_arLogInfoAll.get(line);
+            logInfo.setMarked(isMark);
+            m_arLogInfoAll.set(line, logInfo);
 
             if (logInfo.isMarked()) {
                 m_arSubLogInfoAll.add(logInfo);
-                m_hmMarkedInfoAll.put(nLine, nLine);
+                m_hmMarkedInfoAll.put(line, line);
                 if (m_bUserFilter)
-                    m_hmMarkedInfoFiltered.put(nLine, nIndex);
+                    m_hmMarkedInfoFiltered.put(line, nIndex);
             } else {
                 m_arSubLogInfoAll.remove(logInfo);
-                m_hmMarkedInfoAll.remove(nLine);
+                m_hmMarkedInfoAll.remove(line);
                 if (m_bUserFilter)
-                    m_hmMarkedInfoFiltered.remove(nLine);
+                    m_hmMarkedInfoFiltered.remove(line);
             }
         }
         m_ipIndicator.repaint();
@@ -880,6 +881,21 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
             }
         });
         updateSubTable(-1);
+    }
+
+    @Override
+    public void showInMarkTable(int selectedRow, int line) {
+        synchronized (FILTER_LOCK) {
+            LogInfo target = m_arLogInfoAll.get(line);
+            getSubTable().changeSelection(target, false, false);
+        }
+    }
+
+    @Override
+    public void showRowsContent(String content) {
+        if (content != null && content.length() > 0) {
+            openShowRowContentDialog(content);
+        }
     }
 
     void clearData() {
@@ -2929,6 +2945,16 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         });
         dumpsysViewDialog.setModal(false);
         dumpsysViewDialog.setVisible(true);
+    }
+
+    private void openShowRowContentDialog(String content) {
+        if (content == null || content.length() <= 0) {
+            return;
+        }
+        String title = "Selected Rows";
+        RowsContentDialog contentDialog = new RowsContentDialog(this, title, content);
+        contentDialog.setModal(false);
+        contentDialog.setVisible(true);
     }
 
     private void openFileBrowserToSave(FileType type) {

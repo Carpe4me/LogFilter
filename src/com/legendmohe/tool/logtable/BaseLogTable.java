@@ -794,6 +794,16 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
 
         void notiEvent(INotiEvent.EventParam eventParam);
 
-        void markLogInfo(int selectedRow, int i, boolean b);
+        void markLogInfo(int selectedRow, int line, boolean isMark);
+
+        /*
+        选中markTable中的某行
+         */
+        void showInMarkTable(int selectedRow, int line);
+
+        /*
+        显示选中的行
+         */
+        void showRowsContent(String content);
     }
 }
