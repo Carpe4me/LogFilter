@@ -112,6 +112,26 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
                 return;
             }
         }
+        selectTargetLogInfoInTime(target);
+    }
+
+    /*
+    选取时间最近的下一个
+     */
+    private void selectTargetLogInfoInTime(LogInfo target) {
+        long lastTs = 0;
+        int rowCount = getRowCount();
+        for (int nIndex = 0; nIndex < rowCount; nIndex++) {
+            LogInfo logInfo = ((LogFilterTableModel) getModel()).getRow(nIndex);
+            if (logInfo.getTimestamp() >= target.getTimestamp() && lastTs <= target.getTimestamp()) {
+                showRowCenterIfNotInRect(nIndex > 0 ? nIndex - 1 : nIndex, true);
+                return;
+            }
+            lastTs = logInfo.getTimestamp();
+        }
+        if (rowCount > 0) {
+            showRowCenterIfNotInRect(rowCount - 1, true);
+        }
     }
 
     public void changeSelection(int rowIndex, int columnIndex, boolean toggle, boolean extend) {
