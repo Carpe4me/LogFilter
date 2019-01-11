@@ -98,6 +98,8 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
         setIntercellSpacing(new Dimension(0, 0));
         setShowGrid(false);
 
+//        setFont(new Font("monospaced", Font.BOLD, 12));
+
         for (int iIndex = 0; iIndex < getColumnCount(); iIndex++) {
             getColumnModel().getColumn(iIndex).setCellRenderer(new LogCellRenderer(this, this));
         }
@@ -486,7 +488,7 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
 
     public void setFontSize(int nFontSize) {
         m_fFontSize = nFontSize;
-        setRowHeight(nFontSize + 4);
+        setRowHeight(nFontSize + 6);
     }
 
     public void setValueAt(Object aValue, int row, int column) {

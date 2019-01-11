@@ -3,6 +3,7 @@ package com.legendmohe.tool.view;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Font;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -23,6 +24,8 @@ public class RowsContentDialog extends JDialog {
         c.setPreferredSize(new Dimension(960, 600));
 
         JTextArea pane = new JTextArea();
+        Font font = new Font("monospaced", Font.PLAIN, 14);
+        pane.setFont(font);
         pane.setWrapStyleWord(true);
         pane.setLineWrap(true);
 
