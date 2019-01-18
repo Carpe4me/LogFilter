@@ -2510,50 +2510,70 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
                         && m_chkEnableFind.isSelected()) {
                     getLogTable().setFilterFind(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
+                    m_nChangedFilter = STATUS_CHANGE;
+                    runFilter();
                 } else if (arg0.getDocument()
                         .equals(m_tfRemoveWord.getDocument())
                         && m_chkEnableRemove.isSelected()) {
                     getLogTable().SetFilterRemove(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
+                    m_nChangedFilter = STATUS_CHANGE;
+                    runFilter();
                 } else if (arg0.getDocument().equals(m_tfShowPid.getDocument())
                         && m_chkEnableShowPid.isSelected()) {
                     getLogTable().SetFilterShowPid(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
+                    m_nChangedFilter = STATUS_CHANGE;
+                    runFilter();
                 } else if (arg0.getDocument().equals(m_tfShowTid.getDocument())
                         && m_chkEnableShowTid.isSelected()) {
                     getLogTable().SetFilterShowTid(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
+                    m_nChangedFilter = STATUS_CHANGE;
+                    runFilter();
                 } else if (arg0.getDocument().equals(m_tfShowTag.getDocument())
                         && m_chkEnableShowTag.isSelected()) {
                     getLogTable().SetFilterShowTag(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
+                    m_nChangedFilter = STATUS_CHANGE;
+                    runFilter();
                 } else if (arg0.getDocument().equals(m_tfRemoveTag.getDocument())
                         && m_chkEnableRemoveTag.isSelected()) {
                     getLogTable().SetFilterRemoveTag(arg0.getDocument().getText(
                             0, arg0.getDocument().getLength()));
+                    m_nChangedFilter = STATUS_CHANGE;
+                    runFilter();
                 } else if (arg0.getDocument().equals(m_tfBookmarkTag.getDocument())
                         && m_chkEnableBookmarkTag.isSelected()) {
                     getLogTable().SetFilterBookmarkTag(arg0.getDocument().getText(
                             0, arg0.getDocument().getLength()));
+                    m_nChangedFilter = STATUS_CHANGE;
+                    runFilter();
                 } else if (arg0.getDocument().equals(m_tfHighlight.getDocument())
                         && m_chkEnableHighlight.isSelected()) {
                     getLogTable().SetHighlight(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
                     getSubTable().SetHighlight(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
+                    m_nChangedFilter = STATUS_CHANGE;
+                    runFilter();
                 } else if (arg0.getDocument().equals(m_tfSearch.getDocument())) {
                     getLogTable().SetSearchHighlight(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
                     getSubTable().SetSearchHighlight(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
                     getLogTable().gotoNextSearchResult();
+                    m_nChangedFilter = STATUS_CHANGE;
+                    runFilter();
                 } else if (arg0.getDocument().equals(m_tfFromTimeTag.getDocument())) {
                     getLogTable().SetFilterFromTime(m_tfFromTimeTag.getText());
+                    m_nChangedFilter = STATUS_CHANGE;
+                    runFilter();
                 } else if (arg0.getDocument().equals(m_tfToTimeTag.getDocument())) {
                     getLogTable().SetFilterToTime(m_tfToTimeTag.getText());
+                    m_nChangedFilter = STATUS_CHANGE;
+                    runFilter();
                 }
-                m_nChangedFilter = STATUS_CHANGE;
-                runFilter();
             } catch (Exception e) {
                 T.e(e);
             }
@@ -2562,53 +2582,73 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         public void insertUpdate(DocumentEvent arg0) {
             try {
                 if (arg0.getDocument().equals(m_tfFindWord.getDocument())
-                        && m_chkEnableFind.isSelected())
+                        && m_chkEnableFind.isSelected()) {
                     getLogTable().setFilterFind(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                else if (arg0.getDocument()
+                    m_nChangedFilter = STATUS_CHANGE;
+                    runFilter();
+                } else if (arg0.getDocument()
                         .equals(m_tfRemoveWord.getDocument())
-                        && m_chkEnableRemove.isSelected())
+                        && m_chkEnableRemove.isSelected()) {
                     getLogTable().SetFilterRemove(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                else if (arg0.getDocument().equals(m_tfShowPid.getDocument())
-                        && m_chkEnableShowPid.isSelected())
+                    m_nChangedFilter = STATUS_CHANGE;
+                    runFilter();
+                } else if (arg0.getDocument().equals(m_tfShowPid.getDocument())
+                        && m_chkEnableShowPid.isSelected()) {
                     getLogTable().SetFilterShowPid(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                else if (arg0.getDocument().equals(m_tfShowTid.getDocument())
-                        && m_chkEnableShowTid.isSelected())
+                    m_nChangedFilter = STATUS_CHANGE;
+                    runFilter();
+                } else if (arg0.getDocument().equals(m_tfShowTid.getDocument())
+                        && m_chkEnableShowTid.isSelected()) {
                     getLogTable().SetFilterShowTid(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                else if (arg0.getDocument().equals(m_tfShowTag.getDocument())
-                        && m_chkEnableShowTag.isSelected())
+                    m_nChangedFilter = STATUS_CHANGE;
+                    runFilter();
+                } else if (arg0.getDocument().equals(m_tfShowTag.getDocument())
+                        && m_chkEnableShowTag.isSelected()) {
                     getLogTable().SetFilterShowTag(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                else if (arg0.getDocument().equals(m_tfRemoveTag.getDocument())
-                        && m_chkEnableRemoveTag.isSelected())
+                    m_nChangedFilter = STATUS_CHANGE;
+                    runFilter();
+                } else if (arg0.getDocument().equals(m_tfRemoveTag.getDocument())
+                        && m_chkEnableRemoveTag.isSelected()) {
                     getLogTable().SetFilterRemoveTag(arg0.getDocument().getText(
                             0, arg0.getDocument().getLength()));
-                else if (arg0.getDocument().equals(m_tfBookmarkTag.getDocument())
-                        && m_chkEnableBookmarkTag.isSelected())
+                    m_nChangedFilter = STATUS_CHANGE;
+                    runFilter();
+                } else if (arg0.getDocument().equals(m_tfBookmarkTag.getDocument())
+                        && m_chkEnableBookmarkTag.isSelected()) {
                     getLogTable().SetFilterBookmarkTag(arg0.getDocument().getText(
                             0, arg0.getDocument().getLength()));
-                else if (arg0.getDocument().equals(m_tfHighlight.getDocument())
+                    m_nChangedFilter = STATUS_CHANGE;
+                    runFilter();
+                } else if (arg0.getDocument().equals(m_tfHighlight.getDocument())
                         && m_chkEnableHighlight.isSelected()) {
                     getLogTable().SetHighlight(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
                     getSubTable().SetHighlight(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
+                    m_nChangedFilter = STATUS_CHANGE;
+                    runFilter();
                 } else if (arg0.getDocument().equals(m_tfSearch.getDocument())) {
                     getLogTable().SetSearchHighlight(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
                     getSubTable().SetSearchHighlight(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
                     getLogTable().gotoNextSearchResult();
+                    m_nChangedFilter = STATUS_CHANGE;
+                    runFilter();
                 } else if (arg0.getDocument().equals(m_tfFromTimeTag.getDocument())) {
                     getLogTable().SetFilterFromTime(m_tfFromTimeTag.getText());
+                    m_nChangedFilter = STATUS_CHANGE;
+                    runFilter();
                 } else if (arg0.getDocument().equals(m_tfToTimeTag.getDocument())) {
                     getLogTable().SetFilterToTime(m_tfToTimeTag.getText());
+                    m_nChangedFilter = STATUS_CHANGE;
+                    runFilter();
                 }
-                m_nChangedFilter = STATUS_CHANGE;
-                runFilter();
             } catch (Exception e) {
                 T.e(e);
             }
@@ -2617,53 +2657,72 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         public void removeUpdate(DocumentEvent arg0) {
             try {
                 if (arg0.getDocument().equals(m_tfFindWord.getDocument())
-                        && m_chkEnableFind.isSelected())
+                        && m_chkEnableFind.isSelected()) {
                     getLogTable().setFilterFind(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                else if (arg0.getDocument()
+                    m_nChangedFilter = STATUS_CHANGE;
+                    runFilter();
+                } else if (arg0.getDocument()
                         .equals(m_tfRemoveWord.getDocument())
-                        && m_chkEnableRemove.isSelected())
+                        && m_chkEnableRemove.isSelected()) {
                     getLogTable().SetFilterRemove(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                else if (arg0.getDocument().equals(m_tfShowPid.getDocument())
-                        && m_chkEnableShowPid.isSelected())
+                    m_nChangedFilter = STATUS_CHANGE;
+                    runFilter();
+                } else if (arg0.getDocument().equals(m_tfShowPid.getDocument())
+                        && m_chkEnableShowPid.isSelected()) {
                     getLogTable().SetFilterShowPid(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                else if (arg0.getDocument().equals(m_tfShowTid.getDocument())
-                        && m_chkEnableShowTid.isSelected())
+                    m_nChangedFilter = STATUS_CHANGE;
+                    runFilter();
+                } else if (arg0.getDocument().equals(m_tfShowTid.getDocument())
+                        && m_chkEnableShowTid.isSelected()) {
                     getLogTable().SetFilterShowTid(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                else if (arg0.getDocument().equals(m_tfShowTag.getDocument())
-                        && m_chkEnableShowTag.isSelected())
+                    m_nChangedFilter = STATUS_CHANGE;
+                    runFilter();
+                } else if (arg0.getDocument().equals(m_tfShowTag.getDocument())
+                        && m_chkEnableShowTag.isSelected()) {
                     getLogTable().SetFilterShowTag(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                else if (arg0.getDocument().equals(m_tfRemoveTag.getDocument())
-                        && m_chkEnableRemoveTag.isSelected())
+                    m_nChangedFilter = STATUS_CHANGE;
+                    runFilter();
+                } else if (arg0.getDocument().equals(m_tfRemoveTag.getDocument())
+                        && m_chkEnableRemoveTag.isSelected()) {
                     getLogTable().SetFilterRemoveTag(arg0.getDocument().getText(
                             0, arg0.getDocument().getLength()));
-                else if (arg0.getDocument().equals(m_tfBookmarkTag.getDocument())
-                        && m_chkEnableBookmarkTag.isSelected())
+                    m_nChangedFilter = STATUS_CHANGE;
+                    runFilter();
+                } else if (arg0.getDocument().equals(m_tfBookmarkTag.getDocument())
+                        && m_chkEnableBookmarkTag.isSelected()) {
                     getLogTable().SetFilterBookmarkTag(arg0.getDocument().getText(
                             0, arg0.getDocument().getLength()));
-                else if (arg0.getDocument().equals(m_tfHighlight.getDocument())
+                    m_nChangedFilter = STATUS_CHANGE;
+                    runFilter();
+                } else if (arg0.getDocument().equals(m_tfHighlight.getDocument())
                         && m_chkEnableHighlight.isSelected()) {
                     getLogTable().SetHighlight(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
                     getSubTable().SetHighlight(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
+                    m_nChangedFilter = STATUS_CHANGE;
+                    runFilter();
                 } else if (arg0.getDocument().equals(m_tfSearch.getDocument())) {
                     getLogTable().SetSearchHighlight(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
                     getSubTable().SetSearchHighlight(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
                     getLogTable().gotoNextSearchResult();
+                    m_nChangedFilter = STATUS_CHANGE;
+                    runFilter();
                 } else if (arg0.getDocument().equals(m_tfFromTimeTag.getDocument())) {
                     getLogTable().SetFilterFromTime(m_tfFromTimeTag.getText());
+                    runFilter();
                 } else if (arg0.getDocument().equals(m_tfToTimeTag.getDocument())) {
                     getLogTable().SetFilterToTime(m_tfToTimeTag.getText());
+                    m_nChangedFilter = STATUS_CHANGE;
+                    runFilter();
                 }
-                m_nChangedFilter = STATUS_CHANGE;
-                runFilter();
             } catch (Exception e) {
                 T.e(e);
             }
