@@ -193,9 +193,9 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
     @TextFieldSaveState
     JTextField m_tfHighlight;
     @TextFieldSaveState
-    JTextField m_tfFindWord;
+    JTextField m_tfIncludeWord;
     @TextFieldSaveState
-    JTextField m_tfRemoveWord;
+    JTextField m_tfExcludeWord;
     @TextFieldSaveState
     JTextField m_tfShowTag;
     @TextFieldSaveState
@@ -222,9 +222,9 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
 
     // Log filter enable/disable
     @CheckBoxSaveState
-    JCheckBox m_chkEnableFind;
+    JCheckBox m_chkEnableIncludeWord;
     @CheckBoxSaveState
-    JCheckBox m_chkEnableRemove;
+    JCheckBox m_chkEnableExcludeWord;
     @CheckBoxSaveState
     JCheckBox m_chkEnableShowTag;
     @CheckBoxSaveState
@@ -1070,8 +1070,8 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
     void addChangeListener() {
         m_tfSearch.getDocument().addDocumentListener(m_dlFilterListener);
         m_tfHighlight.getDocument().addDocumentListener(m_dlFilterListener);
-        m_tfFindWord.getDocument().addDocumentListener(m_dlFilterListener);
-        m_tfRemoveWord.getDocument().addDocumentListener(m_dlFilterListener);
+        m_tfIncludeWord.getDocument().addDocumentListener(m_dlFilterListener);
+        m_tfExcludeWord.getDocument().addDocumentListener(m_dlFilterListener);
         m_tfShowTag.getDocument().addDocumentListener(m_dlFilterListener);
         m_tfRemoveTag.getDocument().addDocumentListener(m_dlFilterListener);
         m_tfBookmarkTag.getDocument().addDocumentListener(m_dlFilterListener);
@@ -1080,8 +1080,8 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         m_tfFromTimeTag.getDocument().addDocumentListener(m_dlFilterListener);
         m_tfToTimeTag.getDocument().addDocumentListener(m_dlFilterListener);
 
-        m_chkEnableFind.addItemListener(m_itemListener);
-        m_chkEnableRemove.addItemListener(m_itemListener);
+        m_chkEnableIncludeWord.addItemListener(m_itemListener);
+        m_chkEnableExcludeWord.addItemListener(m_itemListener);
         m_chkEnableShowPid.addItemListener(m_itemListener);
         m_chkEnableShowTid.addItemListener(m_itemListener);
         m_chkEnableShowTag.addItemListener(m_itemListener);
@@ -1121,8 +1121,8 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
     private void addUndoListener() {
         Utils.makeUndoable(m_tfSearch);
         Utils.makeUndoable(m_tfHighlight);
-        Utils.makeUndoable(m_tfFindWord);
-        Utils.makeUndoable(m_tfRemoveWord);
+        Utils.makeUndoable(m_tfIncludeWord);
+        Utils.makeUndoable(m_tfExcludeWord);
         Utils.makeUndoable(m_tfShowTag);
         Utils.makeUndoable(m_tfRemoveTag);
         Utils.makeUndoable(m_tfShowPid);
@@ -1135,16 +1135,16 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
     }
 
     Component getFilterPanel() {
-        m_chkEnableFind = new JCheckBox();
-        m_chkEnableRemove = new JCheckBox();
+        m_chkEnableIncludeWord = new JCheckBox();
+        m_chkEnableExcludeWord = new JCheckBox();
         m_chkEnableShowTag = new JCheckBox();
         m_chkEnableRemoveTag = new JCheckBox();
         m_chkEnableShowPid = new JCheckBox();
         m_chkEnableShowTid = new JCheckBox();
         m_chkEnableBookmarkTag = new JCheckBox();
         m_chkEnableTimeTag = new JCheckBox();
-        m_chkEnableFind.setSelected(true);
-        m_chkEnableRemove.setSelected(true);
+        m_chkEnableIncludeWord.setSelected(true);
+        m_chkEnableExcludeWord.setSelected(true);
         m_chkEnableShowTag.setSelected(true);
         m_chkEnableRemoveTag.setSelected(true);
         m_chkEnableShowPid.setSelected(true);
@@ -1152,8 +1152,8 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         m_chkEnableBookmarkTag.setSelected(false);
         m_chkEnableTimeTag.setSelected(true);
 
-        m_tfFindWord = new JTextField();
-        m_tfRemoveWord = new JTextField();
+        m_tfIncludeWord = new JTextField();
+        m_tfExcludeWord = new JTextField();
         m_tfShowTag = new JTextField();
         m_tfRemoveTag = new JTextField();
         m_tfShowPid = new JTextField();
@@ -1167,22 +1167,22 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         JPanel jpWordFilter = new JPanel(new BorderLayout());
         jpWordFilter.setBorder(BorderFactory.createTitledBorder("Word filter"));
 
-        JPanel jpFind = new JPanel(new BorderLayout());
+        JPanel jpInclide = new JPanel(new BorderLayout());
         JLabel find = new JLabel();
         find.setText("include:");
-        jpFind.add(find, BorderLayout.WEST);
-        jpFind.add(m_tfFindWord, BorderLayout.CENTER);
-        jpFind.add(m_chkEnableFind, BorderLayout.EAST);
+        jpInclide.add(find, BorderLayout.WEST);
+        jpInclide.add(m_tfIncludeWord, BorderLayout.CENTER);
+        jpInclide.add(m_chkEnableIncludeWord, BorderLayout.EAST);
 
-        JPanel jpRemove = new JPanel(new BorderLayout());
+        JPanel jpExclude = new JPanel(new BorderLayout());
         JLabel remove = new JLabel();
         remove.setText("exclude:");
-        jpRemove.add(remove, BorderLayout.WEST);
-        jpRemove.add(m_tfRemoveWord, BorderLayout.CENTER);
-        jpRemove.add(m_chkEnableRemove, BorderLayout.EAST);
+        jpExclude.add(remove, BorderLayout.WEST);
+        jpExclude.add(m_tfExcludeWord, BorderLayout.CENTER);
+        jpExclude.add(m_chkEnableExcludeWord, BorderLayout.EAST);
 
-        jpWordFilter.add(jpFind, BorderLayout.NORTH);
-        jpWordFilter.add(jpRemove);
+        jpWordFilter.add(jpInclide, BorderLayout.NORTH);
+        jpWordFilter.add(jpExclude);
 
         jpMain.add(jpWordFilter, BorderLayout.NORTH);
 
@@ -1504,8 +1504,8 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         clearFieldBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                m_tfFindWord.setText("");
-                m_tfRemoveWord.setText("");
+                m_tfIncludeWord.setText("");
+                m_tfExcludeWord.setText("");
                 m_tfShowTag.setText("");
                 m_tfRemoveTag.setText("");
                 m_tfShowPid.setText("");
@@ -1740,7 +1740,6 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
     }
 
     public void setSearchFocus() {
-//        m_tfFindWord.requestFocus();
         m_tfSearch.requestFocus();
     }
 
@@ -1749,7 +1748,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
     }
 
     private void setWordIncludeFocus() {
-        m_tfFindWord.requestFocus();
+        m_tfIncludeWord.requestFocus();
     }
 
     private void setTagIncludeFocus() {
@@ -1813,47 +1812,47 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
     }
 
     void useFilter(JCheckBox checkBox) {
-        if (checkBox.equals(m_chkEnableFind)) {
-            getLogTable().setFilterFind(checkBox.isSelected() ? m_tfFindWord
+        if (checkBox.equals(m_chkEnableIncludeWord)) {
+            getLogTable().setFilterFind(checkBox.isSelected() ? m_tfIncludeWord
                     .getText() : "");
-            getSubTable().SetHighlight(checkBox.isSelected() ? m_tfFindWord
-                    .getText() : "");
+//            getSubTable().SetHighlight(checkBox.isSelected() ? m_tfIncludeWord
+//                    .getText() : "");
         }
-        if (checkBox.equals(m_chkEnableRemove)) {
-            getLogTable().SetFilterRemove(checkBox.isSelected() ? m_tfRemoveWord
+        if (checkBox.equals(m_chkEnableExcludeWord)) {
+            getLogTable().SetFilterRemove(checkBox.isSelected() ? m_tfExcludeWord
                     .getText() : "");
-            getSubTable().SetHighlight(checkBox.isSelected() ? m_tfRemoveWord
-                    .getText() : "");
+//            getSubTable().SetHighlight(checkBox.isSelected() ? m_tfExcludeWord
+//                    .getText() : "");
         }
         if (checkBox.equals(m_chkEnableShowPid)) {
             getLogTable().SetFilterShowPid(checkBox.isSelected() ? m_tfShowPid
                     .getText() : "");
-            getSubTable().SetHighlight(checkBox.isSelected() ? m_tfShowPid
-                    .getText() : "");
+//            getSubTable().SetHighlight(checkBox.isSelected() ? m_tfShowPid
+//                    .getText() : "");
         }
         if (checkBox.equals(m_chkEnableShowTid)) {
             getLogTable().SetFilterShowTid(checkBox.isSelected() ? m_tfShowTid
                     .getText() : "");
-            getSubTable().SetHighlight(checkBox.isSelected() ? m_tfShowTid
-                    .getText() : "");
+//            getSubTable().SetHighlight(checkBox.isSelected() ? m_tfShowTid
+//                    .getText() : "");
         }
         if (checkBox.equals(m_chkEnableShowTag)) {
             getLogTable().SetFilterShowTag(checkBox.isSelected() ? m_tfShowTag
                     .getText() : "");
-            getSubTable().SetHighlight(checkBox.isSelected() ? m_tfShowTag
-                    .getText() : "");
+//            getSubTable().SetHighlight(checkBox.isSelected() ? m_tfShowTag
+//                    .getText() : "");
         }
         if (checkBox.equals(m_chkEnableRemoveTag)) {
             getLogTable().SetFilterRemoveTag(checkBox.isSelected() ? m_tfRemoveTag
                     .getText() : "");
-            getSubTable().SetHighlight(checkBox.isSelected() ? m_tfRemoveTag
-                    .getText() : "");
+//            getSubTable().SetHighlight(checkBox.isSelected() ? m_tfRemoveTag
+//                    .getText() : "");
         }
         if (checkBox.equals(m_chkEnableBookmarkTag)) {
             getLogTable().SetFilterBookmarkTag(checkBox.isSelected() ? m_tfBookmarkTag
                     .getText() : "");
-            getSubTable().SetHighlight(checkBox.isSelected() ? m_tfBookmarkTag
-                    .getText() : "");
+//            getSubTable().SetHighlight(checkBox.isSelected() ? m_tfBookmarkTag
+//                    .getText() : "");
         }
         if (checkBox.equals(m_chkEnableHighlight)) {
             getLogTable().SetHighlight(checkBox.isSelected() ? m_tfHighlight
@@ -2406,8 +2405,8 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
                 && (getLogTable().GetFilterRemoveTag().length() == 0 || !m_chkEnableRemoveTag.isSelected())
                 && (getLogTable().GetFilterBookmarkTag().length() == 0 || !m_chkEnableBookmarkTag.isSelected())
                 && ((getLogTable().GetFilterFromTime() == -1l && getLogTable().GetFilterToTime() == -1l) || !m_chkEnableTimeTag.isSelected())
-                && (getLogTable().GetFilterFind().length() == 0 || !m_chkEnableFind.isSelected())
-                && (getLogTable().GetFilterRemove().length() == 0 || !m_chkEnableRemove.isSelected())
+                && (getLogTable().GetFilterFind().length() == 0 || !m_chkEnableIncludeWord.isSelected())
+                && (getLogTable().GetFilterRemove().length() == 0 || !m_chkEnableExcludeWord.isSelected())
                 ) {
             m_bUserFilter = false;
         } else
@@ -2506,15 +2505,15 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
     DocumentListener m_dlFilterListener = new DocumentListener() {
         public void changedUpdate(DocumentEvent arg0) {
             try {
-                if (arg0.getDocument().equals(m_tfFindWord.getDocument())
-                        && m_chkEnableFind.isSelected()) {
+                if (arg0.getDocument().equals(m_tfIncludeWord.getDocument())
+                        && m_chkEnableIncludeWord.isSelected()) {
                     getLogTable().setFilterFind(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
                     m_nChangedFilter = STATUS_CHANGE;
                     runFilter();
                 } else if (arg0.getDocument()
-                        .equals(m_tfRemoveWord.getDocument())
-                        && m_chkEnableRemove.isSelected()) {
+                        .equals(m_tfExcludeWord.getDocument())
+                        && m_chkEnableExcludeWord.isSelected()) {
                     getLogTable().SetFilterRemove(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
                     m_nChangedFilter = STATUS_CHANGE;
@@ -2581,15 +2580,15 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
 
         public void insertUpdate(DocumentEvent arg0) {
             try {
-                if (arg0.getDocument().equals(m_tfFindWord.getDocument())
-                        && m_chkEnableFind.isSelected()) {
+                if (arg0.getDocument().equals(m_tfIncludeWord.getDocument())
+                        && m_chkEnableIncludeWord.isSelected()) {
                     getLogTable().setFilterFind(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
                     m_nChangedFilter = STATUS_CHANGE;
                     runFilter();
                 } else if (arg0.getDocument()
-                        .equals(m_tfRemoveWord.getDocument())
-                        && m_chkEnableRemove.isSelected()) {
+                        .equals(m_tfExcludeWord.getDocument())
+                        && m_chkEnableExcludeWord.isSelected()) {
                     getLogTable().SetFilterRemove(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
                     m_nChangedFilter = STATUS_CHANGE;
@@ -2656,15 +2655,15 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
 
         public void removeUpdate(DocumentEvent arg0) {
             try {
-                if (arg0.getDocument().equals(m_tfFindWord.getDocument())
-                        && m_chkEnableFind.isSelected()) {
+                if (arg0.getDocument().equals(m_tfIncludeWord.getDocument())
+                        && m_chkEnableIncludeWord.isSelected()) {
                     getLogTable().setFilterFind(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
                     m_nChangedFilter = STATUS_CHANGE;
                     runFilter();
                 } else if (arg0.getDocument()
-                        .equals(m_tfRemoveWord.getDocument())
-                        && m_chkEnableRemove.isSelected()) {
+                        .equals(m_tfExcludeWord.getDocument())
+                        && m_chkEnableExcludeWord.isSelected()) {
                     getLogTable().SetFilterRemove(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
                     m_nChangedFilter = STATUS_CHANGE;
@@ -2836,8 +2835,8 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
                         check.isSelected());
                 getSubTable().showColumn(LogFilterTableModel.COLUMN_MESSAGE,
                         check.isSelected());
-            } else if (check.equals(m_chkEnableFind)
-                    || check.equals(m_chkEnableRemove)
+            } else if (check.equals(m_chkEnableIncludeWord)
+                    || check.equals(m_chkEnableExcludeWord)
                     || check.equals(m_chkEnableShowPid)
                     || check.equals(m_chkEnableShowTid)
                     || check.equals(m_chkEnableShowTag)
