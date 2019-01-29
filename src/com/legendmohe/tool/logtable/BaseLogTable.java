@@ -118,7 +118,7 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
     }
 
     /*
-    选取时间最近的下一个
+    选取行数最近的下一个
      */
     private void selectTargetLogInfoInLine(LogInfo target) {
         long lastLine = 0;
@@ -130,6 +130,25 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
                 return;
             }
             lastLine = logInfo.getLine();
+        }
+        if (rowCount > 0) {
+            showRowCenterIfNotInRect(rowCount - 1, true);
+        }
+    }
+
+    /*
+    选取时间最近的下一个
+     */
+    public void selectTargetLogInfoInTimestamp(long ts) {
+        long lastTs = 0;
+        int rowCount = getRowCount();
+        for (int nIndex = 0; nIndex < rowCount; nIndex++) {
+            LogInfo logInfo = ((LogFilterTableModel) getModel()).getRow(nIndex);
+            if (logInfo.getTimestamp() >= ts && lastTs <= ts) {
+                showRowCenterIfNotInRect(nIndex > 0 ? nIndex - 1 : nIndex, true);
+                return;
+            }
+            lastTs = logInfo.getTimestamp();
         }
         if (rowCount > 0) {
             showRowCenterIfNotInRect(rowCount - 1, true);

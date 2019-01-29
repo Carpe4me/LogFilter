@@ -12,6 +12,8 @@ public interface IDiffCmdHandler {
 
     void searchSimilar(String cmd);
 
+    void searchTimestamp(String cmd);
+
     void compareWithSelectedRows(String targetRows);
 
     void enableSyncScroll(boolean enable);

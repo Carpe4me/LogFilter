@@ -3104,6 +3104,16 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
     }
 
     @Override
+    public void searchTimestamp(String cmd) {
+        try {
+            long timestamp = Long.parseLong(cmd);
+            m_tbLogTable.selectTargetLogInfoInTimestamp(timestamp);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public void compareWithSelectedRows(String targetRows) {
         String fmtRows = m_tbLogTable.getFormatSelectedRows(
                 new int[]{LogFilterTableModel.COLUMN_LINE, LogFilterTableModel.COLUMN_TIME}
@@ -3198,6 +3208,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
     public void handleSelectedBackwardSyncEvent(String cmd) {
         m_tbLogTable.searchSimilarBackward(cmd);
     }
+
 
     ///////////////////////////////////logParser///////////////////////////////////
 

@@ -116,6 +116,8 @@ public class DiffService {
             mCmdHandler.searchKeyword(cmd);
         } else if (type.equals(DiffServiceCmdType.FIND_SIMILAR.toString())) {
             mCmdHandler.searchSimilar(cmd);
+        } else if (type.equals(DiffServiceCmdType.FIND_TIMESTAMP.toString())) {
+            mCmdHandler.searchTimestamp(cmd);
         } else if (type.equals(DiffServiceCmdType.COMPARE.toString())) {
             mCmdHandler.compareWithSelectedRows(cmd);
         } else if (type.equals(DiffServiceCmdType.SYNC_SELECTED_FORWARD.toString())) {
@@ -160,6 +162,12 @@ public class DiffService {
     }
 
     public enum DiffServiceCmdType {
-        FIND, FIND_SIMILAR, COMPARE, SYNC_SELECTED_FORWARD, SYNC_SELECTED_BACKWARD, SYNC_SCROLL_V
+        FIND,
+        FIND_SIMILAR,
+        FIND_TIMESTAMP,
+        COMPARE,
+        SYNC_SELECTED_FORWARD,
+        SYNC_SELECTED_BACKWARD,
+        SYNC_SCROLL_V
     }
 }

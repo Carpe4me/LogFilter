@@ -227,6 +227,21 @@ public class LogTable extends BaseLogTable {
             }
         });
 
+        JMenuItem findTimestampInDiffMenuItem = new JMenuItem(new AbstractAction("find timestamp in connected LogFilter") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                LogInfo logInfo = ((LogFilterTableModel) getModel()).getRow(getSelectedRow());
+                if (logInfo.getTimestamp() > 0) {
+                    if (mDiffService != null) {
+                        mDiffService.writeDiffCommand(
+                                DiffService.DiffServiceCmdType.FIND_TIMESTAMP,
+                                String.valueOf(logInfo.getTimestamp())
+                        );
+                    }
+                }
+            }
+        });
+
         JMenuItem compareMenuItem = new JMenuItem(new AbstractAction("compare with selected in connected LogFilter") {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -250,6 +265,7 @@ public class LogTable extends BaseLogTable {
         if (mDiffService != null && mDiffService.isDiffConnected()) {
             if (getSelectedRowCount() == 1) {
                 menuPopup.add(findInDiffMenuItem);
+                menuPopup.add(findTimestampInDiffMenuItem);
                 menuPopup.add(findSimilarInDiffMenuItem);
             } else {
                 menuPopup.add(compareMenuItem);
