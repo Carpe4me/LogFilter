@@ -1,4 +1,4 @@
-package com.legendmohe.tool.json;
+package com.legendmohe.tool.thirdparty.json;
 
 /*
  Copyright (c) 2002 JSON.org

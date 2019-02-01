@@ -6,16 +6,45 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3aecea0d-fcd6-41ed-8cea-e55b4a19285a" name="Default" comment="">
+    <list default="true" id="3aecea0d-fcd6-41ed-8cea-e55b4a19285a" name="Default" comment="*) 添加Constant类，常量移到里面去">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RecentFile.ini" beforeDir="false" afterPath="$PROJECT_DIR$/RecentFile.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/conf/LogFilterColor.ini" beforeDir="false" afterPath="$PROJECT_DIR$/conf/LogFilterColor.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/legendmohe/tool/INotiEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/legendmohe/tool/INotiEvent.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/legendmohe/tool/IndicatorPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/legendmohe/tool/IndicatorPanel.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/legendmohe/tool/LogFilterMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/legendmohe/tool/LogFilterMain.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/legendmohe/tool/processor/BTAEventProcessor.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/legendmohe/tool/processor/BluetoothAdapterStateProcessor.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/legendmohe/tool/processor/HFPCIEVEventProcessor.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/legendmohe/tool/processor/HeadsetStateProcessor.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/legendmohe/tool/annotation/StateSaver.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/legendmohe/tool/annotation/UIStateSaver.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/legendmohe/tool/config/Constant.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/legendmohe/tool/config/Constant.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/legendmohe/tool/diff/DiffService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/legendmohe/tool/diff/DiffService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/legendmohe/tool/json/CDL.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/legendmohe/tool/json/Cookie.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/legendmohe/tool/json/CookieList.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/legendmohe/tool/json/HTTP.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/legendmohe/tool/json/HTTPTokener.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/legendmohe/tool/json/JSONArray.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/legendmohe/tool/json/JSONArray.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/legendmohe/tool/thirdparty/json/JSONArray.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/legendmohe/tool/json/JSONException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/legendmohe/tool/json/JSONException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/legendmohe/tool/thirdparty/json/JSONException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/legendmohe/tool/json/JSONML.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/legendmohe/tool/json/JSONObject.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/legendmohe/tool/json/JSONObject.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/legendmohe/tool/thirdparty/json/JSONObject.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/legendmohe/tool/json/JSONString.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/legendmohe/tool/json/JSONString.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/legendmohe/tool/thirdparty/json/JSONString.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/legendmohe/tool/json/JSONStringer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/legendmohe/tool/json/JSONTokener.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/legendmohe/tool/json/JSONTokener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/legendmohe/tool/thirdparty/json/JSONTokener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/legendmohe/tool/json/JSONWriter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/legendmohe/tool/json/Property.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/legendmohe/tool/json/README" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/legendmohe/tool/json/README" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/legendmohe/tool/thirdparty/json/README" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/legendmohe/tool/json/XML.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/legendmohe/tool/json/XMLTokener.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/legendmohe/tool/logtable/BaseLogTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/legendmohe/tool/logtable/BaseLogTable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/legendmohe/tool/logtable/LogTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/legendmohe/tool/logtable/LogTable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/legendmohe/tool/logtable/SubLogTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/legendmohe/tool/logtable/SubLogTable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/legendmohe/tool/parser/AbstractLogParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/legendmohe/tool/parser/AbstractLogParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/legendmohe/tool/parser/BigoDevLogParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/legendmohe/tool/parser/BigoDevLogParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/legendmohe/tool/parser/BigoXLogParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/legendmohe/tool/parser/BigoXLogParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/legendmohe/tool/parser/ILogParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/legendmohe/tool/parser/ILogParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/legendmohe/tool/parser/LogCatParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/legendmohe/tool/parser/LogCatParser.java" afterDir="false" />
     </list>
     <ignored path="LogFilter-master.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -57,14 +86,16 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/LogFilterMain.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-5220">
-              <caret line="404" column="87" selection-start-line="404" selection-start-column="87" selection-end-line="404" selection-end-column="87" />
+            <state relative-caret-position="338">
+              <caret line="2375" column="22" lean-forward="true" selection-start-line="2375" selection-start-column="22" selection-end-line="2375" selection-end-column="22" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#12872#12873#0" expanded="true" />
                 <element signature="e#12934#12935#0" expanded="true" />
                 <element signature="e#19299#19300#0" expanded="true" />
                 <element signature="e#19359#19360#0" expanded="true" />
+                <element signature="e#26470#26471#0" expanded="true" />
+                <element signature="e#26517#26518#0" expanded="true" />
                 <element signature="e#32420#32421#0" expanded="true" />
                 <element signature="e#32486#32487#0" expanded="true" />
                 <element signature="e#49211#49212#0" expanded="true" />
@@ -87,96 +118,70 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/json/CDL.java">
+        <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/INotiEvent.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret column="8" selection-start-column="8" selection-end-column="33" />
+            <state relative-caret-position="269">
+              <caret line="23" column="37" lean-forward="true" selection-start-line="23" selection-start-column="37" selection-end-line="23" selection-end-column="37" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/IndicatorPanel.java">
+        <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/annotation/UIStateSaver.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="285">
-              <caret line="87" column="66" lean-forward="true" selection-start-line="87" selection-start-column="66" selection-end-line="87" selection-end-column="66" />
+            <state relative-caret-position="-1965">
+              <caret line="21" column="32" lean-forward="true" selection-start-line="21" selection-start-column="32" selection-end-line="21" selection-end-column="32" />
               <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#2972#2973#0" expanded="true" />
-                <element signature="e#3031#3032#0" expanded="true" />
+                <element signature="e#2091#2092#0" expanded="true" />
+                <element signature="e#2122#2123#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/java/awt/Frame.java">
+        <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/thirdparty/json/JSONException.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1038">
-              <caret line="741" column="16" selection-start-line="741" selection-start-column="16" selection-end-line="741" selection-end-column="16" />
+            <state relative-caret-position="152">
+              <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/diff/DiffService.java">
+        <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/thirdparty/json/JSONArray.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="108" column="48" selection-start-line="108" selection-start-column="38" selection-end-line="108" selection-end-column="48" />
+            <state relative-caret-position="300">
+              <caret line="87" lean-forward="true" selection-start-line="87" selection-end-line="87" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/logtable/SubLogTable.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="259">
+              <caret line="72" column="31" lean-forward="true" selection-start-line="72" selection-start-column="31" selection-end-line="72" selection-end-column="31" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/config/Constant.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="421">
+              <caret line="24" column="53" lean-forward="true" selection-start-line="24" selection-start-column="53" selection-end-line="24" selection-end-column="53" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/logtable/BaseLogTable.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="391">
+              <caret line="815" column="22" selection-start-line="815" selection-start-column="22" selection-end-line="815" selection-end-column="22" />
               <folding>
                 <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/logtable/LogTable.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1842">
-              <caret line="255" column="17" lean-forward="true" selection-start-line="255" selection-start-column="17" selection-end-line="255" selection-end-column="17" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/LogInfo.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="76">
-              <caret line="6" column="13" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="13" />
-              <folding>
-                <element signature="e#4210#4211#0" expanded="true" />
-                <element signature="e#4242#4243#0" expanded="true" />
-                <element signature="e#5137#5138#0" expanded="true" />
-                <element signature="e#5171#5172#0" expanded="true" />
-                <element signature="e#5221#5222#0" expanded="true" />
-                <element signature="e#5267#5268#0" expanded="true" />
-                <element signature="e#5529#5530#0" expanded="true" />
-                <element signature="e#5563#5564#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/parser/BigoXLogParser.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="703">
-              <caret line="44" column="40" selection-start-line="44" selection-start-column="40" selection-end-line="44" selection-end-column="40" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/java/lang/String.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="41192">
-              <caret line="2237" column="45" selection-start-line="2237" selection-start-column="39" selection-end-line="2237" selection-end-column="45" />
-              <folding>
-                <element signature="e#66457#66458#0" expanded="true" />
-                <element signature="e#66495#66496#0" expanded="true" />
-                <element signature="e#117893#117894#0" expanded="true" />
-                <element signature="e#117955#117956#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -195,18 +200,11 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>m_chkEnableHighlight</find>
-      <find>selectTargetLogInfoInTime</find>
-      <find>getClickCount</find>
-      <find>EVENT_CHANGE_FILTER_SHOW_TAG</find>
-      <find>click</find>
       <find>GetFilterShowTag</find>
       <find>m_tfShowTag</find>
       <find>m_chkEnableShowTag</find>
       <find>m_thFilterParse</find>
-      <find>FILTER_LOCK</find>
       <find>m_strTagShow</find>
-      <find>m_nChangedFilter</find>
       <find>include:</find>
       <find>m_tfIncludeWord</find>
       <find>m_strFilterFind</find>
@@ -222,9 +220,16 @@
       <find>m_recentMenu.addEntry</find>
       <find>m_nWindState</find>
       <find>JSONArray</find>
-      <find>HeadlessException</find>
       <find>com.legendmohe.tool.json</find>
       <find>JSONObject</find>
+      <find>com.legendmohe.tool.OSUtil;</find>
+      <find>HeadlessException</find>
+      <find>static</find>
+      <find>sTypeToParserMap</find>
+      <find>m_nChangedFilter</find>
+      <find>FILTER_LOCK</find>
+      <find>postEvent</find>
+      <find>notieve</find>
     </findStrings>
     <replaceStrings>
       <replace>COLUMN_</replace>
@@ -292,7 +297,6 @@
         <option value="$PROJECT_DIR$/src/com/lehome/tool/INotiEvent.java" />
         <option value="$PROJECT_DIR$/src/com/lehome/tool/ProcessorConfig.java" />
         <option value="$PROJECT_DIR$/src/com/lehome/tool/LogFilterMain.java" />
-        <option value="$PROJECT_DIR$/src/com/legendmohe/tool/annotation/StateSaver.java" />
         <option value="$PROJECT_DIR$/src/com/legendmohe/tool/CustomParser.java" />
         <option value="$PROJECT_DIR$/src/com/legendmohe/tool/BigoUiLogParser.java" />
         <option value="$PROJECT_DIR$/src/com/legendmohe/tool/LogCatParser.java" />
@@ -301,27 +305,36 @@
         <option value="$PROJECT_DIR$/src/com/legendmohe/tool/BigoDevLogParser.java" />
         <option value="$PROJECT_DIR$/src/com/legendmohe/tool/BigoXLogParser.java" />
         <option value="$PROJECT_DIR$/src/com/legendmohe/tool/LogFilterTableModel.java" />
-        <option value="$PROJECT_DIR$/src/com/legendmohe/tool/parser/AbstractLogParser.java" />
-        <option value="$PROJECT_DIR$/src/com/legendmohe/tool/parser/ILogParser.java" />
         <option value="$PROJECT_DIR$/src/com/legendmohe/tool/view/DumpsysViewDialog.java" />
         <option value="$PROJECT_DIR$/src/com/legendmohe/tool/view/RecentFileMenu.java" />
         <option value="$PROJECT_DIR$/src/com/legendmohe/tool/logtable/LogInfoHistory.java" />
         <option value="$PROJECT_DIR$/src/com/legendmohe/tool/logtable/LogFilterTableModel.java" />
         <option value="$PROJECT_DIR$/src/com/legendmohe/tool/stream/ProcessorConfig.java" />
         <option value="$PROJECT_DIR$/src/com/legendmohe/tool/processor/ProcessorConfig.java" />
-        <option value="$PROJECT_DIR$/src/com/legendmohe/tool/parser/LogCatParser.java" />
-        <option value="$PROJECT_DIR$/src/com/legendmohe/tool/Utils.java" />
         <option value="$PROJECT_DIR$/src/com/legendmohe/tool/view/RowsContentDialog.java" />
         <option value="$PROJECT_DIR$/src/com/legendmohe/tool/logtable/LogCellRenderer.java" />
-        <option value="$PROJECT_DIR$/src/com/legendmohe/tool/parser/BigoDevLogParser.java" />
-        <option value="$PROJECT_DIR$/src/com/legendmohe/tool/parser/BigoXLogParser.java" />
         <option value="$PROJECT_DIR$/src/com/legendmohe/tool/diff/DiffService.java" />
         <option value="$PROJECT_DIR$/src/com/legendmohe/tool/IDiffCmdHandler.java" />
         <option value="$PROJECT_DIR$/src/com/legendmohe/tool/LogInfo.java" />
-        <option value="$PROJECT_DIR$/src/com/legendmohe/tool/logtable/BaseLogTable.java" />
         <option value="$PROJECT_DIR$/src/com/legendmohe/tool/logtable/LogTable.java" />
         <option value="$PROJECT_DIR$/src/com/legendmohe/tool/IndicatorPanel.java" />
+        <option value="$PROJECT_DIR$/src/com/legendmohe/tool/OSUtil.java" />
+        <option value="$PROJECT_DIR$/src/com/legendmohe/tool/Utils.java" />
+        <option value="$PROJECT_DIR$/src/com/legendmohe/tool/presenter/PackageViewPresenter.java" />
+        <option value="$PROJECT_DIR$/src/com/legendmohe/tool/presenter/DumpsysViewPresenter.java" />
+        <option value="$PROJECT_DIR$/src/com/legendmohe/tool/config/LogColor.java" />
+        <option value="$PROJECT_DIR$/src/com/legendmohe/tool/config/LogColorConfig.java" />
+        <option value="$PROJECT_DIR$/src/com/legendmohe/tool/config/LogColorConstant.java" />
+        <option value="$PROJECT_DIR$/src/com/legendmohe/tool/parser/LogCatParser.java" />
+        <option value="$PROJECT_DIR$/src/com/legendmohe/tool/parser/BigoDevLogParser.java" />
+        <option value="$PROJECT_DIR$/src/com/legendmohe/tool/parser/BigoXLogParser.java" />
+        <option value="$PROJECT_DIR$/src/com/legendmohe/tool/parser/AbstractLogParser.java" />
+        <option value="$PROJECT_DIR$/src/com/legendmohe/tool/parser/ILogParser.java" />
+        <option value="$PROJECT_DIR$/src/com/legendmohe/tool/config/Constant.java" />
+        <option value="$PROJECT_DIR$/src/com/legendmohe/tool/logtable/BaseLogTable.java" />
         <option value="$PROJECT_DIR$/src/com/legendmohe/tool/LogFilterMain.java" />
+        <option value="$PROJECT_DIR$/src/com/legendmohe/tool/annotation/StateSaver.java" />
+        <option value="$PROJECT_DIR$/src/com/legendmohe/tool/annotation/UIStateSaver.java" />
       </list>
     </option>
   </component>
@@ -374,21 +387,7 @@
               <item name="LogFliter" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="tool" type="462c0819:PsiDirectoryNode" />
-              <item name="diff" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="LogFilter-master" type="b2602c69:ProjectViewProjectNode" />
-              <item name="LogFliter" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="tool" type="462c0819:PsiDirectoryNode" />
               <item name="json" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="LogFilter-master" type="b2602c69:ProjectViewProjectNode" />
-              <item name="LogFliter" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="tool" type="462c0819:PsiDirectoryNode" />
-              <item name="processor" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -437,8 +436,12 @@
     <key name="ExtractSuperBase.RECENT_KEYS">
       <recent name="com.legendmohe.tool" />
     </key>
-    <key name="CreateClassDialog.RecentsKey">
-      <recent name="com.bt.tool.annotation" />
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Workspace\_temp\LogFilter-master\LogFilter-master\src\com\bt\tool\json" />
+      <recent name="C:\Workspace\_temp\LogFilter-master\LogFilter-master" />
+    </key>
+    <key name="MoveMembersDialog.RECENTS_KEY">
+      <recent name="com.legendmohe.tool.config.Constant" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="com.legendmohe.tool.view" />
@@ -447,9 +450,8 @@
       <recent name="com.lehome.tool.view" />
       <recent name="com.bt.tool.stream" />
     </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Workspace\_temp\LogFilter-master\LogFilter-master\src\com\bt\tool\json" />
-      <recent name="C:\Workspace\_temp\LogFilter-master\LogFilter-master" />
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="com.bt.tool.annotation" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -891,7 +893,21 @@
       <option name="project" value="LOCAL" />
       <updated>1548734210219</updated>
     </task>
-    <option name="localTasksCounter" value="46" />
+    <task id="LOCAL-00046" summary="*) 重构代码&#10;-) 移除BT相关processor">
+      <created>1549012282868</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1549012282869</updated>
+    </task>
+    <task id="LOCAL-00047" summary="*) 添加Constant类，常量移到里面去">
+      <created>1549013077778</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1549013077778</updated>
+    </task>
+    <option name="localTasksCounter" value="48" />
     <servers />
   </component>
   <component name="TodoView">
@@ -925,7 +941,7 @@
       <window_info anchor="bottom" id="Terminal" order="7" weight="0.32893" />
       <window_info anchor="bottom" id="Event Log" order="8" sideWeight="0.5057971" side_tool="true" weight="0.3562753" />
       <window_info anchor="bottom" id="Gerrit" order="9" />
-      <window_info anchor="bottom" id="Version Control" order="10" weight="0.3194925" />
+      <window_info anchor="bottom" id="Version Control" order="10" visible="true" weight="0.3194925" />
       <window_info anchor="bottom" id="SVN Repositories" order="11" weight="0.32893" />
       <window_info anchor="bottom" id="Messages" order="12" sideWeight="0.49710146" weight="0.30449826" />
       <window_info anchor="bottom" id="Analyze Dataflow to" order="13" weight="0.32893" />
@@ -1008,8 +1024,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="change code" />
-    <MESSAGE value="fix bug&#10;change filter behaviour" />
     <MESSAGE value="fix: follow line unusable" />
     <MESSAGE value="fix: not goto selected row when deselect filter" />
     <MESSAGE value="fix: double click on bookmark will cancel mark" />
@@ -1033,7 +1047,9 @@
     <MESSAGE value="fix) subtable高亮被取消的问题" />
     <MESSAGE value="fix) bigo log timestamp解析错误" />
     <MESSAGE value="+) 添加diff server 查找timestamp功能" />
-    <option name="LAST_COMMIT_MESSAGE" value="+) 添加diff server 查找timestamp功能" />
+    <MESSAGE value="*) 重构代码&#10;-) 移除BT相关processor" />
+    <MESSAGE value="*) 添加Constant类，常量移到里面去" />
+    <option name="LAST_COMMIT_MESSAGE" value="*) 添加Constant类，常量移到里面去" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
@@ -1100,13 +1116,6 @@
     <entry file="jar://C:/Program Files/Java/jdk1.8.0_45/src.zip!/java/awt/event/ActionListener.java" />
     <entry file="jar://C:/Program Files/Java/jdk1.8.0_45/src.zip!/java/awt/Window.java" />
     <entry file="jar://C:/Program Files/Java/jdk1.8.0_45/src.zip!/java/awt/KeyEventDispatcher.java" />
-    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/presenter/PackageViewPresenter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret line="22" selection-start-line="22" selection-end-line="22" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://C:/Program Files/Java/jdk1.8.0_45/src.zip!/javax/swing/JComponent.java" />
     <entry file="jar://C:/Program Files/Java/jdk1.8.0_45/src.zip!/javax/swing/text/JTextComponent.java" />
     <entry file="jar://C:/Program Files/Java/jdk1.8.0_45/src.zip!/java/awt/FileDialog.java" />
@@ -1162,20 +1171,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/ClassTaster.java" />
-    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/OSUtil.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="95">
-          <caret line="5" column="19" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/T.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="513">
-          <caret line="30" column="23" selection-start-line="30" selection-start-column="23" selection-end-line="30" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/javax/swing/JRadioButtonMenuItem.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2052">
@@ -1187,13 +1182,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="798">
           <caret line="68" column="24" selection-start-line="68" selection-start-column="13" selection-end-line="68" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/annotation/StateSaver.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1653">
-          <caret line="101" column="21" selection-start-line="101" selection-start-column="12" selection-end-line="101" selection-end-column="27" />
         </state>
       </provider>
     </entry>
@@ -1253,13 +1241,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/LogColor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="399">
-          <caret line="21" column="42" selection-start-line="21" selection-start-column="27" selection-end-line="21" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/DevicesPanel.java" />
     <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/ILogRenderResolver.java">
       <provider selected="true" editor-type-id="text-editor">
@@ -1272,13 +1253,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="133">
           <caret line="8" column="23" selection-start-line="8" selection-start-column="23" selection-end-line="8" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/presenter/DumpsysViewPresenter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="133">
-          <caret line="16" column="26" lean-forward="true" selection-start-line="16" selection-start-column="26" selection-end-line="16" selection-end-column="26" />
         </state>
       </provider>
     </entry>
@@ -1325,13 +1299,6 @@
       </provider>
     </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Temp/7zE09A7EE6A/bugreport-G8342-47.1.A.12.145-2018-11-07-15-04-16.txt" />
-    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/parser/ILogParser.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="190">
-          <caret line="12" column="12" selection-start-line="12" selection-start-column="12" selection-end-line="12" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/javax/swing/JTextField.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2413">
@@ -1370,13 +1337,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/Utils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2432">
-          <caret line="151" selection-start-line="151" selection-end-line="151" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/javax/swing/BoxLayout.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2584">
@@ -1388,13 +1348,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="627">
           <caret line="59" column="22" selection-start-line="59" selection-start-column="22" selection-end-line="59" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/logtable/SubLogTable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="214">
-          <caret line="73" column="70" selection-start-line="73" selection-start-column="70" selection-end-line="73" selection-end-column="70" />
         </state>
       </provider>
     </entry>
@@ -1538,27 +1491,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/INotiEvent.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="247">
-          <caret line="13" column="26" selection-start-line="13" selection-start-column="26" selection-end-line="13" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/parser/LogCatParser.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="130" column="28" lean-forward="true" selection-start-line="130" selection-start-column="24" selection-end-line="130" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/parser/AbstractLogParser.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="133">
-          <caret line="10" column="15" selection-start-line="10" selection-start-column="15" selection-end-line="10" selection-end-column="15" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/java/util/regex/Matcher.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="278">
@@ -1581,23 +1513,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/logtable/BaseLogTable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2014">
-          <caret line="140" column="7" selection-start-line="140" selection-start-column="7" selection-end-line="140" selection-end-column="7" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/parser/BigoDevLogParser.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="646">
-          <caret line="40" selection-start-line="40" selection-end-line="40" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/LogInfo.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="76">
@@ -1612,13 +1527,6 @@
             <element signature="e#5529#5530#0" expanded="true" />
             <element signature="e#5563#5564#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/parser/BigoXLogParser.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="703">
-          <caret line="44" column="40" selection-start-line="44" selection-start-column="40" selection-end-line="44" selection-end-column="40" />
         </state>
       </provider>
     </entry>
@@ -1649,28 +1557,154 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/IndicatorPanel.java">
+    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/processor/BTAEventProcessor.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="87" column="66" lean-forward="true" selection-start-line="87" selection-start-column="66" selection-end-line="87" selection-end-column="66" />
+        <state relative-caret-position="461">
+          <caret line="41" column="17" selection-start-line="41" selection-start-column="8" selection-end-line="41" selection-end-column="17" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#2972#2973#0" expanded="true" />
-            <element signature="e#3031#3032#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/diff/DiffService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="274">
+          <caret line="109" column="53" lean-forward="true" selection-start-line="109" selection-start-column="53" selection-end-line="109" selection-end-column="53" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/T.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1643">
+          <caret line="22" column="5" lean-forward="true" selection-start-line="22" selection-start-column="5" selection-end-line="22" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/Utils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="294">
+          <caret line="155" column="5" selection-start-line="155" selection-start-column="5" selection-end-line="155" selection-end-column="5" />
+          <folding>
+            <element signature="e#4778#4779#0" expanded="true" />
+            <element signature="e#4803#4804#0" expanded="true" />
+            <element signature="e#4844#4845#0" expanded="true" />
+            <element signature="e#4900#4901#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/presenter/DumpsysViewPresenter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="183">
+          <caret line="78" column="17" selection-start-line="78" selection-start-column="17" selection-end-line="78" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/OSUtil.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="95">
+          <caret line="5" column="16" lean-forward="true" selection-start-line="5" selection-start-column="16" selection-end-line="5" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/presenter/PackageViewPresenter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="190">
+          <caret line="10" lean-forward="true" selection-start-line="10" selection-end-line="10" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/parser/LogCatParser.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="67">
+          <caret line="24" column="14" selection-start-line="24" selection-start-column="14" selection-end-line="24" selection-end-column="14" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/parser/BigoDevLogParser.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="162">
+          <caret line="15" column="12" lean-forward="true" selection-start-line="15" selection-start-column="4" selection-end-line="15" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/parser/BigoXLogParser.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="171">
+          <caret line="16" column="12" selection-start-line="16" selection-start-column="12" selection-end-line="16" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/parser/AbstractLogParser.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="627">
+          <caret line="36" column="5" selection-start-line="36" selection-start-column="5" selection-end-line="36" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/parser/ILogParser.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="247">
+          <caret line="15" column="4" lean-forward="true" selection-start-line="15" selection-start-column="4" selection-end-line="15" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/IndicatorPanel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="278">
+          <caret line="155" column="76" selection-start-line="155" selection-start-column="76" selection-end-line="155" selection-end-column="76" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/config/Constant.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="421">
+          <caret line="24" column="53" lean-forward="true" selection-start-line="24" selection-start-column="53" selection-end-line="24" selection-end-column="53" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/logtable/SubLogTable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="259">
+          <caret line="72" column="31" lean-forward="true" selection-start-line="72" selection-start-column="31" selection-end-line="72" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/logtable/BaseLogTable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="391">
+          <caret line="815" column="22" selection-start-line="815" selection-start-column="22" selection-end-line="815" selection-end-column="22" />
+          <folding>
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/LogFilterMain.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-5220">
-          <caret line="404" column="87" selection-start-line="404" selection-start-column="87" selection-end-line="404" selection-end-column="87" />
+        <state relative-caret-position="338">
+          <caret line="2375" column="22" lean-forward="true" selection-start-line="2375" selection-start-column="22" selection-end-line="2375" selection-end-column="22" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#12872#12873#0" expanded="true" />
             <element signature="e#12934#12935#0" expanded="true" />
             <element signature="e#19299#19300#0" expanded="true" />
             <element signature="e#19359#19360#0" expanded="true" />
+            <element signature="e#26470#26471#0" expanded="true" />
+            <element signature="e#26517#26518#0" expanded="true" />
             <element signature="e#32420#32421#0" expanded="true" />
             <element signature="e#32486#32487#0" expanded="true" />
             <element signature="e#49211#49212#0" expanded="true" />
@@ -1691,30 +1725,117 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/processor/BTAEventProcessor.java">
+    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/INotiEvent.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="461">
-          <caret line="41" column="17" selection-start-line="41" selection-start-column="8" selection-end-line="41" selection-end-column="17" />
+        <state relative-caret-position="269">
+          <caret line="23" column="37" lean-forward="true" selection-start-line="23" selection-start-column="37" selection-end-line="23" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/thirdparty/json/README">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-684" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/thirdparty/json/HTTP.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="633">
+          <caret line="76" column="8" selection-start-line="76" selection-start-column="8" selection-end-line="76" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/thirdparty/json/HTTPTokener.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="186">
+          <caret line="33" column="21" selection-start-line="33" selection-start-column="21" selection-end-line="33" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/thirdparty/json/Cookie.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="148">
+          <caret line="31" column="20" selection-start-line="31" selection-start-column="20" selection-end-line="31" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/thirdparty/json/CookieList.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="34" column="16" selection-start-line="34" selection-start-column="16" selection-end-line="34" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/thirdparty/json/CDL.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="186">
+          <caret line="46" column="15" selection-start-line="46" selection-start-column="15" selection-end-line="46" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/thirdparty/json/Property.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="474">
+          <caret line="36" column="18" selection-start-line="36" selection-start-column="18" selection-end-line="36" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/thirdparty/json/JSONML.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="186">
+          <caret line="37" column="15" selection-start-line="37" selection-start-column="15" selection-end-line="37" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/thirdparty/json/XML.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="110">
+          <caret line="32" column="19" lean-forward="true" selection-start-line="32" selection-start-column="19" selection-end-line="32" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/thirdparty/json/XMLTokener.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="148">
+          <caret line="31" column="22" lean-forward="true" selection-start-line="31" selection-start-column="22" selection-end-line="31" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/annotation/UIStateSaver.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1965">
+          <caret line="21" column="32" lean-forward="true" selection-start-line="21" selection-start-column="32" selection-end-line="21" selection-end-column="32" />
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="e#2091#2092#0" expanded="true" />
+            <element signature="e#2122#2123#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/json/CDL.java">
+    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/thirdparty/json/JSONException.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="8" selection-start-column="8" selection-end-column="33" />
+        <state relative-caret-position="152">
+          <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/diff/DiffService.java">
+    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/thirdparty/json/JSONStringer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="108" column="48" selection-start-line="108" selection-start-column="38" selection-end-line="108" selection-end-column="48" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state relative-caret-position="186">
+          <caret line="59" column="23" selection-start-line="59" selection-start-column="23" selection-end-line="59" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/thirdparty/json/JSONWriter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="129">
+          <caret line="56" column="19" lean-forward="true" selection-start-line="56" selection-start-column="19" selection-end-line="56" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/thirdparty/json/JSONArray.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="87" lean-forward="true" selection-start-line="87" selection-end-line="87" />
         </state>
       </provider>
     </entry>

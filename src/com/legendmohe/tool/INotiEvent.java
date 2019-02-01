@@ -21,7 +21,7 @@ public interface INotiEvent {
     }
 
 
-    void notiEvent(EventParam param);
+    void postEvent(EventParam param);
 
     class EventParam {
         TYPE type;

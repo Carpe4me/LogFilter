@@ -2,8 +2,8 @@ package com.legendmohe.tool;
 
 import com.legendmohe.tool.annotation.CheckBoxSaveState;
 import com.legendmohe.tool.annotation.FieldSaveState;
-import com.legendmohe.tool.annotation.StateSaver;
 import com.legendmohe.tool.annotation.TextFieldSaveState;
+import com.legendmohe.tool.annotation.UIStateSaver;
 import com.legendmohe.tool.config.Constant;
 import com.legendmohe.tool.diff.DiffService;
 import com.legendmohe.tool.logtable.BaseLogTable;
@@ -144,7 +144,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
     LogTable m_tbLogTable;
     JScrollPane m_logScrollVPane;
     LogFilterTableModel m_tmLogTableModel;
-    boolean m_bUserFilter;
+    boolean mFilterEnabled;
 
     // Word Filter, tag filter
     JTextField m_tfSearch;
@@ -169,7 +169,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
 
     private JTextField m_tfFromTimeTag;
     private JTextField m_tfToTimeTag;
-    private JTextField m_TfGoto;
+    private JTextField m_tfGoto;
 
     // Device
     JButton m_btnDevice;
@@ -250,7 +250,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
 
     Object FILE_LOCK;
     Object FILTER_LOCK;
-    volatile int m_nChangedFilter;
+    volatile int mLogParsingState;
     int m_nFilterLogLV;
     @FieldSaveState
     int m_nWinWidth = Constant.DEFAULT_WIDTH;
@@ -283,7 +283,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
     private boolean mSyncScrollEnable;
     private boolean mSyncScrollSelected;
 
-    private final StateSaver mStateSaver;
+    private final UIStateSaver mUIStateSaver;
     private JSplitPane mSplitPane;
     @FieldSaveState
     private int mSplitPaneDividerLocation = -1;
@@ -338,8 +338,8 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         addDesc();
 
         // register state saver
-        mStateSaver = new StateSaver(this, Constant.INI_FILE_STATE);
-        mStateSaver.load();
+        mUIStateSaver = new UIStateSaver(this, Constant.INI_FILE_STATE);
+        mUIStateSaver.load();
 
         loadUI();
         loadColor();
@@ -627,7 +627,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         m_nWinWidth = getSize().width;
         m_nWinHeight = getSize().height;
         mSplitPaneDividerLocation = mSplitPane.getDividerLocation();
-        mStateSaver.save();
+        mUIStateSaver.save();
         System.exit(0);
     }
 
@@ -805,12 +805,12 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
             if (logInfo.isMarked()) {
                 m_arSubLogInfoAll.add(logInfo);
                 m_hmMarkedInfoAll.put(line, line);
-                if (m_bUserFilter)
+                if (mFilterEnabled)
                     m_hmMarkedInfoFiltered.put(line, nIndex);
             } else {
                 m_arSubLogInfoAll.remove(logInfo);
                 m_hmMarkedInfoAll.remove(line);
-                if (m_bUserFilter)
+                if (mFilterEnabled)
                     m_hmMarkedInfoFiltered.remove(line);
             }
         }
@@ -958,7 +958,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
                 m_hmErrorAll.put(logInfo.getLine() - 1,
                         logInfo.getLine() - 1);
 
-            if (m_bUserFilter) {
+            if (mFilterEnabled) {
                 if (m_ipIndicator.m_chBookmark.isSelected()
                         || m_ipIndicator.m_chError.isSelected()) {
                     boolean bAddFilteredArray = false;
@@ -1010,17 +1010,17 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
     }
 
     void addChangeListener() {
-        m_tfSearch.getDocument().addDocumentListener(m_dlFilterListener);
-        m_tfHighlight.getDocument().addDocumentListener(m_dlFilterListener);
-        m_tfIncludeWord.getDocument().addDocumentListener(m_dlFilterListener);
-        m_tfExcludeWord.getDocument().addDocumentListener(m_dlFilterListener);
-        m_tfShowTag.getDocument().addDocumentListener(m_dlFilterListener);
-        m_tfRemoveTag.getDocument().addDocumentListener(m_dlFilterListener);
-        m_tfBookmarkTag.getDocument().addDocumentListener(m_dlFilterListener);
-        m_tfShowPid.getDocument().addDocumentListener(m_dlFilterListener);
-        m_tfShowTid.getDocument().addDocumentListener(m_dlFilterListener);
-        m_tfFromTimeTag.getDocument().addDocumentListener(m_dlFilterListener);
-        m_tfToTimeTag.getDocument().addDocumentListener(m_dlFilterListener);
+        m_tfSearch.getDocument().addDocumentListener(mFilterListener);
+        m_tfHighlight.getDocument().addDocumentListener(mFilterListener);
+        m_tfIncludeWord.getDocument().addDocumentListener(mFilterListener);
+        m_tfExcludeWord.getDocument().addDocumentListener(mFilterListener);
+        m_tfShowTag.getDocument().addDocumentListener(mFilterListener);
+        m_tfRemoveTag.getDocument().addDocumentListener(mFilterListener);
+        m_tfBookmarkTag.getDocument().addDocumentListener(mFilterListener);
+        m_tfShowPid.getDocument().addDocumentListener(mFilterListener);
+        m_tfShowTid.getDocument().addDocumentListener(mFilterListener);
+        m_tfFromTimeTag.getDocument().addDocumentListener(mFilterListener);
+        m_tfToTimeTag.getDocument().addDocumentListener(mFilterListener);
 
         m_chkEnableIncludeWord.addItemListener(m_itemListener);
         m_chkEnableExcludeWord.addItemListener(m_itemListener);
@@ -1071,7 +1071,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         Utils.makeUndoable(m_tfShowTid);
         Utils.makeUndoable(m_tfBookmarkTag);
         Utils.makeUndoable(m_tfFontSize);
-        Utils.makeUndoable(m_TfGoto);
+        Utils.makeUndoable(m_tfGoto);
         Utils.makeUndoable(m_tfToTimeTag);
         Utils.makeUndoable(m_tfFromTimeTag);
     }
@@ -1336,30 +1336,6 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         return jpMain;
     }
 
-//    JPanel getToolPanel() {
-//        JPanel jpTool = new JPanel();
-//        jpTool.setLayout(new GridLayout(5, 1, 2, 2));
-//        jpTool.setBorder(BorderFactory.createTitledBorder("Tools"));
-//        jpTool.setMinimumSize(new Dimension(80, 0));
-//        jpTool.setPreferredSize(new Dimension(80, 0));
-//
-//        JButton calcButton = new JButton("Calc");
-//        calcButton.setMargin(new Insets(0, 0, 0, 0));
-//        calcButton.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                try {
-//                    Utils.runCmd(new String[]{CALC_PROGRAM_PATH});
-//                } catch (IOException e1) {
-//                    e1.printStackTrace();
-//                }
-//            }
-//        });
-//
-//        jpTool.add(calcButton);
-//        return jpTool;
-//    }
-
     Component getOptionFilter() {
         JPanel optionFilter = new JPanel();
         optionFilter.setLayout(new BoxLayout(optionFilter, BoxLayout.Y_AXIS));
@@ -1390,12 +1366,12 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         m_comboEncode.addItem("Local");
 
         JLabel jlGoto = new JLabel("Goto : ");
-        m_TfGoto = new JTextField(6);
-        m_TfGoto.setHorizontalAlignment(SwingConstants.RIGHT);
-        m_TfGoto.addCaretListener(new CaretListener() {
+        m_tfGoto = new JTextField(6);
+        m_tfGoto.setHorizontalAlignment(SwingConstants.RIGHT);
+        m_tfGoto.addCaretListener(new CaretListener() {
             public void caretUpdate(CaretEvent e) {
                 try {
-                    int nIndex = Integer.parseInt(m_TfGoto.getText()) - 1;
+                    int nIndex = Integer.parseInt(m_tfGoto.getText()) - 1;
                     getLogTable().showRowCenterIfNotInRect(nIndex, true);
                 } catch (Exception err) {
                 }
@@ -1476,7 +1452,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         optionWest.add(jlEncode);
         optionWest.add(m_comboEncode);
         optionWest.add(jlGoto);
-        optionWest.add(m_TfGoto);
+        optionWest.add(m_tfGoto);
         optionWest.add(preHistoryButton);
         optionWest.add(nextHistoryButton);
         optionWest.add(jpActionPanel);
@@ -1549,7 +1525,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         m_bPauseADB = false;
         FILE_LOCK = new Object();
         FILTER_LOCK = new Object();
-        m_nChangedFilter = Constant.STATUS_READY;
+        mLogParsingState = Constant.PARSING_STATUS_READY;
         m_nFilterLogLV = LogInfo.LOG_LV_ALL;
 
         m_arLogInfoAll = new ArrayList<LogInfo>();
@@ -1750,7 +1726,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
             m_nFilterLogLV |= nLogLV;
         else
             m_nFilterLogLV &= ~nLogLV;
-        m_nChangedFilter = Constant.STATUS_CHANGE;
+        mLogParsingState = Constant.PARSING_STATUS_CHANGE_PENDING;
         runFilter();
     }
 
@@ -1812,7 +1788,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
                 getLogTable().SetFilterToTime("");
             }
         }
-        m_nChangedFilter = Constant.STATUS_CHANGE;
+        mLogParsingState = Constant.PARSING_STATUS_CHANGE_PENDING;
         runFilter();
     }
 
@@ -1899,8 +1875,8 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
                     while (true) {
                         Thread.sleep(50);
 
-                        if (m_nChangedFilter == Constant.STATUS_CHANGE
-                                || m_nChangedFilter == Constant.STATUS_PARSING)
+                        if (mLogParsingState == Constant.PARSING_STATUS_CHANGE_PENDING
+                                || mLogParsingState == Constant.PARSING_STATUS_PARSING)
                             continue;
                         if (m_bPauseADB)
                             continue;
@@ -1932,7 +1908,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
                             continue;
 
                         synchronized (FILTER_LOCK) {
-                            if (m_bUserFilter == false) {
+                            if (mFilterEnabled == false) {
                                 m_tmLogTableModel.setData(m_arLogInfoAll);
                                 m_ipIndicator.setData(m_arLogInfoAll,
                                         m_hmMarkedInfoAll, m_hmErrorAll);
@@ -1977,7 +1953,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
 
     void runFilter() {
         checkUseFilter();
-        while (m_nChangedFilter == Constant.STATUS_PARSING)
+        while (mLogParsingState == Constant.PARSING_STATUS_PARSING)
             try {
                 Thread.sleep(100);
             } catch (Exception e) {
@@ -1994,10 +1970,10 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
                 try {
                     while (true) {
                         synchronized (FILTER_LOCK) {
-                            m_nChangedFilter = Constant.STATUS_READY;
+                            mLogParsingState = Constant.PARSING_STATUS_READY;
                             FILTER_LOCK.wait();
 
-                            m_nChangedFilter = Constant.STATUS_PARSING;
+                            mLogParsingState = Constant.PARSING_STATUS_PARSING;
 
                             m_arLogInfoFiltered.clear();
                             m_hmMarkedInfoFiltered.clear();
@@ -2005,7 +1981,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
                             getLogTable().clearSelection();
                             getSubTable().clearSelection();
 
-                            if (m_bUserFilter == false) {
+                            if (mFilterEnabled == false) {
                                 m_tmLogTableModel.setData(m_arLogInfoAll);
                                 m_ipIndicator.setData(m_arLogInfoAll,
                                         m_hmMarkedInfoAll, m_hmErrorAll);
@@ -2022,7 +1998,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
                                 } else {
                                     updateTable(m_arLogInfoFiltered.size() - 1, true);
                                 }
-                                m_nChangedFilter = Constant.STATUS_READY;
+                                mLogParsingState = Constant.PARSING_STATUS_READY;
                                 continue;
                             }
                             m_tmLogTableModel.setData(m_arLogInfoFiltered);
@@ -2038,7 +2014,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
                             for (int nIndex = 0; nIndex < nRowCount; nIndex++) {
                                 if (nIndex % 10000 == 0)
                                     Thread.sleep(1);
-                                if (m_nChangedFilter == Constant.STATUS_CHANGE) {
+                                if (mLogParsingState == Constant.PARSING_STATUS_CHANGE_PENDING) {
                                     break;
                                 }
                                 logInfo = m_arLogInfoAll.get(nIndex);
@@ -2094,8 +2070,8 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
                                     }
                                 }
                             }
-                            if (m_nChangedFilter == Constant.STATUS_PARSING) {
-                                m_nChangedFilter = Constant.STATUS_READY;
+                            if (mLogParsingState == Constant.PARSING_STATUS_PARSING) {
+                                mLogParsingState = Constant.PARSING_STATUS_READY;
                                 m_tmLogTableModel.setData(m_arLogInfoFiltered);
                                 m_ipIndicator.setData(m_arLogInfoFiltered,
                                         m_hmMarkedInfoFiltered,
@@ -2351,10 +2327,10 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
                 && (getLogTable().GetFilterFind().length() == 0 || !m_chkEnableIncludeWord.isSelected())
                 && (getLogTable().GetFilterRemove().length() == 0 || !m_chkEnableExcludeWord.isSelected())
         ) {
-            m_bUserFilter = false;
+            mFilterEnabled = false;
         } else
-            m_bUserFilter = true;
-        return m_bUserFilter;
+            mFilterEnabled = true;
+        return mFilterEnabled;
     }
 
     //////////////////////////////////////////////////////////////////////
@@ -2387,11 +2363,12 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         }
     };
 
-    public void notiEvent(EventParam param) {
+    @Override
+    public void postEvent(EventParam param) {
         switch (param.type) {
             case EVENT_CLICK_BOOKMARK:
             case EVENT_CLICK_ERROR:
-                m_nChangedFilter = Constant.STATUS_CHANGE;
+                mLogParsingState = Constant.PARSING_STATUS_CHANGE_PENDING;
                 runFilter();
                 break;
             case EVENT_CHANGE_FILTER_SHOW_PID:
@@ -2445,51 +2422,51 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
             getSubTable().showRowCenterIfNotInRect(nRow, true);
     }
 
-    DocumentListener m_dlFilterListener = new DocumentListener() {
+    DocumentListener mFilterListener = new DocumentListener() {
         public void changedUpdate(DocumentEvent arg0) {
             try {
                 if (arg0.getDocument().equals(m_tfIncludeWord.getDocument())
                         && m_chkEnableIncludeWord.isSelected()) {
                     getLogTable().setFilterFind(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                    m_nChangedFilter = Constant.STATUS_CHANGE;
+                    mLogParsingState = Constant.PARSING_STATUS_CHANGE_PENDING;
                     runFilter();
                 } else if (arg0.getDocument()
                         .equals(m_tfExcludeWord.getDocument())
                         && m_chkEnableExcludeWord.isSelected()) {
                     getLogTable().SetFilterRemove(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                    m_nChangedFilter = Constant.STATUS_CHANGE;
+                    mLogParsingState = Constant.PARSING_STATUS_CHANGE_PENDING;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfShowPid.getDocument())
                         && m_chkEnableShowPid.isSelected()) {
                     getLogTable().SetFilterShowPid(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                    m_nChangedFilter = Constant.STATUS_CHANGE;
+                    mLogParsingState = Constant.PARSING_STATUS_CHANGE_PENDING;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfShowTid.getDocument())
                         && m_chkEnableShowTid.isSelected()) {
                     getLogTable().SetFilterShowTid(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                    m_nChangedFilter = Constant.STATUS_CHANGE;
+                    mLogParsingState = Constant.PARSING_STATUS_CHANGE_PENDING;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfShowTag.getDocument())
                         && m_chkEnableShowTag.isSelected()) {
                     getLogTable().SetFilterShowTag(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                    m_nChangedFilter = Constant.STATUS_CHANGE;
+                    mLogParsingState = Constant.PARSING_STATUS_CHANGE_PENDING;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfRemoveTag.getDocument())
                         && m_chkEnableRemoveTag.isSelected()) {
                     getLogTable().SetFilterRemoveTag(arg0.getDocument().getText(
                             0, arg0.getDocument().getLength()));
-                    m_nChangedFilter = Constant.STATUS_CHANGE;
+                    mLogParsingState = Constant.PARSING_STATUS_CHANGE_PENDING;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfBookmarkTag.getDocument())
                         && m_chkEnableBookmarkTag.isSelected()) {
                     getLogTable().SetFilterBookmarkTag(arg0.getDocument().getText(
                             0, arg0.getDocument().getLength()));
-                    m_nChangedFilter = Constant.STATUS_CHANGE;
+                    mLogParsingState = Constant.PARSING_STATUS_CHANGE_PENDING;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfHighlight.getDocument())
                         && m_chkEnableHighlight.isSelected()) {
@@ -2497,7 +2474,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
                             arg0.getDocument().getLength()));
                     getSubTable().SetHighlight(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                    m_nChangedFilter = Constant.STATUS_CHANGE;
+                    mLogParsingState = Constant.PARSING_STATUS_CHANGE_PENDING;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfSearch.getDocument())) {
                     getLogTable().SetSearchHighlight(arg0.getDocument().getText(0,
@@ -2505,15 +2482,15 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
                     getSubTable().SetSearchHighlight(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
                     getLogTable().gotoNextSearchResult();
-                    m_nChangedFilter = Constant.STATUS_CHANGE;
+                    mLogParsingState = Constant.PARSING_STATUS_CHANGE_PENDING;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfFromTimeTag.getDocument())) {
                     getLogTable().SetFilterFromTime(m_tfFromTimeTag.getText());
-                    m_nChangedFilter = Constant.STATUS_CHANGE;
+                    mLogParsingState = Constant.PARSING_STATUS_CHANGE_PENDING;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfToTimeTag.getDocument())) {
                     getLogTable().SetFilterToTime(m_tfToTimeTag.getText());
-                    m_nChangedFilter = Constant.STATUS_CHANGE;
+                    mLogParsingState = Constant.PARSING_STATUS_CHANGE_PENDING;
                     runFilter();
                 }
             } catch (Exception e) {
@@ -2527,44 +2504,44 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
                         && m_chkEnableIncludeWord.isSelected()) {
                     getLogTable().setFilterFind(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                    m_nChangedFilter = Constant.STATUS_CHANGE;
+                    mLogParsingState = Constant.PARSING_STATUS_CHANGE_PENDING;
                     runFilter();
                 } else if (arg0.getDocument()
                         .equals(m_tfExcludeWord.getDocument())
                         && m_chkEnableExcludeWord.isSelected()) {
                     getLogTable().SetFilterRemove(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                    m_nChangedFilter = Constant.STATUS_CHANGE;
+                    mLogParsingState = Constant.PARSING_STATUS_CHANGE_PENDING;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfShowPid.getDocument())
                         && m_chkEnableShowPid.isSelected()) {
                     getLogTable().SetFilterShowPid(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                    m_nChangedFilter = Constant.STATUS_CHANGE;
+                    mLogParsingState = Constant.PARSING_STATUS_CHANGE_PENDING;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfShowTid.getDocument())
                         && m_chkEnableShowTid.isSelected()) {
                     getLogTable().SetFilterShowTid(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                    m_nChangedFilter = Constant.STATUS_CHANGE;
+                    mLogParsingState = Constant.PARSING_STATUS_CHANGE_PENDING;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfShowTag.getDocument())
                         && m_chkEnableShowTag.isSelected()) {
                     getLogTable().SetFilterShowTag(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                    m_nChangedFilter = Constant.STATUS_CHANGE;
+                    mLogParsingState = Constant.PARSING_STATUS_CHANGE_PENDING;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfRemoveTag.getDocument())
                         && m_chkEnableRemoveTag.isSelected()) {
                     getLogTable().SetFilterRemoveTag(arg0.getDocument().getText(
                             0, arg0.getDocument().getLength()));
-                    m_nChangedFilter = Constant.STATUS_CHANGE;
+                    mLogParsingState = Constant.PARSING_STATUS_CHANGE_PENDING;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfBookmarkTag.getDocument())
                         && m_chkEnableBookmarkTag.isSelected()) {
                     getLogTable().SetFilterBookmarkTag(arg0.getDocument().getText(
                             0, arg0.getDocument().getLength()));
-                    m_nChangedFilter = Constant.STATUS_CHANGE;
+                    mLogParsingState = Constant.PARSING_STATUS_CHANGE_PENDING;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfHighlight.getDocument())
                         && m_chkEnableHighlight.isSelected()) {
@@ -2572,7 +2549,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
                             arg0.getDocument().getLength()));
                     getSubTable().SetHighlight(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                    m_nChangedFilter = Constant.STATUS_CHANGE;
+                    mLogParsingState = Constant.PARSING_STATUS_CHANGE_PENDING;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfSearch.getDocument())) {
                     getLogTable().SetSearchHighlight(arg0.getDocument().getText(0,
@@ -2580,15 +2557,15 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
                     getSubTable().SetSearchHighlight(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
                     getLogTable().gotoNextSearchResult();
-                    m_nChangedFilter = Constant.STATUS_CHANGE;
+                    mLogParsingState = Constant.PARSING_STATUS_CHANGE_PENDING;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfFromTimeTag.getDocument())) {
                     getLogTable().SetFilterFromTime(m_tfFromTimeTag.getText());
-                    m_nChangedFilter = Constant.STATUS_CHANGE;
+                    mLogParsingState = Constant.PARSING_STATUS_CHANGE_PENDING;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfToTimeTag.getDocument())) {
                     getLogTable().SetFilterToTime(m_tfToTimeTag.getText());
-                    m_nChangedFilter = Constant.STATUS_CHANGE;
+                    mLogParsingState = Constant.PARSING_STATUS_CHANGE_PENDING;
                     runFilter();
                 }
             } catch (Exception e) {
@@ -2602,44 +2579,44 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
                         && m_chkEnableIncludeWord.isSelected()) {
                     getLogTable().setFilterFind(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                    m_nChangedFilter = Constant.STATUS_CHANGE;
+                    mLogParsingState = Constant.PARSING_STATUS_CHANGE_PENDING;
                     runFilter();
                 } else if (arg0.getDocument()
                         .equals(m_tfExcludeWord.getDocument())
                         && m_chkEnableExcludeWord.isSelected()) {
                     getLogTable().SetFilterRemove(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                    m_nChangedFilter = Constant.STATUS_CHANGE;
+                    mLogParsingState = Constant.PARSING_STATUS_CHANGE_PENDING;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfShowPid.getDocument())
                         && m_chkEnableShowPid.isSelected()) {
                     getLogTable().SetFilterShowPid(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                    m_nChangedFilter = Constant.STATUS_CHANGE;
+                    mLogParsingState = Constant.PARSING_STATUS_CHANGE_PENDING;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfShowTid.getDocument())
                         && m_chkEnableShowTid.isSelected()) {
                     getLogTable().SetFilterShowTid(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                    m_nChangedFilter = Constant.STATUS_CHANGE;
+                    mLogParsingState = Constant.PARSING_STATUS_CHANGE_PENDING;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfShowTag.getDocument())
                         && m_chkEnableShowTag.isSelected()) {
                     getLogTable().SetFilterShowTag(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                    m_nChangedFilter = Constant.STATUS_CHANGE;
+                    mLogParsingState = Constant.PARSING_STATUS_CHANGE_PENDING;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfRemoveTag.getDocument())
                         && m_chkEnableRemoveTag.isSelected()) {
                     getLogTable().SetFilterRemoveTag(arg0.getDocument().getText(
                             0, arg0.getDocument().getLength()));
-                    m_nChangedFilter = Constant.STATUS_CHANGE;
+                    mLogParsingState = Constant.PARSING_STATUS_CHANGE_PENDING;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfBookmarkTag.getDocument())
                         && m_chkEnableBookmarkTag.isSelected()) {
                     getLogTable().SetFilterBookmarkTag(arg0.getDocument().getText(
                             0, arg0.getDocument().getLength()));
-                    m_nChangedFilter = Constant.STATUS_CHANGE;
+                    mLogParsingState = Constant.PARSING_STATUS_CHANGE_PENDING;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfHighlight.getDocument())
                         && m_chkEnableHighlight.isSelected()) {
@@ -2647,7 +2624,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
                             arg0.getDocument().getLength()));
                     getSubTable().SetHighlight(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                    m_nChangedFilter = Constant.STATUS_CHANGE;
+                    mLogParsingState = Constant.PARSING_STATUS_CHANGE_PENDING;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfSearch.getDocument())) {
                     getLogTable().SetSearchHighlight(arg0.getDocument().getText(0,
@@ -2655,14 +2632,14 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
                     getSubTable().SetSearchHighlight(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
                     getLogTable().gotoNextSearchResult();
-                    m_nChangedFilter = Constant.STATUS_CHANGE;
+                    mLogParsingState = Constant.PARSING_STATUS_CHANGE_PENDING;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfFromTimeTag.getDocument())) {
                     getLogTable().SetFilterFromTime(m_tfFromTimeTag.getText());
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfToTimeTag.getDocument())) {
                     getLogTable().SetFilterToTime(m_tfToTimeTag.getText());
-                    m_nChangedFilter = Constant.STATUS_CHANGE;
+                    mLogParsingState = Constant.PARSING_STATUS_CHANGE_PENDING;
                     runFilter();
                 }
             } catch (Exception e) {
@@ -2916,7 +2893,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
                     pidShow += "|" + value;
                 }
                 m_tbLogTable.SetFilterShowPid(pidShow);
-                LogFilterMain.this.notiEvent(new INotiEvent.EventParam(INotiEvent.TYPE.EVENT_CHANGE_FILTER_SHOW_PID));
+                LogFilterMain.this.postEvent(new INotiEvent.EventParam(INotiEvent.TYPE.EVENT_CHANGE_FILTER_SHOW_PID));
             }
         });
         packageViewDialog.setModal(false);
@@ -2977,7 +2954,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
             T.e("mode file == null");
             return;
         }
-        mStateSaver.save(file.getAbsolutePath());
+        mUIStateSaver.save(file.getAbsolutePath());
     }
 
     private void loadModeFile(File file) {
@@ -2985,7 +2962,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
             T.e("mode file == null");
             return;
         }
-        mStateSaver.load(file.getAbsolutePath());
+        mUIStateSaver.load(file.getAbsolutePath());
     }
 
     ///////////////////////////////////diff///////////////////////////////////

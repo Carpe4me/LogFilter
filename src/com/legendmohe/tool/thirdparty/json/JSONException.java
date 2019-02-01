@@ -1,4 +1,4 @@
-package com.legendmohe.tool.json;
+package com.legendmohe.tool.thirdparty.json;
 
 /**
  * The JSONException is thrown by the JSON.org classes when things are amiss.

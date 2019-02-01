@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
  */
 public class BigoXLogParser extends AbstractLogParser {
 
-    static final DateFormat TIMESTAMP_FORMAT_WITH_TIMEZONE = new SimpleDateFormat("yyyy-MM-dd Z HH:mm:ss.SSS");
+    private static final DateFormat TIMESTAMP_FORMAT_WITH_TIMEZONE = new SimpleDateFormat("yyyy-MM-dd Z HH:mm:ss.SSS");
 
     /*
     Match 1

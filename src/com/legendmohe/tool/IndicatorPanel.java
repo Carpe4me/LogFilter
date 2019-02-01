@@ -138,7 +138,7 @@ public class IndicatorPanel extends JPanel {
 
             //�ϸ�ũ indicator�� �׸���.
             for (Integer nIndex : m_hmBookmark.keySet()) {
-                if (m_LogFilterMain.m_nChangedFilter == Constant.STATUS_CHANGE || m_LogFilterMain.m_nChangedFilter == Constant.STATUS_PARSING)
+                if (m_LogFilterMain.mLogParsingState == Constant.PARSING_STATUS_CHANGE_PENDING || m_LogFilterMain.mLogParsingState == Constant.PARSING_STATUS_PARSING)
                     break;
                 int nY1 = (int) (INDICATRO_Y_POS + m_hmBookmark.get(nIndex) * fRate);
                 int nY2 = (int) (nY1 + HEIGHT);
@@ -153,7 +153,7 @@ public class IndicatorPanel extends JPanel {
 
             //���� indicator�� �׸���.
             for (Integer nIndex : m_hmError.keySet()) {
-                if (m_LogFilterMain.m_nChangedFilter == Constant.STATUS_CHANGE || m_LogFilterMain.m_nChangedFilter == Constant.STATUS_PARSING)
+                if (m_LogFilterMain.mLogParsingState == Constant.PARSING_STATUS_CHANGE_PENDING || m_LogFilterMain.mLogParsingState == Constant.PARSING_STATUS_PARSING)
                     break;
                 int nY1 = (int) (INDICATRO_Y_POS + m_hmError.get(nIndex) * fRate);
                 int nY2 = (int) (nY1 + HEIGHT);
@@ -213,9 +213,9 @@ public class IndicatorPanel extends JPanel {
     ItemListener m_itemListener = new ItemListener() {
         public void itemStateChanged(ItemEvent itemEvent) {
             if (itemEvent.getSource().equals(m_chBookmark)) {
-                m_LogFilterMain.notiEvent(new INotiEvent.EventParam(INotiEvent.TYPE.EVENT_CLICK_BOOKMARK));
+                m_LogFilterMain.postEvent(new INotiEvent.EventParam(INotiEvent.TYPE.EVENT_CLICK_BOOKMARK));
             } else if (itemEvent.getSource().equals(m_chError)) {
-                m_LogFilterMain.notiEvent(new INotiEvent.EventParam(INotiEvent.TYPE.EVENT_CLICK_ERROR));
+                m_LogFilterMain.postEvent(new INotiEvent.EventParam(INotiEvent.TYPE.EVENT_CLICK_ERROR));
             }
         }
     };

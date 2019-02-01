@@ -61,9 +61,9 @@ public class LogTable extends BaseLogTable {
                             } else {
                                 m_strTagShow += "|" + logInfo.getData(column);
                             }
-                            mBaseLogTableListener.notiEvent(new INotiEvent.EventParam(INotiEvent.TYPE.EVENT_CHANGE_FILTER_SHOW_TAG));
+                            mBaseLogTableListener.postEvent(new INotiEvent.EventParam(INotiEvent.TYPE.EVENT_CHANGE_FILTER_SHOW_TAG));
                         } else if (column == LogFilterTableModel.COLUMN_TIME) {
-                            mBaseLogTableListener.notiEvent(
+                            mBaseLogTableListener.postEvent(
                                     new INotiEvent.EventParam(INotiEvent.TYPE.EVENT_CHANGE_FILTER_FROM_TIME, logInfo.getTime())
                             );
                         }
@@ -87,9 +87,9 @@ public class LogTable extends BaseLogTable {
                         LogInfo logInfo = ((LogFilterTableModel) getModel()).getRow(row);
                         if (column == LogFilterTableModel.COLUMN_TAG) {
                             m_strTagRemove += "|" + logInfo.getData(column);
-                            mBaseLogTableListener.notiEvent(new INotiEvent.EventParam(INotiEvent.TYPE.EVENT_CHANGE_FILTER_REMOVE_TAG));
+                            mBaseLogTableListener.postEvent(new INotiEvent.EventParam(INotiEvent.TYPE.EVENT_CHANGE_FILTER_REMOVE_TAG));
                         } else if (column == LogFilterTableModel.COLUMN_TIME) {
-                            mBaseLogTableListener.notiEvent(
+                            mBaseLogTableListener.postEvent(
                                     new INotiEvent.EventParam(INotiEvent.TYPE.EVENT_CHANGE_FILTER_TO_TIME, logInfo.getTime())
                             );
                         }

@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
  */
 public class BigoDevLogParser extends AbstractLogParser {
 
-    static final DateFormat TIMESTAMP_FORMAT = new SimpleDateFormat("MM-dd HH:mm:ss.SSS");
+    private static final DateFormat TIMESTAMP_FORMAT = new SimpleDateFormat("MM-dd HH:mm:ss.SSS");
 
     /*
     Match 1

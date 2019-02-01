@@ -3,7 +3,7 @@ package com.legendmohe.tool.diff;
 import com.legendmohe.tool.IDiffCmdHandler;
 import com.legendmohe.tool.LogFilterMain;
 import com.legendmohe.tool.T;
-import com.legendmohe.tool.json.JSONObject;
+import com.legendmohe.tool.thirdparty.json.JSONObject;
 
 import java.io.IOException;
 import java.net.Socket;

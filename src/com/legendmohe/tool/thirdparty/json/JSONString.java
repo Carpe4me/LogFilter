@@ -1,4 +1,4 @@
-package com.legendmohe.tool.json;
+package com.legendmohe.tool.thirdparty.json;
 
 /**
  * The <code>JSONString</code> interface allows a <code>toJSONString()</code>

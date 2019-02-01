@@ -70,7 +70,7 @@ public class SubLogTable extends BaseLogTable {
     }
 
     private void showInfoInLogTable(LogInfo logInfo) {
-        mBaseLogTableListener.notiEvent(
+        mBaseLogTableListener.postEvent(
                 new INotiEvent.EventParam(INotiEvent.TYPE.EVENT_CHANGE_SELECTION, logInfo)
         );
     }

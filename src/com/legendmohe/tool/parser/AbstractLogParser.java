@@ -35,22 +35,4 @@ abstract class AbstractLogParser implements ILogParser {
         else
             return Color.BLACK;
     }
-
-    @Override
-    public int getLogLV(LogInfo logInfo) {
-        if (logInfo.getLogLV() == null) return LogInfo.LOG_LV_VERBOSE;
-
-        if (logInfo.getLogLV().equals("FATAL") || logInfo.getLogLV().equals("F"))
-            return LogInfo.LOG_LV_FATAL;
-        if (logInfo.getLogLV().equals("ERROR") || logInfo.getLogLV().equals("E"))
-            return LogInfo.LOG_LV_ERROR;
-        else if (logInfo.getLogLV().equals("WARN") || logInfo.getLogLV().equals("W"))
-            return LogInfo.LOG_LV_WARN;
-        else if (logInfo.getLogLV().equals("INFO") || logInfo.getLogLV().equals("I"))
-            return LogInfo.LOG_LV_INFO;
-        else if (logInfo.getLogLV().equals("DEBUG") || logInfo.getLogLV().equals("D"))
-            return LogInfo.LOG_LV_DEBUG;
-        else
-            return LogInfo.LOG_LV_VERBOSE;
-    }
 }

@@ -20,9 +20,9 @@ public class Constant {
     static final int DEVICES_ANDROID = 0;
     static final int DEVICES_IOS = 1;
     static final int DEVICES_CUSTOM = 2;
-    public static final int STATUS_CHANGE = 1;
-    public static final int STATUS_PARSING = 2;
-    public static final int STATUS_READY = 4;
+    public static final int PARSING_STATUS_CHANGE_PENDING = 1;
+    public static final int PARSING_STATUS_PARSING = 2;
+    public static final int PARSING_STATUS_READY = 4;
     public static final String DIFF_PROGRAM_PATH = "C:\\Program Files\\KDiff3\\kdiff3.exe";
 
     ///////////////////////////////////logcat command///////////////////////////////////

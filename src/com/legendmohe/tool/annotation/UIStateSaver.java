@@ -1,6 +1,11 @@
 package com.legendmohe.tool.annotation;
 
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -13,7 +18,7 @@ import java.util.Set;
 /**
  * Created by xinyu.he on 2016/1/14.
  */
-public class StateSaver {
+public class UIStateSaver {
 
     private Class[] mSupportedSaveState = new Class[]{
             SaveState.class,
@@ -27,7 +32,7 @@ public class StateSaver {
     private Object mContext;
     private String mSavePath;
 
-    public StateSaver(Object target, String filePath) {
+    public UIStateSaver(Object target, String filePath) {
         register(target, filePath);
     }
 

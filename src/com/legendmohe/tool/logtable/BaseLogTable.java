@@ -813,7 +813,7 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
 
         void onSetBookmark(int i, String aValue);
 
-        void notiEvent(INotiEvent.EventParam eventParam);
+        void postEvent(INotiEvent.EventParam eventParam);
 
         void markLogInfo(int selectedRow, int line, boolean isMark);
 

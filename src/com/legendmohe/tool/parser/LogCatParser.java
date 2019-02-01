@@ -10,12 +10,12 @@ import java.text.SimpleDateFormat;
 import java.util.StringTokenizer;
 
 public class LogCatParser extends AbstractLogParser {
-    final String TOKEN_KERNEL = "<>[]";
-    final String TOKEN_SPACE = " ";
-    final String TOKEN_SLASH = "/";
-    final String TOKEN = "/()";
-    final String TOKEN_PID = "/() ";
-    final String TOKEN_MESSAGE = "'";
+    private static final String TOKEN_KERNEL = "<>[]";
+    private static final String TOKEN_SPACE = " ";
+    private static final String TOKEN_SLASH = "/";
+    private static final String TOKEN = "/()";
+    private static final String TOKEN_PID = "/() ";
+    private static final String TOKEN_MESSAGE = "'";
 
     public static final DateFormat TIMESTAMP_FORMAT = new SimpleDateFormat("HH:mm:ss.SSS");
 
