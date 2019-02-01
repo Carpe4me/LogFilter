@@ -409,7 +409,11 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         fileMenu.add(modeMenu);
         fileMenu.add(mRecentMenu);
 
-        JMenu netMenu = new JMenu("Tools");
+        JMenu toolsMenu = new JMenu("Tools");
+
+        JMenu viewMenu = initAndGetViewMenu(this);
+        toolsMenu.add(viewMenu);
+
         JMenu diffMenu = new JMenu("Diff Service");
 
         mDisconnectDiffMenuItem = new JMenuItem("disconnect");
@@ -443,7 +447,8 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
 
         diffMenu.add(mConnectDiffMenuItem);
         diffMenu.add(mDisconnectDiffMenuItem);
-        netMenu.add(diffMenu);
+
+        toolsMenu.add(diffMenu);
 
         JMenu parserMenu = new JMenu("Parser");
         parserMenu.addMenuListener(new MenuListener() {
@@ -503,11 +508,8 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         parserBG.add(bigoParserMenu);
         parserBG.add(bigoXLogParserMenu);
 
-        JMenu viewMenu = initAndGetViewMenu(this);
-
         menuBar.add(fileMenu);
-        menuBar.add(netMenu);
-        menuBar.add(viewMenu);
+        menuBar.add(toolsMenu);
         menuBar.add(parserMenu);
         this.setJMenuBar(menuBar);
     }
