@@ -1,5 +1,7 @@
 package com.legendmohe.tool;
 
+import com.legendmohe.tool.config.Constant;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -136,7 +138,7 @@ public class IndicatorPanel extends JPanel {
 
             //�ϸ�ũ indicator�� �׸���.
             for (Integer nIndex : m_hmBookmark.keySet()) {
-                if (m_LogFilterMain.m_nChangedFilter == LogFilterMain.STATUS_CHANGE || m_LogFilterMain.m_nChangedFilter == LogFilterMain.STATUS_PARSING)
+                if (m_LogFilterMain.m_nChangedFilter == Constant.STATUS_CHANGE || m_LogFilterMain.m_nChangedFilter == Constant.STATUS_PARSING)
                     break;
                 int nY1 = (int) (INDICATRO_Y_POS + m_hmBookmark.get(nIndex) * fRate);
                 int nY2 = (int) (nY1 + HEIGHT);
@@ -151,7 +153,7 @@ public class IndicatorPanel extends JPanel {
 
             //���� indicator�� �׸���.
             for (Integer nIndex : m_hmError.keySet()) {
-                if (m_LogFilterMain.m_nChangedFilter == LogFilterMain.STATUS_CHANGE || m_LogFilterMain.m_nChangedFilter == LogFilterMain.STATUS_PARSING)
+                if (m_LogFilterMain.m_nChangedFilter == Constant.STATUS_CHANGE || m_LogFilterMain.m_nChangedFilter == Constant.STATUS_PARSING)
                     break;
                 int nY1 = (int) (INDICATRO_Y_POS + m_hmError.get(nIndex) * fRate);
                 int nY2 = (int) (nY1 + HEIGHT);

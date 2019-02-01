@@ -29,9 +29,9 @@ import javax.swing.undo.UndoManager;
  * Created by xinyu.he on 2016/1/7.
  */
 public class Utils {
-    public static void openWebpage(String urlString) {
+    public static void openWebPage(String urlString) {
         try {
-            openWebpage(new URL(urlString).toURI());
+            openWebPage(new URL(urlString).toURI());
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (URISyntaxException e) {
@@ -39,7 +39,7 @@ public class Utils {
         }
     }
 
-    public static void openWebpage(URI uri) {
+    public static void openWebPage(URI uri) {
         Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
         if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
             try {
@@ -50,9 +50,9 @@ public class Utils {
         }
     }
 
-    public static void openWebpage(URL url) {
+    public static void openWebPage(URL url) {
         try {
-            openWebpage(url.toURI());
+            openWebPage(url.toURI());
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -137,6 +137,22 @@ public class Utils {
         }
         reader.close();
         return fileData.toString();
+    }
+
+    ///////////////////////////////////system///////////////////////////////////
+
+    private static String OS;
+
+    static {
+        OS = System.getProperty("os.name");
+    }
+
+    public static String getOsName() {
+        return OS;
+    }
+
+    public static boolean isWindows() {
+        return getOsName().startsWith("Windows");
     }
 
     ///////////////////////////////////undo///////////////////////////////////

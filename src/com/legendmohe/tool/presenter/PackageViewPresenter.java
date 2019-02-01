@@ -1,7 +1,7 @@
 package com.legendmohe.tool.presenter;
 
-import com.legendmohe.tool.OSUtil;
 import com.legendmohe.tool.T;
+import com.legendmohe.tool.Utils;
 import com.legendmohe.tool.model.PackageViewTableModel;
 import com.legendmohe.tool.view.PackageViewDialog;
 
@@ -76,7 +76,7 @@ public class PackageViewPresenter {
             customCmd = "adb shell \"" + customCmd + "\"";
         }
         String[] cmd;
-        if (OSUtil.isWindows()) {
+        if (Utils.isWindows()) {
             cmd = new String[]{"cmd.exe", "/C", customCmd};
         } else {
             cmd = new String[]{"/bin/bash", "-l", "-c", customCmd};

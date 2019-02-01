@@ -1,8 +1,8 @@
 package com.legendmohe.tool.logtable;
 
 import com.legendmohe.tool.ILogRenderResolver;
-import com.legendmohe.tool.LogColor;
 import com.legendmohe.tool.LogInfo;
+import com.legendmohe.tool.config.Constant;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -94,10 +94,10 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
         if (isSelected) {
             c.setFont(getFont().deriveFont(mResolver.getFontSize() + 1));
             if (logInfo.isMarked()) {
-                c.setBackground(new Color(LogColor.COLOR_BOOKMARK2));
+                c.setBackground(new Color(Constant.COLOR_BOOKMARK2));
             }
         } else if (logInfo.isMarked()) {
-            c.setBackground(new Color(LogColor.COLOR_BOOKMARK));
+            c.setBackground(new Color(Constant.COLOR_BOOKMARK));
         } else {
             c.setBackground(Color.WHITE);
         }
@@ -152,8 +152,8 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
         m_bChanged = false;
 
         strText = strText.replace(" ", "\u00A0");
-        if (LogColor.COLOR_HIGHLIGHT != null && LogColor.COLOR_HIGHLIGHT.length > 0) {
-            strText = remakeFind(strText, mResolver.GetHighlight(), LogColor.COLOR_HIGHLIGHT, true);
+        if (Constant.COLOR_HIGHLIGHT != null && Constant.COLOR_HIGHLIGHT.length > 0) {
+            strText = remakeFind(strText, mResolver.GetHighlight(), Constant.COLOR_HIGHLIGHT, true);
         } else {
             strText = remakeFind(strText, mResolver.GetHighlight(), "#00FF00", true);
         }

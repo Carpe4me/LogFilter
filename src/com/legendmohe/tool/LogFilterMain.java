@@ -4,6 +4,7 @@ import com.legendmohe.tool.annotation.CheckBoxSaveState;
 import com.legendmohe.tool.annotation.FieldSaveState;
 import com.legendmohe.tool.annotation.StateSaver;
 import com.legendmohe.tool.annotation.TextFieldSaveState;
+import com.legendmohe.tool.config.Constant;
 import com.legendmohe.tool.diff.DiffService;
 import com.legendmohe.tool.logtable.BaseLogTable;
 import com.legendmohe.tool.logtable.LogFilterTableModel;
@@ -118,59 +119,17 @@ import javax.swing.event.MenuListener;
 public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.BaseLogTableListener, IDiffCmdHandler {
     private static final long serialVersionUID = 1L;
 
-    static final String LOGFILTER = "LogFilter";
-    static final String VERSION = "Version 1.9.0";
-    static final String OUTPUT_LOG_DIR = "log";
-    static final String CONFIG_BASE_DIR = "conf";
-    final String COMBO_ANDROID = "Android          ";
-    final String COMBO_IOS = "ios";
-    final String COMBO_CUSTOM_COMMAND = "custom command";
-    final String IOS_DEFAULT_CMD = "adb logcat -v time ";
-    final String IOS_SELECTED_CMD_FIRST = "adb -s ";
-    final String IOS_SELECTED_CMD_LAST = " logcat -v time ";
-    final String ANDROID_DEFAULT_CMD = "logcat -v time";
-    final String ANDROID_THREAD_CMD = "logcat -v threadtime";
-    final String ANDROID_EVENT_CMD = "logcat -b events -v time";
-    final String ANDROID_RADIO_CMD = "logcat -b radio -v time";
-    final String ANDROID_CUSTOM_CMD = "shell cat /proc/kmsg";
-    //    final String ANDROID_CUSTOM_CMD = "logcat -v time -f /dev/kmsg | cat /proc/kmsg";
-    final String ANDROID_DEFAULT_CMD_FIRST = "adb ";
-    final String ANDROID_SELECTED_CMD_FIRST = "adb -s ";
-    // final String ANDROID_SELECTED_CMD_LAST = " logcat -v time ";
-    final String[] DEVICES_CMD = {"adb devices -l", "", ""};
-
-    static final int DEFAULT_WIDTH = 1200;
-    static final int DEFAULT_HEIGHT = 720;
-    static final int MIN_WIDTH = 1100;
-    static final int MIN_HEIGHT = 500;
-
-    static final int DEVICES_ANDROID = 0;
-    static final int DEVICES_IOS = 1;
-    static final int DEVICES_CUSTOM = 2;
-
-    static final int STATUS_CHANGE = 1;
-    static final int STATUS_PARSING = 2;
-    static final int STATUS_READY = 4;
-
-    private static final String DIFF_PROGRAM_PATH = "C:\\Program Files\\KDiff3\\kdiff3.exe";
-    private static final String CALC_PROGRAM_PATH = "calc";
-
-    // 对应menu的index，必须从0开始
-    public static final int PARSER_TYPE_LOGCAT = 0;
-    public static final int PARSER_TYPE_BIGO_DEV_LOG = 1;
-    public static final int PARSER_TYPE_BIGO_XLOG = 2;
-
     private static final Map<Integer, ILogParser> sTypeToParserMap = new HashMap<>();
     private static final Map<Integer, String> sTypeToParserNameMap = new HashMap<>();
 
     {
-        sTypeToParserMap.put(PARSER_TYPE_LOGCAT, new LogCatParser());
-        sTypeToParserMap.put(PARSER_TYPE_BIGO_DEV_LOG, new BigoDevLogParser());
-        sTypeToParserMap.put(PARSER_TYPE_BIGO_XLOG, new BigoXLogParser());
+        sTypeToParserMap.put(Constant.PARSER_TYPE_LOGCAT, new LogCatParser());
+        sTypeToParserMap.put(Constant.PARSER_TYPE_BIGO_DEV_LOG, new BigoDevLogParser());
+        sTypeToParserMap.put(Constant.PARSER_TYPE_BIGO_XLOG, new BigoXLogParser());
 
-        sTypeToParserNameMap.put(PARSER_TYPE_LOGCAT, "logcat");
-        sTypeToParserNameMap.put(PARSER_TYPE_BIGO_DEV_LOG, "bigo dev log");
-        sTypeToParserNameMap.put(PARSER_TYPE_BIGO_XLOG, "bigo xlog");
+        sTypeToParserNameMap.put(Constant.PARSER_TYPE_LOGCAT, "logcat");
+        sTypeToParserNameMap.put(Constant.PARSER_TYPE_BIGO_DEV_LOG, "bigo dev log");
+        sTypeToParserNameMap.put(Constant.PARSER_TYPE_BIGO_XLOG, "bigo xlog");
     }
 
     JLabel m_tfStatus;
@@ -294,9 +253,9 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
     volatile int m_nChangedFilter;
     int m_nFilterLogLV;
     @FieldSaveState
-    int m_nWinWidth = DEFAULT_WIDTH;
+    int m_nWinWidth = Constant.DEFAULT_WIDTH;
     @FieldSaveState
-    int m_nWinHeight = DEFAULT_HEIGHT;
+    int m_nWinHeight = Constant.DEFAULT_HEIGHT;
     int m_nLastWidth;
     int m_nLastHeight;
     @FieldSaveState
@@ -304,7 +263,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
     RecentFileMenu mRecentMenu;
 
     @FieldSaveState
-    int m_parserType = PARSER_TYPE_LOGCAT;
+    int m_parserType = Constant.PARSER_TYPE_LOGCAT;
 
     @FieldSaveState
     int[] m_colWidths = LogFilterTableModel.DEFAULT_WIDTH;
@@ -379,7 +338,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         addDesc();
 
         // register state saver
-        mStateSaver = new StateSaver(this, INI_FILE_STATE);
+        mStateSaver = new StateSaver(this, Constant.INI_FILE_STATE);
         mStateSaver.load();
 
         loadUI();
@@ -388,7 +347,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         loadParser();
         initDiffService();
 
-        setTitle(LOGFILTER + " " + VERSION);
+        setTitle(Constant.WINDOW_TITLE + " " + Constant.VERSION);
         addWindowStateListener(new WindowStateListener() {
             @Override
             public void windowStateChanged(WindowEvent e) {
@@ -505,34 +464,34 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
             }
         });
 
-        JRadioButtonMenuItem logcatParserMenu = new JRadioButtonMenuItem("Logcat Parser", LogFilterMain.this.m_parserType == PARSER_TYPE_LOGCAT);
+        JRadioButtonMenuItem logcatParserMenu = new JRadioButtonMenuItem("Logcat Parser", LogFilterMain.this.m_parserType == Constant.PARSER_TYPE_LOGCAT);
         logcatParserMenu.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
-                    LogFilterMain.this.switchToLogParser(PARSER_TYPE_LOGCAT);
+                    LogFilterMain.this.switchToLogParser(Constant.PARSER_TYPE_LOGCAT);
                 }
             }
         });
         parserMenu.add(logcatParserMenu);
 
-        JRadioButtonMenuItem bigoParserMenu = new JRadioButtonMenuItem("BigoDevLog Parser", LogFilterMain.this.m_parserType == PARSER_TYPE_BIGO_DEV_LOG);
+        JRadioButtonMenuItem bigoParserMenu = new JRadioButtonMenuItem("BigoDevLog Parser", LogFilterMain.this.m_parserType == Constant.PARSER_TYPE_BIGO_DEV_LOG);
         bigoParserMenu.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
-                    LogFilterMain.this.switchToLogParser(PARSER_TYPE_BIGO_DEV_LOG);
+                    LogFilterMain.this.switchToLogParser(Constant.PARSER_TYPE_BIGO_DEV_LOG);
                 }
             }
         });
         parserMenu.add(bigoParserMenu);
 
-        JRadioButtonMenuItem bigoXLogParserMenu = new JRadioButtonMenuItem("BigoXLog Parser", LogFilterMain.this.m_parserType == PARSER_TYPE_BIGO_XLOG);
+        JRadioButtonMenuItem bigoXLogParserMenu = new JRadioButtonMenuItem("BigoXLog Parser", LogFilterMain.this.m_parserType == Constant.PARSER_TYPE_BIGO_XLOG);
         bigoXLogParserMenu.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
-                    LogFilterMain.this.switchToLogParser(PARSER_TYPE_BIGO_XLOG);
+                    LogFilterMain.this.switchToLogParser(Constant.PARSER_TYPE_BIGO_XLOG);
                 }
             }
         });
@@ -618,9 +577,9 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
     private void loadCustomMenu(final LogFilterMain mainFrame, JMenu customMenu) {
         Properties p = new Properties();
         try {
-            p.load(new FileInputStream(INI_FILE_DUMPSYS));
+            p.load(new FileInputStream(Constant.INI_FILE_DUMP_SYS));
         } catch (FileNotFoundException e) {
-            T.d(INI_FILE_DUMPSYS + " not exist!");
+            T.d(Constant.INI_FILE_DUMP_SYS + " not exist!");
             return;
         } catch (IOException e) {
             e.printStackTrace();
@@ -651,7 +610,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
     private String makeFilename() {
         Date now = new Date();
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_HHmmss");
-        return OUTPUT_LOG_DIR + File.separator + "LogFilter_" + format.format(now) + ".txt";
+        return Constant.OUTPUT_LOG_DIR + File.separator + "LogFilter_" + format.format(now) + ".txt";
     }
 
     private void exit() {
@@ -673,7 +632,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
     }
 
     private void loadUI() {
-        setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
+        setMinimumSize(new Dimension(Constant.MIN_WIDTH, Constant.MIN_HEIGHT));
         setExtendedState(mWindowState);
         setPreferredSize(new Dimension(m_nWinWidth, m_nWinHeight));
 
@@ -687,51 +646,33 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         updateTable(-1, false);
     }
 
-    final static String INI_FILE_CMD = CONFIG_BASE_DIR + File.separator + "LogFilterCmd.ini";
-    final static String INI_FILE_COLOR = CONFIG_BASE_DIR + File.separator + "LogFilterColor.ini";
-    final static String INI_FILE_STATE = CONFIG_BASE_DIR + File.separator + "LogFilterState.ser";
-    final static String INI_FILE_DUMPSYS = CONFIG_BASE_DIR + File.separator + "LogFilterDumpsysCmd.ini";
-    final String INI_CMD_COUNT = "CMD_COUNT";
-    final String INI_CMD = "CMD_";
-    final String INI_COLOR_0 = "INI_COLOR_0";
-    final String INI_COLOR_1 = "INI_COLOR_1";
-    final String INI_COLOR_2 = "INI_COLOR_2";
-    final String INI_COLOR_3 = "INI_COLOR_3(E)";
-    final String INI_COLOR_4 = "INI_COLOR_4(W)";
-    final String INI_COLOR_5 = "INI_COLOR_5";
-    final String INI_COLOR_6 = "INI_COLOR_6(I)";
-    final String INI_COLOR_7 = "INI_COLOR_7(D)";
-    final String INI_COLOR_8 = "INI_COLOR_8(F)";
-    final String INI_HIGILIGHT_COUNT = "INI_HIGILIGHT_COUNT";
-    final String INI_HIGILIGHT_ = "INI_HIGILIGHT_";
-
     void loadCmd() {
         try {
             Properties p = new Properties();
 
             try {
-                p.load(new FileInputStream(INI_FILE_CMD));
+                p.load(new FileInputStream(Constant.INI_FILE_CMD));
             } catch (FileNotFoundException e) {
-                T.d(INI_FILE_CMD + " not exist!");
+                T.d(Constant.INI_FILE_CMD + " not exist!");
             }
 
-            if (p.getProperty(INI_CMD_COUNT) == null) {
-                p.setProperty(INI_CMD + "0", ANDROID_THREAD_CMD);
-                p.setProperty(INI_CMD + "1", ANDROID_DEFAULT_CMD);
-                p.setProperty(INI_CMD + "2", ANDROID_RADIO_CMD);
-                p.setProperty(INI_CMD + "3", ANDROID_EVENT_CMD);
-                p.setProperty(INI_CMD + "4", ANDROID_CUSTOM_CMD);
-                p.setProperty(INI_CMD_COUNT, "5");
-                p.store(new FileOutputStream(INI_FILE_CMD), null);
+            if (p.getProperty(Constant.INI_CMD_COUNT) == null) {
+                p.setProperty(Constant.INI_CMD + "0", Constant.ANDROID_THREAD_CMD);
+                p.setProperty(Constant.INI_CMD + "1", Constant.ANDROID_DEFAULT_CMD);
+                p.setProperty(Constant.INI_CMD + "2", Constant.ANDROID_RADIO_CMD);
+                p.setProperty(Constant.INI_CMD + "3", Constant.ANDROID_EVENT_CMD);
+                p.setProperty(Constant.INI_CMD + "4", Constant.ANDROID_CUSTOM_CMD);
+                p.setProperty(Constant.INI_CMD_COUNT, "5");
+                p.store(new FileOutputStream(Constant.INI_FILE_CMD), null);
             }
 
             T.d("p.getProperty(INI_CMD_COUNT) = "
-                    + p.getProperty(INI_CMD_COUNT));
-            int nCount = Integer.parseInt(p.getProperty(INI_CMD_COUNT));
+                    + p.getProperty(Constant.INI_CMD_COUNT));
+            int nCount = Integer.parseInt(p.getProperty(Constant.INI_CMD_COUNT));
             T.d("nCount = " + nCount);
             for (int nIndex = 0; nIndex < nCount; nIndex++) {
-                T.d("CMD = " + INI_CMD + nIndex);
-                m_comboCmd.addItem(p.getProperty(INI_CMD + nIndex));
+                T.d("CMD = " + Constant.INI_CMD + nIndex);
+                m_comboCmd.addItem(p.getProperty(Constant.INI_CMD + nIndex));
             }
         } catch (Exception e) {
             System.out.println(e);
@@ -746,37 +687,37 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         try {
             Properties p = new Properties();
 
-            p.load(new FileInputStream(INI_FILE_COLOR));
+            p.load(new FileInputStream(Constant.INI_FILE_COLOR));
 
-            LogColor.COLOR_0 = Integer.parseInt(p.getProperty(INI_COLOR_0)
+            Constant.COLOR_0 = Integer.parseInt(p.getProperty(Constant.INI_COLOR_0)
                     .replace("0x", ""), 16);
-            LogColor.COLOR_1 = Integer.parseInt(p.getProperty(INI_COLOR_1)
+            Constant.COLOR_1 = Integer.parseInt(p.getProperty(Constant.INI_COLOR_1)
                     .replace("0x", ""), 16);
-            LogColor.COLOR_2 = Integer.parseInt(p.getProperty(INI_COLOR_2)
+            Constant.COLOR_2 = Integer.parseInt(p.getProperty(Constant.INI_COLOR_2)
                     .replace("0x", ""), 16);
-            LogColor.COLOR_ERROR = LogColor.COLOR_3 = Integer.parseInt(p
-                    .getProperty(INI_COLOR_3).replace("0x", ""), 16);
-            LogColor.COLOR_WARN = LogColor.COLOR_4 = Integer.parseInt(p
-                    .getProperty(INI_COLOR_4).replace("0x", ""), 16);
-            LogColor.COLOR_5 = Integer.parseInt(p.getProperty(INI_COLOR_5)
+            Constant.COLOR_ERROR = Constant.COLOR_3 = Integer.parseInt(p
+                    .getProperty(Constant.INI_COLOR_3).replace("0x", ""), 16);
+            Constant.COLOR_WARN = Constant.COLOR_4 = Integer.parseInt(p
+                    .getProperty(Constant.INI_COLOR_4).replace("0x", ""), 16);
+            Constant.COLOR_5 = Integer.parseInt(p.getProperty(Constant.INI_COLOR_5)
                     .replace("0x", ""), 16);
-            LogColor.COLOR_INFO = LogColor.COLOR_6 = Integer.parseInt(p
-                    .getProperty(INI_COLOR_6).replace("0x", ""), 16);
-            LogColor.COLOR_DEBUG = LogColor.COLOR_7 = Integer.parseInt(p
-                    .getProperty(INI_COLOR_7).replace("0x", ""), 16);
-            LogColor.COLOR_FATAL = LogColor.COLOR_8 = Integer.parseInt(p
-                    .getProperty(INI_COLOR_8).replace("0x", ""), 16);
+            Constant.COLOR_INFO = Constant.COLOR_6 = Integer.parseInt(p
+                    .getProperty(Constant.INI_COLOR_6).replace("0x", ""), 16);
+            Constant.COLOR_DEBUG = Constant.COLOR_7 = Integer.parseInt(p
+                    .getProperty(Constant.INI_COLOR_7).replace("0x", ""), 16);
+            Constant.COLOR_FATAL = Constant.COLOR_8 = Integer.parseInt(p
+                    .getProperty(Constant.INI_COLOR_8).replace("0x", ""), 16);
 
-            int nCount = Integer.parseInt(p.getProperty(INI_HIGILIGHT_COUNT,
+            int nCount = Integer.parseInt(p.getProperty(Constant.INI_HIGILIGHT_COUNT,
                     "0"));
             if (nCount > 0) {
-                LogColor.COLOR_HIGHLIGHT = new String[nCount];
+                Constant.COLOR_HIGHLIGHT = new String[nCount];
                 for (int nIndex = 0; nIndex < nCount; nIndex++)
-                    LogColor.COLOR_HIGHLIGHT[nIndex] = p.getProperty(
-                            INI_HIGILIGHT_ + nIndex).replace("0x", "");
+                    Constant.COLOR_HIGHLIGHT[nIndex] = p.getProperty(
+                            Constant.INI_HIGILIGHT_ + nIndex).replace("0x", "");
             } else {
-                LogColor.COLOR_HIGHLIGHT = new String[1];
-                LogColor.COLOR_HIGHLIGHT[0] = "ffff";
+                Constant.COLOR_HIGHLIGHT = new String[1];
+                Constant.COLOR_HIGHLIGHT[0] = "ffff";
             }
         } catch (Exception e) {
             System.out.println(e);
@@ -787,34 +728,34 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         try {
             Properties p = new Properties();
 
-            p.setProperty(INI_COLOR_0,
-                    "0x" + Integer.toHexString(LogColor.COLOR_0).toUpperCase());
-            p.setProperty(INI_COLOR_1,
-                    "0x" + Integer.toHexString(LogColor.COLOR_1).toUpperCase());
-            p.setProperty(INI_COLOR_2,
-                    "0x" + Integer.toHexString(LogColor.COLOR_2).toUpperCase());
-            p.setProperty(INI_COLOR_3,
-                    "0x" + Integer.toHexString(LogColor.COLOR_3).toUpperCase());
-            p.setProperty(INI_COLOR_4,
-                    "0x" + Integer.toHexString(LogColor.COLOR_4).toUpperCase());
-            p.setProperty(INI_COLOR_5,
-                    "0x" + Integer.toHexString(LogColor.COLOR_5).toUpperCase());
-            p.setProperty(INI_COLOR_6,
-                    "0x" + Integer.toHexString(LogColor.COLOR_6).toUpperCase());
-            p.setProperty(INI_COLOR_7,
-                    "0x" + Integer.toHexString(LogColor.COLOR_7).toUpperCase());
-            p.setProperty(INI_COLOR_8,
-                    "0x" + Integer.toHexString(LogColor.COLOR_8).toUpperCase());
+            p.setProperty(Constant.INI_COLOR_0,
+                    "0x" + Integer.toHexString(Constant.COLOR_0).toUpperCase());
+            p.setProperty(Constant.INI_COLOR_1,
+                    "0x" + Integer.toHexString(Constant.COLOR_1).toUpperCase());
+            p.setProperty(Constant.INI_COLOR_2,
+                    "0x" + Integer.toHexString(Constant.COLOR_2).toUpperCase());
+            p.setProperty(Constant.INI_COLOR_3,
+                    "0x" + Integer.toHexString(Constant.COLOR_3).toUpperCase());
+            p.setProperty(Constant.INI_COLOR_4,
+                    "0x" + Integer.toHexString(Constant.COLOR_4).toUpperCase());
+            p.setProperty(Constant.INI_COLOR_5,
+                    "0x" + Integer.toHexString(Constant.COLOR_5).toUpperCase());
+            p.setProperty(Constant.INI_COLOR_6,
+                    "0x" + Integer.toHexString(Constant.COLOR_6).toUpperCase());
+            p.setProperty(Constant.INI_COLOR_7,
+                    "0x" + Integer.toHexString(Constant.COLOR_7).toUpperCase());
+            p.setProperty(Constant.INI_COLOR_8,
+                    "0x" + Integer.toHexString(Constant.COLOR_8).toUpperCase());
 
-            if (LogColor.COLOR_HIGHLIGHT != null) {
-                p.setProperty(INI_HIGILIGHT_COUNT, ""
-                        + LogColor.COLOR_HIGHLIGHT.length);
-                for (int nIndex = 0; nIndex < LogColor.COLOR_HIGHLIGHT.length; nIndex++)
-                    p.setProperty(INI_HIGILIGHT_ + nIndex, "0x"
-                            + LogColor.COLOR_HIGHLIGHT[nIndex].toUpperCase());
+            if (Constant.COLOR_HIGHLIGHT != null) {
+                p.setProperty(Constant.INI_HIGILIGHT_COUNT, ""
+                        + Constant.COLOR_HIGHLIGHT.length);
+                for (int nIndex = 0; nIndex < Constant.COLOR_HIGHLIGHT.length; nIndex++)
+                    p.setProperty(Constant.INI_HIGILIGHT_ + nIndex, "0x"
+                            + Constant.COLOR_HIGHLIGHT[nIndex].toUpperCase());
             }
 
-            p.store(new FileOutputStream(INI_FILE_COLOR), "done.");
+            p.store(new FileOutputStream(Constant.INI_FILE_COLOR), "done.");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -832,7 +773,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
             // alt + 左箭头 上一个历史行 alt + 右箭头 下一个历史行
      */
     void addDesc() {
-        appendDescToTable(VERSION);
+        appendDescToTable(Constant.VERSION);
         appendDescToTable("");
         appendDescToTable("Xinyu.he fork from https://github.com/iookill/LogFilter");
         appendDescToTable("");
@@ -928,7 +869,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
 
         JPanel jpCmd = new JPanel();
         m_comboDeviceCmd = new JComboBox<String>();
-        m_comboDeviceCmd.addItem(COMBO_ANDROID);
+        m_comboDeviceCmd.addItem(Constant.COMBO_ANDROID);
         // m_comboDeviceCmd.addItem(COMBO_IOS);
         // m_comboDeviceCmd.addItem(CUSTOM_COMMAND);
         m_comboDeviceCmd.addItemListener(new ItemListener() {
@@ -939,7 +880,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
                 DefaultListModel listModel = (DefaultListModel) m_lDeviceList
                         .getModel();
                 listModel.clear();
-                if (e.getItem().equals(COMBO_CUSTOM_COMMAND)) {
+                if (e.getItem().equals(Constant.COMBO_CUSTOM_COMMAND)) {
                     m_comboDeviceCmd.setEditable(true);
                 } else {
                     m_comboDeviceCmd.setEditable(false);
@@ -1608,7 +1549,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         m_bPauseADB = false;
         FILE_LOCK = new Object();
         FILTER_LOCK = new Object();
-        m_nChangedFilter = STATUS_READY;
+        m_nChangedFilter = Constant.STATUS_READY;
         m_nFilterLogLV = LogInfo.LOG_LV_ALL;
 
         m_arLogInfoAll = new ArrayList<LogInfo>();
@@ -1619,12 +1560,12 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         m_hmErrorFiltered = new ConcurrentHashMap<Integer, Integer>();
         m_arSubLogInfoAll = new ArrayList<>();
 
-        File confDir = new File(CONFIG_BASE_DIR);
+        File confDir = new File(Constant.CONFIG_BASE_DIR);
         if (!confDir.exists()) {
             confDir.mkdirs();
             T.d("create conf directory: " + confDir.getAbsolutePath());
         }
-        File outputDir = new File(OUTPUT_LOG_DIR);
+        File outputDir = new File(Constant.OUTPUT_LOG_DIR);
         if (!outputDir.exists()) {
             outputDir.mkdirs();
             T.d("create log directory: " + outputDir.getAbsolutePath());
@@ -1710,9 +1651,9 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
     }
 
     private String[] getADBValidCmd() {
-        String strCommand = DEVICES_CMD[m_comboDeviceCmd.getSelectedIndex()];
+        String strCommand = Constant.DEVICES_CMD[m_comboDeviceCmd.getSelectedIndex()];
         String[] cmd;
-        if (OSUtil.isWindows()) {
+        if (Utils.isWindows()) {
             cmd = new String[]{"cmd.exe", "/C", strCommand};
         } else {
             cmd = new String[]{"/bin/bash", "-l", "-c", strCommand};
@@ -1809,7 +1750,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
             m_nFilterLogLV |= nLogLV;
         else
             m_nFilterLogLV &= ~nLogLV;
-        m_nChangedFilter = STATUS_CHANGE;
+        m_nChangedFilter = Constant.STATUS_CHANGE;
         runFilter();
     }
 
@@ -1871,7 +1812,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
                 getLogTable().SetFilterToTime("");
             }
         }
-        m_nChangedFilter = STATUS_CHANGE;
+        m_nChangedFilter = Constant.STATUS_CHANGE;
         runFilter();
     }
 
@@ -1895,9 +1836,9 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         if (m_lDeviceList.getSelectedIndex() < 0
                 || m_selectedDevice == null
                 || m_selectedDevice.code.length() == 0)
-            return ANDROID_DEFAULT_CMD_FIRST + m_comboCmd.getSelectedItem();
+            return Constant.ANDROID_DEFAULT_CMD_FIRST + m_comboCmd.getSelectedItem();
         else
-            return ANDROID_SELECTED_CMD_FIRST
+            return Constant.ANDROID_SELECTED_CMD_FIRST
                     + m_selectedDevice.code
                     + " "
                     + m_comboCmd.getSelectedItem();
@@ -1958,8 +1899,8 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
                     while (true) {
                         Thread.sleep(50);
 
-                        if (m_nChangedFilter == STATUS_CHANGE
-                                || m_nChangedFilter == STATUS_PARSING)
+                        if (m_nChangedFilter == Constant.STATUS_CHANGE
+                                || m_nChangedFilter == Constant.STATUS_PARSING)
                             continue;
                         if (m_bPauseADB)
                             continue;
@@ -2036,7 +1977,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
 
     void runFilter() {
         checkUseFilter();
-        while (m_nChangedFilter == STATUS_PARSING)
+        while (m_nChangedFilter == Constant.STATUS_PARSING)
             try {
                 Thread.sleep(100);
             } catch (Exception e) {
@@ -2053,10 +1994,10 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
                 try {
                     while (true) {
                         synchronized (FILTER_LOCK) {
-                            m_nChangedFilter = STATUS_READY;
+                            m_nChangedFilter = Constant.STATUS_READY;
                             FILTER_LOCK.wait();
 
-                            m_nChangedFilter = STATUS_PARSING;
+                            m_nChangedFilter = Constant.STATUS_PARSING;
 
                             m_arLogInfoFiltered.clear();
                             m_hmMarkedInfoFiltered.clear();
@@ -2081,7 +2022,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
                                 } else {
                                     updateTable(m_arLogInfoFiltered.size() - 1, true);
                                 }
-                                m_nChangedFilter = STATUS_READY;
+                                m_nChangedFilter = Constant.STATUS_READY;
                                 continue;
                             }
                             m_tmLogTableModel.setData(m_arLogInfoFiltered);
@@ -2097,7 +2038,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
                             for (int nIndex = 0; nIndex < nRowCount; nIndex++) {
                                 if (nIndex % 10000 == 0)
                                     Thread.sleep(1);
-                                if (m_nChangedFilter == STATUS_CHANGE) {
+                                if (m_nChangedFilter == Constant.STATUS_CHANGE) {
                                     break;
                                 }
                                 logInfo = m_arLogInfoAll.get(nIndex);
@@ -2153,8 +2094,8 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
                                     }
                                 }
                             }
-                            if (m_nChangedFilter == STATUS_PARSING) {
-                                m_nChangedFilter = STATUS_READY;
+                            if (m_nChangedFilter == Constant.STATUS_PARSING) {
+                                m_nChangedFilter = Constant.STATUS_READY;
                                 m_tmLogTableModel.setData(m_arLogInfoFiltered);
                                 m_ipIndicator.setData(m_arLogInfoFiltered,
                                         m_hmMarkedInfoFiltered,
@@ -2193,7 +2134,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         getLogTable().clearSelection();
         getSubTable().clearSelection();
         // 自动切换到logcatparser
-        switchToLogParser(PARSER_TYPE_LOGCAT);
+        switchToLogParser(Constant.PARSER_TYPE_LOGCAT);
 
         m_thProcess = new Thread(new Runnable() {
             public void run() {
@@ -2450,7 +2391,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         switch (param.type) {
             case EVENT_CLICK_BOOKMARK:
             case EVENT_CLICK_ERROR:
-                m_nChangedFilter = STATUS_CHANGE;
+                m_nChangedFilter = Constant.STATUS_CHANGE;
                 runFilter();
                 break;
             case EVENT_CHANGE_FILTER_SHOW_PID:
@@ -2511,44 +2452,44 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
                         && m_chkEnableIncludeWord.isSelected()) {
                     getLogTable().setFilterFind(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                    m_nChangedFilter = STATUS_CHANGE;
+                    m_nChangedFilter = Constant.STATUS_CHANGE;
                     runFilter();
                 } else if (arg0.getDocument()
                         .equals(m_tfExcludeWord.getDocument())
                         && m_chkEnableExcludeWord.isSelected()) {
                     getLogTable().SetFilterRemove(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                    m_nChangedFilter = STATUS_CHANGE;
+                    m_nChangedFilter = Constant.STATUS_CHANGE;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfShowPid.getDocument())
                         && m_chkEnableShowPid.isSelected()) {
                     getLogTable().SetFilterShowPid(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                    m_nChangedFilter = STATUS_CHANGE;
+                    m_nChangedFilter = Constant.STATUS_CHANGE;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfShowTid.getDocument())
                         && m_chkEnableShowTid.isSelected()) {
                     getLogTable().SetFilterShowTid(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                    m_nChangedFilter = STATUS_CHANGE;
+                    m_nChangedFilter = Constant.STATUS_CHANGE;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfShowTag.getDocument())
                         && m_chkEnableShowTag.isSelected()) {
                     getLogTable().SetFilterShowTag(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                    m_nChangedFilter = STATUS_CHANGE;
+                    m_nChangedFilter = Constant.STATUS_CHANGE;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfRemoveTag.getDocument())
                         && m_chkEnableRemoveTag.isSelected()) {
                     getLogTable().SetFilterRemoveTag(arg0.getDocument().getText(
                             0, arg0.getDocument().getLength()));
-                    m_nChangedFilter = STATUS_CHANGE;
+                    m_nChangedFilter = Constant.STATUS_CHANGE;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfBookmarkTag.getDocument())
                         && m_chkEnableBookmarkTag.isSelected()) {
                     getLogTable().SetFilterBookmarkTag(arg0.getDocument().getText(
                             0, arg0.getDocument().getLength()));
-                    m_nChangedFilter = STATUS_CHANGE;
+                    m_nChangedFilter = Constant.STATUS_CHANGE;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfHighlight.getDocument())
                         && m_chkEnableHighlight.isSelected()) {
@@ -2556,7 +2497,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
                             arg0.getDocument().getLength()));
                     getSubTable().SetHighlight(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                    m_nChangedFilter = STATUS_CHANGE;
+                    m_nChangedFilter = Constant.STATUS_CHANGE;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfSearch.getDocument())) {
                     getLogTable().SetSearchHighlight(arg0.getDocument().getText(0,
@@ -2564,15 +2505,15 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
                     getSubTable().SetSearchHighlight(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
                     getLogTable().gotoNextSearchResult();
-                    m_nChangedFilter = STATUS_CHANGE;
+                    m_nChangedFilter = Constant.STATUS_CHANGE;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfFromTimeTag.getDocument())) {
                     getLogTable().SetFilterFromTime(m_tfFromTimeTag.getText());
-                    m_nChangedFilter = STATUS_CHANGE;
+                    m_nChangedFilter = Constant.STATUS_CHANGE;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfToTimeTag.getDocument())) {
                     getLogTable().SetFilterToTime(m_tfToTimeTag.getText());
-                    m_nChangedFilter = STATUS_CHANGE;
+                    m_nChangedFilter = Constant.STATUS_CHANGE;
                     runFilter();
                 }
             } catch (Exception e) {
@@ -2586,44 +2527,44 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
                         && m_chkEnableIncludeWord.isSelected()) {
                     getLogTable().setFilterFind(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                    m_nChangedFilter = STATUS_CHANGE;
+                    m_nChangedFilter = Constant.STATUS_CHANGE;
                     runFilter();
                 } else if (arg0.getDocument()
                         .equals(m_tfExcludeWord.getDocument())
                         && m_chkEnableExcludeWord.isSelected()) {
                     getLogTable().SetFilterRemove(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                    m_nChangedFilter = STATUS_CHANGE;
+                    m_nChangedFilter = Constant.STATUS_CHANGE;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfShowPid.getDocument())
                         && m_chkEnableShowPid.isSelected()) {
                     getLogTable().SetFilterShowPid(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                    m_nChangedFilter = STATUS_CHANGE;
+                    m_nChangedFilter = Constant.STATUS_CHANGE;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfShowTid.getDocument())
                         && m_chkEnableShowTid.isSelected()) {
                     getLogTable().SetFilterShowTid(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                    m_nChangedFilter = STATUS_CHANGE;
+                    m_nChangedFilter = Constant.STATUS_CHANGE;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfShowTag.getDocument())
                         && m_chkEnableShowTag.isSelected()) {
                     getLogTable().SetFilterShowTag(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                    m_nChangedFilter = STATUS_CHANGE;
+                    m_nChangedFilter = Constant.STATUS_CHANGE;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfRemoveTag.getDocument())
                         && m_chkEnableRemoveTag.isSelected()) {
                     getLogTable().SetFilterRemoveTag(arg0.getDocument().getText(
                             0, arg0.getDocument().getLength()));
-                    m_nChangedFilter = STATUS_CHANGE;
+                    m_nChangedFilter = Constant.STATUS_CHANGE;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfBookmarkTag.getDocument())
                         && m_chkEnableBookmarkTag.isSelected()) {
                     getLogTable().SetFilterBookmarkTag(arg0.getDocument().getText(
                             0, arg0.getDocument().getLength()));
-                    m_nChangedFilter = STATUS_CHANGE;
+                    m_nChangedFilter = Constant.STATUS_CHANGE;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfHighlight.getDocument())
                         && m_chkEnableHighlight.isSelected()) {
@@ -2631,7 +2572,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
                             arg0.getDocument().getLength()));
                     getSubTable().SetHighlight(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                    m_nChangedFilter = STATUS_CHANGE;
+                    m_nChangedFilter = Constant.STATUS_CHANGE;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfSearch.getDocument())) {
                     getLogTable().SetSearchHighlight(arg0.getDocument().getText(0,
@@ -2639,15 +2580,15 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
                     getSubTable().SetSearchHighlight(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
                     getLogTable().gotoNextSearchResult();
-                    m_nChangedFilter = STATUS_CHANGE;
+                    m_nChangedFilter = Constant.STATUS_CHANGE;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfFromTimeTag.getDocument())) {
                     getLogTable().SetFilterFromTime(m_tfFromTimeTag.getText());
-                    m_nChangedFilter = STATUS_CHANGE;
+                    m_nChangedFilter = Constant.STATUS_CHANGE;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfToTimeTag.getDocument())) {
                     getLogTable().SetFilterToTime(m_tfToTimeTag.getText());
-                    m_nChangedFilter = STATUS_CHANGE;
+                    m_nChangedFilter = Constant.STATUS_CHANGE;
                     runFilter();
                 }
             } catch (Exception e) {
@@ -2661,44 +2602,44 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
                         && m_chkEnableIncludeWord.isSelected()) {
                     getLogTable().setFilterFind(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                    m_nChangedFilter = STATUS_CHANGE;
+                    m_nChangedFilter = Constant.STATUS_CHANGE;
                     runFilter();
                 } else if (arg0.getDocument()
                         .equals(m_tfExcludeWord.getDocument())
                         && m_chkEnableExcludeWord.isSelected()) {
                     getLogTable().SetFilterRemove(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                    m_nChangedFilter = STATUS_CHANGE;
+                    m_nChangedFilter = Constant.STATUS_CHANGE;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfShowPid.getDocument())
                         && m_chkEnableShowPid.isSelected()) {
                     getLogTable().SetFilterShowPid(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                    m_nChangedFilter = STATUS_CHANGE;
+                    m_nChangedFilter = Constant.STATUS_CHANGE;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfShowTid.getDocument())
                         && m_chkEnableShowTid.isSelected()) {
                     getLogTable().SetFilterShowTid(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                    m_nChangedFilter = STATUS_CHANGE;
+                    m_nChangedFilter = Constant.STATUS_CHANGE;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfShowTag.getDocument())
                         && m_chkEnableShowTag.isSelected()) {
                     getLogTable().SetFilterShowTag(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                    m_nChangedFilter = STATUS_CHANGE;
+                    m_nChangedFilter = Constant.STATUS_CHANGE;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfRemoveTag.getDocument())
                         && m_chkEnableRemoveTag.isSelected()) {
                     getLogTable().SetFilterRemoveTag(arg0.getDocument().getText(
                             0, arg0.getDocument().getLength()));
-                    m_nChangedFilter = STATUS_CHANGE;
+                    m_nChangedFilter = Constant.STATUS_CHANGE;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfBookmarkTag.getDocument())
                         && m_chkEnableBookmarkTag.isSelected()) {
                     getLogTable().SetFilterBookmarkTag(arg0.getDocument().getText(
                             0, arg0.getDocument().getLength()));
-                    m_nChangedFilter = STATUS_CHANGE;
+                    m_nChangedFilter = Constant.STATUS_CHANGE;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfHighlight.getDocument())
                         && m_chkEnableHighlight.isSelected()) {
@@ -2706,7 +2647,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
                             arg0.getDocument().getLength()));
                     getSubTable().SetHighlight(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
-                    m_nChangedFilter = STATUS_CHANGE;
+                    m_nChangedFilter = Constant.STATUS_CHANGE;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfSearch.getDocument())) {
                     getLogTable().SetSearchHighlight(arg0.getDocument().getText(0,
@@ -2714,14 +2655,14 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
                     getSubTable().SetSearchHighlight(arg0.getDocument().getText(0,
                             arg0.getDocument().getLength()));
                     getLogTable().gotoNextSearchResult();
-                    m_nChangedFilter = STATUS_CHANGE;
+                    m_nChangedFilter = Constant.STATUS_CHANGE;
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfFromTimeTag.getDocument())) {
                     getLogTable().SetFilterFromTime(m_tfFromTimeTag.getText());
                     runFilter();
                 } else if (arg0.getDocument().equals(m_tfToTimeTag.getDocument())) {
                     getLogTable().SetFilterToTime(m_tfToTimeTag.getText());
-                    m_nChangedFilter = STATUS_CHANGE;
+                    m_nChangedFilter = Constant.STATUS_CHANGE;
                     runFilter();
                 }
             } catch (Exception e) {
@@ -3134,7 +3075,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
             bw.write(fmtRows);
             bw.close();
 
-            Utils.runCmd(new String[]{DIFF_PROGRAM_PATH, tempFile1.getAbsolutePath(), tempFile2.getAbsolutePath()});
+            Utils.runCmd(new String[]{Constant.DIFF_PROGRAM_PATH, tempFile1.getAbsolutePath(), tempFile2.getAbsolutePath()});
         } catch (IOException e) {
             e.printStackTrace();
         }

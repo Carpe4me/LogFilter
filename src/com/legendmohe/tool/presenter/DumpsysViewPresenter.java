@@ -1,15 +1,20 @@
 package com.legendmohe.tool.presenter;
 
-import com.legendmohe.tool.OSUtil;
 import com.legendmohe.tool.T;
+import com.legendmohe.tool.Utils;
 import com.legendmohe.tool.model.DumpsysViewTableModel;
 import com.legendmohe.tool.view.DumpsysViewDialog;
 
-import javax.swing.*;
-import java.awt.*;
-import java.io.*;
+import java.awt.Rectangle;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.JTable;
 
 /**
  * Created by xinyu.he on 2016/2/5.
@@ -71,7 +76,7 @@ public class DumpsysViewPresenter {
             customCmd = "adb shell \"" + customCmd + "\"";
         }
         String[] cmd;
-        if (OSUtil.isWindows()) {
+        if (Utils.isWindows()) {
             cmd = new String[]{"cmd.exe", "/C", customCmd};
         } else {
             cmd = new String[]{"/bin/bash", "-l", "-c", customCmd};
