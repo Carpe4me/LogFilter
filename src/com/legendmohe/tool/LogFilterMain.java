@@ -29,7 +29,6 @@ import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.HeadlessException;
 import java.awt.Insets;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
@@ -301,8 +300,8 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
     int m_nLastWidth;
     int m_nLastHeight;
     @FieldSaveState
-    int m_nWindState;
-    static RecentFileMenu m_recentMenu;
+    int mWindowState;
+    RecentFileMenu mRecentMenu;
 
     @FieldSaveState
     int m_parserType = PARSER_TYPE_LOGCAT;
@@ -313,8 +312,8 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
     @FieldSaveState
     private String m_strLastDir;
 
-    private static JMenuItem sDisconnectDiffMenuItem;
-    private static JMenuItem sConnectDiffMenuItem;
+    private JMenuItem mDisconnectDiffMenuItem;
+    private JMenuItem mConnectDiffMenuItem;
 
     public DiffService mDiffService;
     private JLabel m_tfDiffPort;
@@ -335,17 +334,77 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
     private JScrollPane m_subLogScrollVPane;
     ArrayList<LogInfo> m_arSubLogInfoAll;
 
+    ///////////////////////////////////main///////////////////////////////////
+
     public static void main(final String args[]) {
-        final LogFilterMain mainFrame = new LogFilterMain();
-        mainFrame.setTitle(LOGFILTER + " " + VERSION);
-        mainFrame.addWindowStateListener(new WindowStateListener() {
-            @Override
-            public void windowStateChanged(WindowEvent e) {
-                mainFrame.m_nWindState = e.getNewState();
+        final LogFilterMain main = new LogFilterMain();
+        main.pack();
+        main.restoreSplitPane();
+
+        if (args != null && args.length > 0) {
+            EventQueue.invokeLater(new Runnable() {
+                public void run() {
+                    File argFile = new File(args[0]);
+                    main.parseLogFile(argFile.getAbsoluteFile());
+                }
+            });
+        }
+    }
+
+    ///////////////////////////////////constructor///////////////////////////////////
+
+    private LogFilterMain() {
+        super();
+
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                exit();
             }
         });
+        initValue();
 
-        JMenuBar menubar = new JMenuBar();
+        Container pane = getContentPane();
+        pane.setLayout(new BorderLayout());
+
+        JSplitPane mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, getOptionPanel(), getLogPanel());
+        pane.add(mainSplitPane, BorderLayout.CENTER);
+        pane.add(getStatusPanel(), BorderLayout.SOUTH);
+
+        setDnDListener();
+        addChangeListener();
+        addUndoListener();
+        startFilterParse();
+
+        setVisible(true);
+        addDesc();
+
+        // register state saver
+        mStateSaver = new StateSaver(this, INI_FILE_STATE);
+        mStateSaver.load();
+
+        loadUI();
+        loadColor();
+        loadCmd();
+        loadParser();
+        initDiffService();
+
+        setTitle(LOGFILTER + " " + VERSION);
+        addWindowStateListener(new WindowStateListener() {
+            @Override
+            public void windowStateChanged(WindowEvent e) {
+                mWindowState = e.getNewState();
+            }
+        });
+        setupMenuBar();
+
+        KeyboardFocusManager.getCurrentKeyboardFocusManager()
+                .addKeyEventDispatcher(mKeyEventDispatcher);
+    }
+
+    ///////////////////////////////////setup process///////////////////////////////////
+
+    private void setupMenuBar() {
+        JMenuBar menuBar = new JMenuBar();
         JMenu fileMenu = new JMenu("File");
         fileMenu.setMnemonic(KeyEvent.VK_F);
 
@@ -356,7 +415,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         fileOpen.setToolTipText("Open log file");
         fileOpen.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                mainFrame.openFileBrowserToLoad(FileType.LOGFILE);
+                LogFilterMain.this.openFileBrowserToLoad(FileType.LOG);
             }
         });
 
@@ -366,73 +425,72 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         modeOpen.setToolTipText("Open .mode file");
         modeOpen.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                mainFrame.openFileBrowserToLoad(FileType.MODEFILE);
+                LogFilterMain.this.openFileBrowserToLoad(FileType.MODE);
             }
         });
         JMenuItem modeSave = new JMenuItem("Save Mode File");
         modeSave.setToolTipText("Save .mode file");
         modeSave.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                mainFrame.openFileBrowserToSave(FileType.MODEFILE);
+                LogFilterMain.this.openFileBrowserToSave(FileType.MODE);
             }
         });
 
         modeMenu.add(modeOpen);
         modeMenu.add(modeSave);
 
-        m_recentMenu = new RecentFileMenu("RecentFile", 10) {
+        mRecentMenu = new RecentFileMenu("RecentFile", 10) {
             public void onSelectFile(String filePath) {
                 File recentFile = new File(filePath);
-                mainFrame.parseFile(new File(filePath));
-                m_recentMenu.addEntry(recentFile.getAbsolutePath());
+                LogFilterMain.this.parseLogFile(recentFile);
             }
         };
 
         fileMenu.add(fileOpen);
         fileMenu.add(modeMenu);
-        fileMenu.add(m_recentMenu);
+        fileMenu.add(mRecentMenu);
 
         JMenu netMenu = new JMenu("Net");
         JMenu diffMenu = new JMenu("Diff Service");
 
-        sDisconnectDiffMenuItem = new JMenuItem("disconnect");
-        sDisconnectDiffMenuItem.setEnabled(false);
-        sConnectDiffMenuItem = new JMenuItem("connect to diff server");
+        mDisconnectDiffMenuItem = new JMenuItem("disconnect");
+        mDisconnectDiffMenuItem.setEnabled(false);
+        mConnectDiffMenuItem = new JMenuItem("connect to diff server");
 
-        sDisconnectDiffMenuItem.addActionListener(new ActionListener() {
+        mDisconnectDiffMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                mainFrame.mDiffService.disconnectDiffClient();
-                sConnectDiffMenuItem.setEnabled(true);
-                sDisconnectDiffMenuItem.setEnabled(false);
+                LogFilterMain.this.mDiffService.disconnectDiffClient();
+                mConnectDiffMenuItem.setEnabled(true);
+                mDisconnectDiffMenuItem.setEnabled(false);
             }
         });
-        sConnectDiffMenuItem.addActionListener(new ActionListener() {
+        mConnectDiffMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String serverPort = JOptionPane.showInputDialog(
-                        mainFrame,
+                        LogFilterMain.this,
                         "Enter Server Port",
                         "",
                         JOptionPane.QUESTION_MESSAGE
                 );
                 if (serverPort != null && serverPort.length() != 0) {
-                    if (mainFrame.mDiffService.setupDiffClient(serverPort)) {
-                        sConnectDiffMenuItem.setEnabled(false);
-                        sDisconnectDiffMenuItem.setEnabled(true);
+                    if (LogFilterMain.this.mDiffService.setupDiffClient(serverPort)) {
+                        mConnectDiffMenuItem.setEnabled(false);
+                        mDisconnectDiffMenuItem.setEnabled(true);
                     }
                 }
             }
         });
 
-        diffMenu.add(sConnectDiffMenuItem);
-        diffMenu.add(sDisconnectDiffMenuItem);
+        diffMenu.add(mConnectDiffMenuItem);
+        diffMenu.add(mDisconnectDiffMenuItem);
         netMenu.add(diffMenu);
 
         JMenu parserMenu = new JMenu("Parser");
         parserMenu.addMenuListener(new MenuListener() {
             @Override
             public void menuSelected(MenuEvent e) {
-                JMenuItem menuItem = parserMenu.getItem(mainFrame.m_parserType);
+                JMenuItem menuItem = parserMenu.getItem(LogFilterMain.this.m_parserType);
                 menuItem.setSelected(true);
             }
 
@@ -447,34 +505,34 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
             }
         });
 
-        JRadioButtonMenuItem logcatParserMenu = new JRadioButtonMenuItem("Logcat Parser", mainFrame.m_parserType == PARSER_TYPE_LOGCAT);
+        JRadioButtonMenuItem logcatParserMenu = new JRadioButtonMenuItem("Logcat Parser", LogFilterMain.this.m_parserType == PARSER_TYPE_LOGCAT);
         logcatParserMenu.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
-                    mainFrame.switchToLogParser(PARSER_TYPE_LOGCAT);
+                    LogFilterMain.this.switchToLogParser(PARSER_TYPE_LOGCAT);
                 }
             }
         });
         parserMenu.add(logcatParserMenu);
 
-        JRadioButtonMenuItem bigoParserMenu = new JRadioButtonMenuItem("BigoDevLog Parser", mainFrame.m_parserType == PARSER_TYPE_BIGO_DEV_LOG);
+        JRadioButtonMenuItem bigoParserMenu = new JRadioButtonMenuItem("BigoDevLog Parser", LogFilterMain.this.m_parserType == PARSER_TYPE_BIGO_DEV_LOG);
         bigoParserMenu.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
-                    mainFrame.switchToLogParser(PARSER_TYPE_BIGO_DEV_LOG);
+                    LogFilterMain.this.switchToLogParser(PARSER_TYPE_BIGO_DEV_LOG);
                 }
             }
         });
         parserMenu.add(bigoParserMenu);
 
-        JRadioButtonMenuItem bigoXLogParserMenu = new JRadioButtonMenuItem("BigoXLog Parser", mainFrame.m_parserType == PARSER_TYPE_BIGO_XLOG);
+        JRadioButtonMenuItem bigoXLogParserMenu = new JRadioButtonMenuItem("BigoXLog Parser", LogFilterMain.this.m_parserType == PARSER_TYPE_BIGO_XLOG);
         bigoXLogParserMenu.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
-                    mainFrame.switchToLogParser(PARSER_TYPE_BIGO_XLOG);
+                    LogFilterMain.this.switchToLogParser(PARSER_TYPE_BIGO_XLOG);
                 }
             }
         });
@@ -486,29 +544,16 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         parserBG.add(bigoParserMenu);
         parserBG.add(bigoXLogParserMenu);
 
-        JMenu viewMenu = initAndGetViewMenu(mainFrame);
+        JMenu viewMenu = initAndGetViewMenu(this);
 
-        menubar.add(fileMenu);
-        menubar.add(netMenu);
-        menubar.add(viewMenu);
-        menubar.add(parserMenu);
-        mainFrame.setJMenuBar(menubar);
-
-        mainFrame.pack();
-        mainFrame.restoreSplitPane();
-
-        if (args != null && args.length > 0) {
-            EventQueue.invokeLater(new Runnable() {
-                public void run() {
-                    File argFile = new File(args[0]);
-                    mainFrame.parseFile(argFile.getAbsoluteFile());
-                    m_recentMenu.addEntry(argFile.getAbsolutePath());
-                }
-            });
-        }
+        menuBar.add(fileMenu);
+        menuBar.add(netMenu);
+        menuBar.add(viewMenu);
+        menuBar.add(parserMenu);
+        this.setJMenuBar(menuBar);
     }
 
-    private static JMenu initAndGetViewMenu(final LogFilterMain mainFrame) {
+    private JMenu initAndGetViewMenu(final LogFilterMain mainFrame) {
         JMenu viewMenu = new JMenu("View");
         JMenuItem packagesMenuItem = new JMenuItem("Show Running Packages");
         packagesMenuItem.setToolTipText("show running packages on current android device");
@@ -570,7 +615,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         return viewMenu;
     }
 
-    private static void loadCustomMenu(final LogFilterMain mainFrame, JMenu customMenu) {
+    private void loadCustomMenu(final LogFilterMain mainFrame, JMenu customMenu) {
         Properties p = new Properties();
         try {
             p.load(new FileInputStream(INI_FILE_DUMPSYS));
@@ -627,52 +672,9 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         System.exit(0);
     }
 
-    /**
-     * @throws HeadlessException
-     */
-    private LogFilterMain() {
-        super();
-        addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
-                exit();
-            }
-        });
-        initValue();
-
-        Container pane = getContentPane();
-        pane.setLayout(new BorderLayout());
-
-
-        JSplitPane mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, getOptionPanel(), getLogPanel());
-        pane.add(mainSplitPane, BorderLayout.CENTER);
-        pane.add(getStatusPanel(), BorderLayout.SOUTH);
-
-        setDnDListener();
-        addChangeListener();
-        addUndoListener();
-        startFilterParse();
-
-        setVisible(true);
-        addDesc();
-
-        // register state saver
-        mStateSaver = new StateSaver(this, INI_FILE_STATE);
-        mStateSaver.load();
-
-        loadUI();
-        loadColor();
-        loadCmd();
-        loadParser();
-        initDiffService();
-
-        KeyboardFocusManager.getCurrentKeyboardFocusManager()
-                .addKeyEventDispatcher(mKeyEventDispatcher);
-    }
-
     private void loadUI() {
-
         setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
-        setExtendedState(m_nWindState);
+        setExtendedState(mWindowState);
         setPreferredSize(new Dimension(m_nWinWidth, m_nWinHeight));
 
         loadTableColumnState();
@@ -683,7 +685,6 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
                 .getText()));
 
         updateTable(-1, false);
-
     }
 
     final static String INI_FILE_CMD = CONFIG_BASE_DIR + File.separator + "LogFilterCmd.ini";
@@ -908,7 +909,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         m_hmErrorFiltered.clear();
     }
 
-    Component getBookmarkPanel() {
+    Component getIndicatorPanel() {
         JPanel jp = new JPanel();
         jp.setLayout(new BorderLayout());
 
@@ -1592,7 +1593,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         m_logScrollVPane = new JScrollPane(m_tbLogTable);
         mainLogPanel.add(m_logScrollVPane, BorderLayout.CENTER);
 
-        mainLogPanel.add(getBookmarkPanel(), BorderLayout.WEST);
+        mainLogPanel.add(getIndicatorPanel(), BorderLayout.WEST);
 
         m_tSubLogTableModel = new LogFilterTableModel();
         m_tSubLogTableModel.setData(m_arSubLogInfoAll);
@@ -1632,11 +1633,13 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
         // m_strProcessCmd = ANDROID_DEFAULT_CMD + m_strLogFileName;
     }
 
-    void parseFile(final File file) {
+    void parseLogFile(final File file) {
         if (file == null) {
             T.e("file == null");
             return;
         }
+
+        mRecentMenu.addEntry(file.getAbsolutePath());
 
         setTitle(file.getPath());
         new Thread(new Runnable() {
@@ -1792,8 +1795,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
                                 setTitle(file.getPath());
 
                                 stopProcess();
-                                parseFile(file);
-                                m_recentMenu.addEntry(file.getAbsolutePath());
+                                parseLogFile(file);
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -2407,7 +2409,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
                 && ((getLogTable().GetFilterFromTime() == -1l && getLogTable().GetFilterToTime() == -1l) || !m_chkEnableTimeTag.isSelected())
                 && (getLogTable().GetFilterFind().length() == 0 || !m_chkEnableIncludeWord.isSelected())
                 && (getLogTable().GetFilterRemove().length() == 0 || !m_chkEnableExcludeWord.isSelected())
-                ) {
+        ) {
             m_bUserFilter = false;
         } else
             m_bUserFilter = true;
@@ -2936,18 +2938,17 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
 
     public void openFileBrowserToLoad(FileType type) {
         FileDialog fd = new FileDialog(this, "File open", FileDialog.LOAD);
-        if (type == FileType.LOGFILE) {
+        if (type == FileType.LOG) {
             fd.setDirectory(m_strLastDir);
         }
         fd.setVisible(true);
         if (fd.getFile() != null) {
             switch (type) {
-                case LOGFILE:
-                    parseFile(new File(fd.getDirectory() + fd.getFile()));
-                    m_recentMenu.addEntry(fd.getDirectory() + fd.getFile());
+                case LOG:
+                    parseLogFile(new File(fd.getDirectory() + fd.getFile()));
                     m_strLastDir = fd.getDirectory();
                     break;
-                case MODEFILE:
+                case MODE:
                     loadModeFile(new File(fd.getDirectory() + fd.getFile()));
                     break;
             }
@@ -3017,13 +3018,13 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
 
     private void openFileBrowserToSave(FileType type) {
         FileDialog fd = new FileDialog(this, "File save", FileDialog.SAVE);
-        if (type != FileType.MODEFILE) {
+        if (type != FileType.MODE) {
             return;
         }
         fd.setVisible(true);
         if (fd.getFile() != null) {
             switch (type) {
-                case MODEFILE:
+                case MODE:
                     saveModeFile(new File(fd.getDirectory() + fd.getFile()));
                     break;
             }
@@ -3052,11 +3053,11 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
     public void refreshDiffMenuBar() {
         if (mDiffService.getDiffServiceType() == DiffService.DiffServiceType.AS_SERVER) {
             if (mDiffService.isDiffConnected()) {
-                sConnectDiffMenuItem.setEnabled(false);
-                sDisconnectDiffMenuItem.setEnabled(true);
+                mConnectDiffMenuItem.setEnabled(false);
+                mDisconnectDiffMenuItem.setEnabled(true);
             } else {
-                sConnectDiffMenuItem.setEnabled(true);
-                sDisconnectDiffMenuItem.setEnabled(false);
+                mConnectDiffMenuItem.setEnabled(true);
+                mDisconnectDiffMenuItem.setEnabled(false);
             }
         }
     }
@@ -3221,7 +3222,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
     ///////////////////////////////////interface///////////////////////////////////
 
     private enum FileType {
-        LOGFILE, MODEFILE
+        LOG, MODE
     }
 
     private static class TargetDevice {

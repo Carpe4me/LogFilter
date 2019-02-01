@@ -1,13 +1,8 @@
 package com.legendmohe.tool.parser;
 
 import com.legendmohe.tool.LogInfo;
-import com.legendmohe.tool.processor.BTAEventProcessor;
 import com.legendmohe.tool.processor.BaseEventProcessor;
-import com.legendmohe.tool.processor.BluetoothAdapterStateProcessor;
-import com.legendmohe.tool.processor.HFPCIEVEventProcessor;
-import com.legendmohe.tool.processor.HeadsetStateProcessor;
 import com.legendmohe.tool.processor.MessagePostProcessor;
-import com.legendmohe.tool.processor.ProcessorConfig;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -32,22 +27,7 @@ public class LogCatParser extends AbstractLogParser {
 
     @Override
     public void loadProcessorFromConfig() {
-        MessagePostProcessor baseEventProcessor = new BaseEventProcessor();
-        MessagePostProcessor nextProcessor = baseEventProcessor;
-
-        if (ProcessorConfig.BTAEventEnable) {
-            nextProcessor = (MessagePostProcessor) nextProcessor.setNextProcessor(new BTAEventProcessor("BTA_event_conf.json"));
-        }
-        if (ProcessorConfig.BluetoothAdapterStateEnable) {
-            nextProcessor = (MessagePostProcessor) nextProcessor.setNextProcessor(new BluetoothAdapterStateProcessor());
-        }
-        if (ProcessorConfig.HFPCIEVEnable) {
-            nextProcessor = (MessagePostProcessor) nextProcessor.setNextProcessor(new HFPCIEVEventProcessor());
-        }
-        if (ProcessorConfig.HeadsetStateEnable) {
-            nextProcessor = (MessagePostProcessor) nextProcessor.setNextProcessor(new HeadsetStateProcessor());
-        }
-        mMessagePostProcessor = baseEventProcessor;
+        mMessagePostProcessor = new BaseEventProcessor();
     }
 
     @Override
