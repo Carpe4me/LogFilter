@@ -409,7 +409,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         fileMenu.add(modeMenu);
         fileMenu.add(mRecentMenu);
 
-        JMenu netMenu = new JMenu("Net");
+        JMenu netMenu = new JMenu("Tools");
         JMenu diffMenu = new JMenu("Diff Service");
 
         mDisconnectDiffMenuItem = new JMenuItem("disconnect");
