@@ -116,7 +116,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
-public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.BaseLogTableListener, IDiffCmdHandler {
+public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.BaseLogTableListener, IDiffCmdHandler {
     private static final long serialVersionUID = 1L;
 
     private static final Map<Integer, ILogParser> sTypeToParserMap = new HashMap<>();
@@ -2364,7 +2364,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
     };
 
     @Override
-    public void postEvent(EventParam param) {
+    public void postEvent(Event param) {
         switch (param.type) {
             case EVENT_CLICK_BOOKMARK:
             case EVENT_CLICK_ERROR:
@@ -2893,7 +2893,7 @@ public class LogFilterMain extends JFrame implements INotiEvent, BaseLogTable.Ba
                     pidShow += "|" + value;
                 }
                 m_tbLogTable.SetFilterShowPid(pidShow);
-                LogFilterMain.this.postEvent(new INotiEvent.EventParam(INotiEvent.TYPE.EVENT_CHANGE_FILTER_SHOW_PID));
+                LogFilterMain.this.postEvent(new Event(EventBus.TYPE.EVENT_CHANGE_FILTER_SHOW_PID));
             }
         });
         packageViewDialog.setModal(false);

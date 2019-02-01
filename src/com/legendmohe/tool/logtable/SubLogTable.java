@@ -1,6 +1,6 @@
 package com.legendmohe.tool.logtable;
 
-import com.legendmohe.tool.INotiEvent;
+import com.legendmohe.tool.EventBus;
 import com.legendmohe.tool.LogFilterMain;
 import com.legendmohe.tool.LogInfo;
 import com.legendmohe.tool.T;
@@ -71,7 +71,7 @@ public class SubLogTable extends BaseLogTable {
 
     private void showInfoInLogTable(LogInfo logInfo) {
         mBaseLogTableListener.postEvent(
-                new INotiEvent.EventParam(INotiEvent.TYPE.EVENT_CHANGE_SELECTION, logInfo)
+                new EventBus.Event(EventBus.TYPE.EVENT_CHANGE_SELECTION, logInfo)
         );
     }
 

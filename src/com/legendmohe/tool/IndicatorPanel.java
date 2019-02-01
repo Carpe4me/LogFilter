@@ -213,9 +213,9 @@ public class IndicatorPanel extends JPanel {
     ItemListener m_itemListener = new ItemListener() {
         public void itemStateChanged(ItemEvent itemEvent) {
             if (itemEvent.getSource().equals(m_chBookmark)) {
-                m_LogFilterMain.postEvent(new INotiEvent.EventParam(INotiEvent.TYPE.EVENT_CLICK_BOOKMARK));
+                m_LogFilterMain.postEvent(new EventBus.Event(EventBus.TYPE.EVENT_CLICK_BOOKMARK));
             } else if (itemEvent.getSource().equals(m_chError)) {
-                m_LogFilterMain.postEvent(new INotiEvent.EventParam(INotiEvent.TYPE.EVENT_CLICK_ERROR));
+                m_LogFilterMain.postEvent(new EventBus.Event(EventBus.TYPE.EVENT_CLICK_ERROR));
             }
         }
     };

@@ -5,7 +5,7 @@ package com.legendmohe.tool; /**
 /**
  *
  */
-public interface INotiEvent {
+public interface EventBus {
 
     enum TYPE {
         EVENT_CLICK_BOOKMARK,
@@ -20,28 +20,27 @@ public interface INotiEvent {
         EVENT_CHANGE_SELECTION,
     }
 
+    void postEvent(Event param);
 
-    void postEvent(EventParam param);
-
-    class EventParam {
+    class Event {
         TYPE type;
         Object param1;
         Object param2;
         Object param3;
 
-        public EventParam(TYPE type) {
+        public Event(TYPE type) {
             this(type, null, null, null);
         }
 
-        public EventParam(TYPE type, Object param1) {
+        public Event(TYPE type, Object param1) {
             this(type, param1, null, null);
         }
 
-        public EventParam(TYPE type, Object param1, Object param2) {
+        public Event(TYPE type, Object param1, Object param2) {
             this(type, param1, param2, null);
         }
 
-        public EventParam(TYPE type, Object param1, Object param2, Object param3) {
+        public Event(TYPE type, Object param1, Object param2, Object param3) {
             this.type = type;
             this.param1 = param1;
             this.param2 = param2;

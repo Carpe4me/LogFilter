@@ -1,7 +1,7 @@
 package com.legendmohe.tool.logtable;
 
+import com.legendmohe.tool.EventBus;
 import com.legendmohe.tool.ILogRenderResolver;
-import com.legendmohe.tool.INotiEvent;
 import com.legendmohe.tool.LogInfo;
 import com.legendmohe.tool.T;
 import com.legendmohe.tool.Utils;
@@ -815,7 +815,7 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
 
         void onSetBookmark(int i, String aValue);
 
-        void postEvent(INotiEvent.EventParam eventParam);
+        void postEvent(EventBus.Event event);
 
         void markLogInfo(int selectedRow, int line, boolean isMark);
 
