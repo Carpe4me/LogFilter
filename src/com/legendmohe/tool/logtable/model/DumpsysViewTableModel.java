@@ -1,7 +1,8 @@
-package com.legendmohe.tool.model;
+package com.legendmohe.tool.logtable.model;
+
+import java.util.ArrayList;
 
 import javax.swing.table.AbstractTableModel;
-import java.util.ArrayList;
 
 /**
  * Created by xinyu.he on 2016/2/5.

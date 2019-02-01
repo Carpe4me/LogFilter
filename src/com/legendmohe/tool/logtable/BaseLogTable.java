@@ -807,6 +807,8 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
         }
     }
 
+    ///////////////////////////////////classes///////////////////////////////////
+
     public interface BaseLogTableListener {
 
         void onSelectedRowChanged(int mLastSelectedRow, int rowIndex, LogInfo logInfo);
@@ -826,5 +828,14 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
         显示选中的行
          */
         void showRowsContent(String content);
+    }
+
+    /**
+     * Created by xinyu.he on 2016/1/14.
+     */
+    public static class LogInfoHistory {
+        LogInfo value;
+        LogInfoHistory prev;
+        LogInfoHistory next;
     }
 }

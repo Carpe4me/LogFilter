@@ -28,8 +28,8 @@ public class LogTable extends BaseLogTable {
     private static final long serialVersionUID = 1L;
     private DiffService mDiffService;
 
-    public LogTable(LogFilterTableModel tablemodel, LogFilterMain filterMain) {
-        super(tablemodel, filterMain);
+    public LogTable(LogFilterTableModel tableModel, LogFilterMain filterMain) {
+        super(tableModel, filterMain);
         initListener();
     }
 

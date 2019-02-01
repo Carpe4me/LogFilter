@@ -2,7 +2,7 @@ package com.legendmohe.tool.presenter;
 
 import com.legendmohe.tool.T;
 import com.legendmohe.tool.Utils;
-import com.legendmohe.tool.model.PackageViewTableModel;
+import com.legendmohe.tool.logtable.model.PackageViewTableModel;
 import com.legendmohe.tool.view.PackageViewDialog;
 
 import java.io.BufferedReader;

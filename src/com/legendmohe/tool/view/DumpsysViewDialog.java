@@ -2,7 +2,7 @@ package com.legendmohe.tool.view;
 
 import com.legendmohe.tool.T;
 import com.legendmohe.tool.Utils;
-import com.legendmohe.tool.model.DumpsysViewTableModel;
+import com.legendmohe.tool.logtable.model.DumpsysViewTableModel;
 import com.legendmohe.tool.presenter.DumpsysViewPresenter;
 
 import java.awt.BorderLayout;

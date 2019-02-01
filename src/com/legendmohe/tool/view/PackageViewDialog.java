@@ -1,17 +1,28 @@
 package com.legendmohe.tool.view;
 
-import com.legendmohe.tool.model.PackageViewTableModel;
-import com.legendmohe.tool.presenter.PackageViewPresenter;
 import com.legendmohe.tool.T;
+import com.legendmohe.tool.logtable.model.PackageViewTableModel;
+import com.legendmohe.tool.presenter.PackageViewPresenter;
 
-import javax.swing.*;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableColumnModel;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.FlowLayout;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.SwingUtilities;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumnModel;
 
 /**
  * Created by xinyu.he on 2016/2/5.

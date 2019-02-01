@@ -20,26 +20,28 @@ import javax.swing.table.DefaultTableCellRenderer;
 
 public class LogCellRenderer extends DefaultTableCellRenderer {
     private static final long serialVersionUID = 1L;
-    private Border SELECTED_BORDER_TOP_LEFT;
-    private Border SELECTED_BORDER_TOP_RIGHT;
-    private Border SELECTED_BORDER_TOP;
-    private Border SELECTED_BORDER_BOTTOM_LEFT;
-    private Border SELECTED_BORDER_BOTTOM_RIGHT;
-    private Border SELECTED_BORDER_BOTTOM;
-    private Border SELECTED_BORDER_LEFT;
-    private Border SELECTED_BORDER_RIGHT;
-    private Border SELECTED_BORDER_TOTAL;
-    private Border SELECTED_BORDER_LEFT_RIGHT;
-    private Border SELECTED_BORDER_LEFT_RIGHT_TOP;
-    private Border SELECTED_BORDER_LEFT_RIGHT_BOTTOM;
-    private Border SELECTED_BORDER_TOP_BOTTOM;
-    private Border SELECTED_BORDER_TOP_BOTTOM_LEFT;
-    private Border SELECTED_BORDER_TOP_BOTTOM_RIGHT;
-    private Border SELECTED_BORDER_NONE;
 
-    boolean m_bChanged;
+    private final Border SELECTED_BORDER_TOP_LEFT;
+    private final Border SELECTED_BORDER_TOP_RIGHT;
+    private final Border SELECTED_BORDER_TOP;
+    private final Border SELECTED_BORDER_BOTTOM_LEFT;
+    private final Border SELECTED_BORDER_BOTTOM_RIGHT;
+    private final Border SELECTED_BORDER_BOTTOM;
+    private final Border SELECTED_BORDER_LEFT;
+    private final Border SELECTED_BORDER_RIGHT;
+    private final Border SELECTED_BORDER_TOTAL;
+    private final Border SELECTED_BORDER_LEFT_RIGHT;
+    private final Border SELECTED_BORDER_LEFT_RIGHT_TOP;
+    private final Border SELECTED_BORDER_LEFT_RIGHT_BOTTOM;
+    private final Border SELECTED_BORDER_TOP_BOTTOM;
+    private final Border SELECTED_BORDER_TOP_BOTTOM_LEFT;
+    private final Border SELECTED_BORDER_TOP_BOTTOM_RIGHT;
+    private final Border SELECTED_BORDER_NONE;
+
     private final int BRORDER_WIDTG = 1;
     private final Color BORDER_COLOR = new Color(100, 100, 100);
+
+    boolean mIsDataChanged;
     private JTable mTable;
     private ILogRenderResolver mResolver;
 
@@ -81,7 +83,7 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
         }
         LogInfo logInfo = ((LogFilterTableModel) mTable.getModel()).getRow(row);
         if (value != null) {
-            value = remakeData(column, value.toString());
+            value = renderCellContent(column, value.toString());
         }
         Component c = super.getTableCellRendererComponent(table,
                 value,
@@ -89,19 +91,15 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
                 hasFocus,
                 row,
                 column);
-        c.setForeground(logInfo.getTextColor());
-        c.setFont(getFont().deriveFont(mResolver.getFontSize()));
-        if (isSelected) {
-            c.setFont(getFont().deriveFont(mResolver.getFontSize() + 1));
-            if (logInfo.isMarked()) {
-                c.setBackground(new Color(Constant.COLOR_BOOKMARK2));
-            }
-        } else if (logInfo.isMarked()) {
-            c.setBackground(new Color(Constant.COLOR_BOOKMARK));
-        } else {
-            c.setBackground(Color.WHITE);
-        }
 
+        renderFont(c);
+        renderBackground(isSelected, logInfo, c);
+        renderBorder(isSelected, row, column, c);
+
+        return c;
+    }
+
+    private void renderBorder(boolean isSelected, int row, int column, Component c) {
         if (c instanceof JComponent) {
             JComponent cc = (JComponent) c;
             if (isSelected) {
@@ -143,35 +141,52 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
                 cc.setBorder(SELECTED_BORDER_NONE);
             }
         }
-
-        return c;
     }
 
-    String remakeData(int nIndex, String strText) {
+    private void renderBackground(boolean isSelected, LogInfo logInfo, Component c) {
+        c.setForeground(logInfo.getTextColor());
+        if (isSelected) {
+            c.setFont(getFont().deriveFont(mResolver.getFontSize() + 1));
+            if (logInfo.isMarked()) {
+                c.setBackground(new Color(Constant.COLOR_BOOKMARK2));
+            }
+        } else if (logInfo.isMarked()) {
+            c.setBackground(new Color(Constant.COLOR_BOOKMARK));
+        } else {
+            c.setBackground(Color.WHITE);
+        }
+    }
 
-        m_bChanged = false;
+    private void renderFont(Component c) {
+        c.setFont(getFont().deriveFont(mResolver.getFontSize()));
+    }
+
+    private String renderCellContent(int columnIndex, String strText) {
+
+        mIsDataChanged = false;
 
         strText = strText.replace(" ", "\u00A0");
         if (Constant.COLOR_HIGHLIGHT != null && Constant.COLOR_HIGHLIGHT.length > 0) {
-            strText = remakeFind(strText, mResolver.GetHighlight(), Constant.COLOR_HIGHLIGHT, true);
+            strText = highLightCell(strText, mResolver.GetHighlight(), Constant.COLOR_HIGHLIGHT, true);
         } else {
-            strText = remakeFind(strText, mResolver.GetHighlight(), "#00FF00", true);
+            strText = highLightCell(strText, mResolver.GetHighlight(), new String[]{"#00FF00"}, true);
         }
 
-        if (nIndex == LogFilterTableModel.COLUMN_MESSAGE || nIndex == LogFilterTableModel.COLUMN_TAG) {
-            String strFind = nIndex == LogFilterTableModel.COLUMN_MESSAGE ? mResolver.GetFilterFind() : mResolver.GetFilterShowTag();
-            strText = remakeFind(strText, strFind, "#FF0000", false);
+        if (columnIndex == LogFilterTableModel.COLUMN_MESSAGE || columnIndex == LogFilterTableModel.COLUMN_TAG) {
+            String strFind = columnIndex == LogFilterTableModel.COLUMN_MESSAGE ? mResolver.GetFilterFind() : mResolver.GetFilterShowTag();
+            strText = highLightCell(strText, strFind, new String[]{"#FF0000"}, false);
         }
 
-        strText = remakeFind(strText, mResolver.GetSearchHighlight(), "#FFFF00", true);
-        if (m_bChanged)
+        strText = highLightCell(strText, mResolver.GetSearchHighlight(), new String[]{"#FFFF00"}, true);
+        if (mIsDataChanged)
             strText = "<html><nobr>" + strText + "</nobr></html>";
 
         return strText.replace("\t", "    ");
     }
 
-    String remakeFind(String strText, String strFind, String[] arColor, boolean bUseSpan) {
-        if (strFind == null || strFind.length() <= 0) return strText;
+    private String highLightCell(String strText, String strFind, String[] arColor, boolean bUseSpan) {
+        if (strFind == null || strFind.length() <= 0)
+            return strText;
 
         strFind = strFind.replace(" ", "\u00A0");
         StringTokenizer stk = new StringTokenizer(strFind, "|");
@@ -200,41 +215,8 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
                 else
                     newText += "</b></font>";
                 strText = prefix + newText + suffix;
-                m_bChanged = true;
+                mIsDataChanged = true;
                 nIndex++;
-            }
-        }
-        return strText;
-    }
-
-    String remakeFind(String strText, String strFind, String strColor, boolean bUseSpan) {
-        if (strFind == null || strFind.length() <= 0) return strText;
-
-        strFind = strFind.replace(" ", "\u00A0");
-        StringTokenizer stk = new StringTokenizer(strFind, "|");
-        String newText;
-        String strToken;
-
-        while (stk.hasMoreElements()) {
-            strToken = stk.nextToken();
-
-            int idx = strText.toLowerCase().indexOf(strToken.toLowerCase());
-            if (idx != -1) {
-                String prefix = strText.substring(0, idx);
-                String suffix = strText.substring(idx + strToken.length());
-                String target = strText.substring(idx, idx + strToken.length());
-
-                if (bUseSpan)
-                    newText = "<span style=\"background-color:" + strColor + "\"><b>";
-                else
-                    newText = "<font color=" + strColor + "><b>";
-                newText += target;
-                if (bUseSpan)
-                    newText += "</b></span>";
-                else
-                    newText += "</b></font>";
-                strText = prefix + newText + suffix;
-                m_bChanged = true;
             }
         }
         return strText;
