@@ -50,7 +50,7 @@ public class FixPopup extends JPanel {
 
     private Object mContext;
 
-    public FixPopup(String message, int maxWidth, Object context) {
+    public FixPopup(String message, int maxWidth, int minWidth, Object context) {
         mContext = context;
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -62,7 +62,7 @@ public class FixPopup extends JPanel {
         add(btnPanel);
 
         JTextArea textArea = createMultiLineLabel(message);
-        setupTextArea(textArea, maxWidth);
+        setupTextArea(textArea, maxWidth, minWidth);
         add(textArea);
 
         MouseAdapter mouseAdapter = new MouseAdapter() {
@@ -95,6 +95,12 @@ public class FixPopup extends JPanel {
         };
         addMouseListener(mouseAdapter);
         addMouseMotionListener(mouseAdapter);
+
+        Dimension btnPreferredSize = btnPanel.getPreferredSize();
+        Dimension txaPreferredSize = textArea.getPreferredSize();
+        Dimension preferDimension = new Dimension(Math.max(btnPreferredSize.width, txaPreferredSize.width), btnPreferredSize.height + txaPreferredSize.height);
+        setPreferredSize(preferDimension);
+        setSize(preferDimension);
     }
 
     private JTextArea createMultiLineLabel(String message) {
@@ -104,7 +110,7 @@ public class FixPopup extends JPanel {
         textArea.setOpaque(false);
         textArea.setFocusable(true);
         textArea.setFont(getFont().deriveFont(getFont().getSize()));
-        textArea.setWrapStyleWord(true);
+//        textArea.setWrapStyleWord(true); // 高度会计算错误
         textArea.setLineWrap(true);
         return textArea;
     }
@@ -159,11 +165,18 @@ public class FixPopup extends JPanel {
         pinBtn.setForeground(mIsPinned ? Color.DARK_GRAY : Color.GRAY);
     }
 
-    private void setupTextArea(JTextArea textArea, int width) {
+    private void setupTextArea(JTextArea textArea, int width, int minWidth) {
         FontMetrics fm = textArea.getFontMetrics(textArea.getFont());
         int textWidth = SwingUtilities.computeStringWidth(fm, textArea.getText());
+        int textHeight = fm.getHeight();
+//        textArea.setSize(Short.MAX_VALUE,Short.MAX_VALUE);
+//        int textWidth =  textArea.getPreferredSize().width;
+//        int textHeight =  textArea.getPreferredSize().height;
+
+        int targetWidth = Math.max(minWidth, Math.min(width, textWidth));
+        double targetHeight = textHeight * Math.ceil((double) textWidth / (double) targetWidth);
         Dimension d = new Dimension();
-        d.setSize(Math.min(width, textWidth) + (CONTENT_PANEL_PADDING + BORDER_THICKNESS) * 2, fm.getHeight() * Math.ceil((double) textWidth / (double) width) + (CONTENT_PANEL_PADDING + BORDER_THICKNESS) * 2);
+        d.setSize(targetWidth + (CONTENT_PANEL_PADDING) * 2, targetHeight + (CONTENT_PANEL_PADDING) * 2);
 
         textArea.setPreferredSize(d);
         textArea.setBorder(new EmptyBorder(CONTENT_PANEL_PADDING, CONTENT_PANEL_PADDING, CONTENT_PANEL_PADDING, CONTENT_PANEL_PADDING));

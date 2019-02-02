@@ -295,7 +295,9 @@ public class LogTable extends BaseLogTable {
 
     ///////////////////////////////////hover///////////////////////////////////
 
-    private static final int FIX_POPUP_WIDTH = 350;
+    private static final int FIX_POPUP_MAX_WIDTH = 350;
+
+    private static final int FIX_POPUP_MIN_WIDTH = 100;
 
     private List<FixPopup> mMsgTipsPopups = new ArrayList<>();
 
@@ -329,7 +331,7 @@ public class LogTable extends BaseLogTable {
 
     private void showPopup(Object value, int row, int col) {
         Point location = MouseInfo.getPointerInfo().getLocation();
-        FixPopup popup = new FixPopup(String.valueOf(value), FIX_POPUP_WIDTH, row);
+        FixPopup popup = new FixPopup(String.valueOf(value).trim(), FIX_POPUP_MAX_WIDTH, FIX_POPUP_MIN_WIDTH, row);
         popup.setListener(new FixPopup.Listener() {
             @Override
             public void onGoButtonClick(FixPopup popup) {
