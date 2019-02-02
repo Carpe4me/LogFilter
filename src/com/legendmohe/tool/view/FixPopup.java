@@ -1,5 +1,7 @@
 package com.legendmohe.tool.view;
 
+import com.legendmohe.tool.Utils;
+
 import java.applet.Applet;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -13,6 +15,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -65,7 +68,7 @@ public class FixPopup extends JPanel {
         setupTextArea(textArea, maxWidth, minWidth);
         add(textArea);
 
-        MouseAdapter mouseAdapter = new MouseAdapter() {
+        MouseAdapter draggableMouseAdapter = new MouseAdapter() {
             private int mMouseY;
             private int mMouseX;
 
@@ -87,20 +90,36 @@ public class FixPopup extends JPanel {
 
             @Override
             public void mouseDragged(MouseEvent e) {
-                if (mInternalPopupComponent != null && mIsPinned) {
+                if (mInternalPopupComponent != null) {
                     Point point = SwingUtilities.convertPoint(FixPopup.this, e.getX(), e.getY(), mInternalPopupComponent.getParent());
                     mInternalPopupComponent.setLocation(point.x - mMouseX, point.y - mMouseY);
                 }
             }
         };
-        addMouseListener(mouseAdapter);
-        addMouseMotionListener(mouseAdapter);
+        MouseAdapter normalMouseAdapter = new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                mIsMouseEntered = true;
+            }
 
-        Dimension btnPreferredSize = btnPanel.getPreferredSize();
-        Dimension txaPreferredSize = textArea.getPreferredSize();
-        Dimension preferDimension = new Dimension(Math.max(btnPreferredSize.width, txaPreferredSize.width), btnPreferredSize.height + txaPreferredSize.height);
-        setPreferredSize(preferDimension);
-        setSize(preferDimension);
+            @Override
+            public void mouseExited(MouseEvent e) {
+                mIsMouseEntered = false;
+            }
+        };
+
+        // 设置所有component
+        addMouseListener(normalMouseAdapter);
+        addMouseMotionListener(normalMouseAdapter);
+        List<Component> allComponents = Utils.getAllComponents(this);
+        for (Component component : allComponents) {
+            if (component == btnPanel) {
+                component.addMouseListener(draggableMouseAdapter);
+                component.addMouseMotionListener(draggableMouseAdapter);
+            } else {
+                component.addMouseListener(normalMouseAdapter);
+            }
+        }
     }
 
     private JTextArea createMultiLineLabel(String message) {
@@ -180,19 +199,6 @@ public class FixPopup extends JPanel {
 
         textArea.setPreferredSize(d);
         textArea.setBorder(new EmptyBorder(CONTENT_PANEL_PADDING, CONTENT_PANEL_PADDING, CONTENT_PANEL_PADDING, CONTENT_PANEL_PADDING));
-
-        MouseAdapter mouseAdapter = new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                mIsMouseEntered = true;
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                mIsMouseEntered = false;
-            }
-        };
-        textArea.addMouseListener(mouseAdapter);
     }
 
     public boolean isMouseEntered() {
