@@ -6,15 +6,11 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3aecea0d-fcd6-41ed-8cea-e55b4a19285a" name="Default" comment="*) 新增二级菜单">
-      <change afterPath="$PROJECT_DIR$/src/com/legendmohe/tool/view/FixWidthPopup.java" afterDir="false" />
+    <list default="true" id="3aecea0d-fcd6-41ed-8cea-e55b4a19285a" name="Default" comment="+) FixPopup支持多个同时pin">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RecentFile.ini" beforeDir="false" afterPath="$PROJECT_DIR$/RecentFile.ini" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/conf/LogFilterColor.ini" beforeDir="false" afterPath="$PROJECT_DIR$/conf/LogFilterColor.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/legendmohe/tool/IndicatorPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/legendmohe/tool/IndicatorPanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/legendmohe/tool/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/legendmohe/tool/Utils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/legendmohe/tool/logtable/BaseLogTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/legendmohe/tool/logtable/BaseLogTable.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/legendmohe/tool/logtable/LogTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/legendmohe/tool/logtable/LogTable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/legendmohe/tool/view/FixPopup.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/legendmohe/tool/view/FixPopup.java" afterDir="false" />
     </list>
     <ignored path="LogFilter-master.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -54,68 +50,49 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/logtable/BaseLogTable.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-105">
-              <caret line="830" lean-forward="true" selection-start-line="830" selection-end-line="830" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#27291#27292#0" expanded="true" />
-                <element signature="e#27339#27340#0" expanded="true" />
-                <element signature="e#27414#27415#0" expanded="true" />
-                <element signature="e#27462#27463#0" expanded="true" />
-                <element signature="e#29049#29201#0" expanded="true" />
-                <element signature="e#29200#29201#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/logtable/LogTable.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="217">
-              <caret line="308" column="35" selection-start-line="308" selection-start-column="35" selection-end-line="308" selection-end-column="35" />
+            <state relative-caret-position="3276">
+              <caret line="332" column="17" selection-start-line="332" selection-start-column="17" selection-end-line="332" selection-end-column="17" />
               <folding>
-                <element signature="e#1275#4959#0" expanded="true" />
-                <element signature="e#4958#4959#0" expanded="true" />
+                <element signature="e#1348#5032#0" expanded="true" />
+                <element signature="e#5031#5032#0" expanded="true" />
                 <element signature="e#12045#12046#0" expanded="true" />
                 <element signature="e#12080#12081#0" expanded="true" />
                 <element signature="e#12140#12141#0" expanded="true" />
                 <element signature="e#12188#12189#0" expanded="true" />
+                <element signature="e#12893#12894#0" expanded="true" />
+                <element signature="e#12937#12938#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/java/awt/EventQueue.java">
+        <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/java/util/Iterator.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="423">
-              <caret line="1264" column="23" selection-start-line="1264" selection-start-column="23" selection-end-line="1264" selection-end-column="23" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/view/PackageViewDialog.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="406">
-              <caret line="138" column="32" selection-start-line="138" selection-start-column="13" selection-end-line="138" selection-end-column="32" />
+            <state relative-caret-position="594">
+              <caret line="91" column="17" selection-start-line="91" selection-start-column="17" selection-end-line="91" selection-end-column="17" />
+              <folding>
+                <element signature="e#2496#2497#0" expanded="true" />
+                <element signature="e#2561#2562#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/view/FixWidthPopup.java">
+        <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/view/FixPopup.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="484">
-              <caret line="56" column="45" selection-start-line="56" selection-start-column="45" selection-end-line="56" selection-end-column="45" />
+            <state relative-caret-position="332">
+              <caret line="86" column="54" selection-start-line="86" selection-start-column="54" selection-end-line="86" selection-end-column="54" />
               <folding>
-                <element signature="e#1335#1336#0" expanded="true" />
-                <element signature="e#1389#1390#0" expanded="true" />
-                <element signature="e#1464#1465#0" expanded="true" />
-                <element signature="e#1519#1520#0" expanded="true" />
+                <element signature="e#1632#1633#0" expanded="true" />
+                <element signature="e#1686#1687#0" expanded="true" />
+                <element signature="e#1761#1762#0" expanded="true" />
+                <element signature="e#1816#1817#0" expanded="true" />
+                <element signature="e#4954#4955#0" expanded="true" />
+                <element signature="e#5019#5020#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -124,35 +101,36 @@
       <file pinned="false" current-in-tab="false">
         <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/java/awt/Component.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="537">
-              <caret line="3126" column="16" selection-start-line="3126" selection-start-column="16" selection-end-line="3126" selection-end-column="16" />
+            <state relative-caret-position="376">
+              <caret line="2129" column="12" lean-forward="true" selection-start-line="2129" selection-start-column="12" selection-end-line="2129" selection-end-column="12" />
+              <folding>
+                <element signature="e#69814#69815#0" expanded="true" />
+                <element signature="e#69847#69848#0" expanded="true" />
+                <element signature="e#72511#72512#0" expanded="true" />
+                <element signature="e#72537#72538#0" expanded="true" />
+                <element signature="e#73504#73505#0" expanded="true" />
+                <element signature="e#73541#73542#0" expanded="true" />
+                <element signature="e#74067#74068#0" expanded="true" />
+                <element signature="e#74096#74097#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/javax/swing/JComponent.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="423">
-              <caret line="4361" column="16" selection-start-line="4361" selection-start-column="16" selection-end-line="4361" selection-end-column="16" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/java/awt/Font.java">
+        <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/javax/swing/RootPaneContainer.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="195">
-              <caret line="1933" column="16" selection-start-line="1933" selection-start-column="16" selection-end-line="1933" selection-end-column="16" />
+              <caret line="148" column="17" selection-start-line="148" selection-start-column="17" selection-end-line="148" selection-end-column="17" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/javax/swing/PopupFactory.java">
+        <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/javax/swing/SwingUtilities.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="186">
-              <caret line="165" column="17" selection-start-line="165" selection-start-column="17" selection-end-line="165" selection-end-column="17" />
+            <state relative-caret-position="129">
+              <caret line="369" column="63" selection-start-line="369" selection-start-column="62" selection-end-line="369" selection-end-column="63" />
             </state>
           </provider>
         </entry>
@@ -160,8 +138,47 @@
       <file pinned="false" current-in-tab="false">
         <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/javax/swing/Popup.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="537">
-              <caret line="57" column="13" selection-start-line="57" selection-start-column="13" selection-end-line="57" selection-end-column="13" />
+            <state relative-caret-position="1">
+              <caret line="222" column="14" selection-start-line="222" selection-start-column="14" selection-end-line="222" selection-end-column="14" />
+              <folding>
+                <element signature="e#6730#6731#0" expanded="true" />
+                <element signature="e#6762#6763#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/javax/swing/BoxLayout.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="309">
+              <caret line="178" column="11" selection-start-line="178" selection-start-column="11" selection-end-line="178" selection-end-column="11" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/java/awt/FlowLayout.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="205">
+              <caret line="202" column="14" lean-forward="true" selection-start-line="202" selection-start-column="14" selection-end-line="202" selection-end-column="14" />
+              <folding>
+                <element signature="e#5403#5404#0" expanded="true" />
+                <element signature="e#5437#5438#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/javax/swing/PopupFactory.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="262">
+              <caret line="917" column="26" lean-forward="true" selection-start-line="917" selection-start-column="26" selection-end-line="918" selection-end-column="77" />
+              <folding>
+                <element signature="e#3677#3678#0" expanded="true" />
+                <element signature="e#3709#3710#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -179,11 +196,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>getLine</find>
-      <find>DIFF_PROGRAM_PATH</find>
-      <find>&quot;Parser</find>
-      <find>parserMenu</find>
-      <find>static</find>
       <find>m_recentMenu</find>
       <find>static</find>
       <find>m_recentMenu.addEntry</find>
@@ -209,6 +221,11 @@
       <find>FontMetrics</find>
       <find>Border</find>
       <find>EventQueue</find>
+      <find>flowla</find>
+      <find>Y_AXIS</find>
+      <find>click</find>
+      <find>component</find>
+      <find>component =</find>
     </findStrings>
     <replaceStrings>
       <replace>COLUMN_</replace>
@@ -318,8 +335,9 @@
         <option value="$PROJECT_DIR$/src/com/legendmohe/tool/Utils.java" />
         <option value="$PROJECT_DIR$/src/com/legendmohe/tool/IndicatorPanel.java" />
         <option value="$PROJECT_DIR$/src/com/legendmohe/tool/logtable/BaseLogTable.java" />
-        <option value="$PROJECT_DIR$/src/com/legendmohe/tool/logtable/LogTable.java" />
         <option value="$PROJECT_DIR$/src/com/legendmohe/tool/view/FixWidthPopup.java" />
+        <option value="$PROJECT_DIR$/src/com/legendmohe/tool/logtable/LogTable.java" />
+        <option value="$PROJECT_DIR$/src/com/legendmohe/tool/view/FixPopup.java" />
       </list>
     </option>
   </component>
@@ -580,20 +598,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1452040736107</updated>
-    </task>
-    <task id="LOCAL-00004" summary="add history&#10;add StateSaver">
-      <created>1452760725597</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1452760725597</updated>
-    </task>
-    <task id="LOCAL-00005" summary="add load font size">
-      <created>1452761572940</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1452761572940</updated>
     </task>
     <task id="LOCAL-00006" summary="improve saver">
       <created>1452776277885</created>
@@ -924,7 +928,21 @@
       <option name="project" value="LOCAL" />
       <updated>1549017376124</updated>
     </task>
-    <option name="localTasksCounter" value="53" />
+    <task id="LOCAL-00053" summary="+) 添加悬停显示详情 FixPopup">
+      <created>1549073199803</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1549073199803</updated>
+    </task>
+    <task id="LOCAL-00054" summary="+) FixPopup支持多个同时pin">
+      <created>1549075885763</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1549075885763</updated>
+    </task>
+    <option name="localTasksCounter" value="55" />
     <servers />
   </component>
   <component name="TodoView">
@@ -940,8 +958,8 @@
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.48558247" visible="true" weight="0.26100966" />
-      <window_info id="Structure" order="1" sideWeight="0.5144175" side_tool="true" weight="0.26100966" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4854369" visible="true" weight="0.26100966" />
+      <window_info id="Structure" order="1" sideWeight="0.5145631" side_tool="true" weight="0.26100966" />
       <window_info id="Designer" order="2" />
       <window_info id="Image Layers" order="3" />
       <window_info id="UI Designer" order="4" />
@@ -1041,8 +1059,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="add Dumpsys view" />
-    <MESSAGE value="add Dumpsys view save file" />
     <MESSAGE value="add custom dumpsys cmd" />
     <MESSAGE value="fix: add pid to maintable" />
     <MESSAGE value="记住选择了的parser类型" />
@@ -1066,14 +1082,31 @@
     <MESSAGE value="*) 调整Event命名" />
     <MESSAGE value="*) 更改菜单名Net为tools" />
     <MESSAGE value="*) 新增二级菜单" />
-    <option name="LAST_COMMIT_MESSAGE" value="*) 新增二级菜单" />
+    <MESSAGE value="+) 添加悬停显示详情 FixPopup" />
+    <MESSAGE value="+) FixPopup支持多个同时pin" />
+    <option name="LAST_COMMIT_MESSAGE" value="+) FixPopup支持多个同时pin" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/com/legendmohe/tool/view/FixPopup.java</url>
+          <line>86</line>
+          <properties />
+          <option name="timeStamp" value="57" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
     <watches-manager>
       <configuration name="Application">
-        <watch expression="e.source" language="JAVA" />
+        <watch expression="parent.getComponents()" language="JAVA" />
+        <watch expression="parent.getComponentAt(x, y)" language="JAVA" />
+        <watch expression="convertedEvent.getX()" language="JAVA" />
+        <watch expression="convertedEvent.getY()" language="JAVA" />
+        <watch expression="convertedEvent.getXOnScreen()" language="JAVA" />
+        <watch expression="e.getX()" language="JAVA" />
       </configuration>
     </watches-manager>
   </component>
@@ -1084,52 +1117,52 @@
   <component name="debuggerHistoryManager">
     <expressions id="watch">
       <expression>
-        <expression-string>e.source</expression-string>
+        <expression-string>e.getX()</expression-string>
         <language-id>JAVA</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>fm.getHeight()</expression-string>
+        <expression-string>convertedEvent.getXOnScreen()</expression-string>
         <language-id>JAVA</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>Math.ceil((double) textWidth / (double) width)</expression-string>
+        <expression-string>convertedEvent.getY()</expression-string>
         <language-id>JAVA</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>location.x</expression-string>
+        <expression-string>convertedEvent.getX()</expression-string>
         <language-id>JAVA</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>location.y</expression-string>
+        <expression-string>parent.getComponentAt(x, y)</expression-string>
         <language-id>JAVA</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>value.getClass()</expression-string>
+        <expression-string>parent.getComponents()</expression-string>
         <language-id>JAVA</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>value</expression-string>
+        <expression-string>owner.getParent()</expression-string>
         <language-id>JAVA</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>m_chkEnableShowTag.isSelected()</expression-string>
+        <expression-string>component.getParent()</expression-string>
         <language-id>JAVA</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>getFont()</expression-string>
+        <expression-string>getComponents()</expression-string>
         <language-id>JAVA</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>target.getTimestamp()</expression-string>
+        <expression-string>getComponentAt(x, y)</expression-string>
         <language-id>JAVA</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
@@ -1345,13 +1378,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1558">
           <caret line="113" column="28" selection-start-line="113" selection-start-column="28" selection-end-line="113" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/javax/swing/BoxLayout.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2584">
-          <caret line="162" column="28" selection-start-line="162" selection-start-column="28" selection-end-line="162" selection-end-column="28" />
         </state>
       </provider>
     </entry>
@@ -1856,17 +1882,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/java/awt/BorderLayout.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
-          <caret line="350" column="11" selection-start-line="350" selection-start-column="11" selection-end-line="350" selection-end-column="11" />
-          <folding>
-            <element signature="e#11133#11134#0" expanded="true" />
-            <element signature="e#11159#11160#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/java/awt/FontMetrics.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="521">
@@ -1875,13 +1890,6 @@
             <element signature="e#7954#7955#0" expanded="true" />
             <element signature="e#8018#8019#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/javax/swing/SwingUtilities.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="186">
-          <caret line="829" column="22" selection-start-line="829" selection-start-column="22" selection-end-line="829" selection-end-column="22" />
         </state>
       </provider>
     </entry>
@@ -1950,20 +1958,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/javax/swing/Popup.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="537">
-          <caret line="57" column="13" selection-start-line="57" selection-start-column="13" selection-end-line="57" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/javax/swing/PopupFactory.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="186">
-          <caret line="165" column="17" selection-start-line="165" selection-start-column="17" selection-end-line="165" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/view/PackageViewDialog.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="406">
@@ -1978,44 +1972,134 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/logtable/LogTable.java">
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/javax/swing/JComponent.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="217">
-          <caret line="308" column="35" selection-start-line="308" selection-start-column="35" selection-end-line="308" selection-end-column="35" />
+        <state relative-caret-position="186">
+          <caret line="1655" column="21" selection-start-line="1655" selection-start-column="21" selection-end-line="1655" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/java/awt/BorderLayout.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4838">
+          <caret line="350" column="11" selection-start-line="350" selection-start-column="11" selection-end-line="350" selection-end-column="11" />
           <folding>
-            <element signature="e#1275#4959#0" expanded="true" />
-            <element signature="e#4958#4959#0" expanded="true" />
-            <element signature="e#12045#12046#0" expanded="true" />
-            <element signature="e#12080#12081#0" expanded="true" />
-            <element signature="e#12140#12141#0" expanded="true" />
-            <element signature="e#12188#12189#0" expanded="true" />
+            <element signature="e#11133#11134#0" expanded="true" />
+            <element signature="e#11159#11160#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/javax/swing/JComponent.java">
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/java/awt/FlowLayout.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="423">
-          <caret line="4361" column="16" selection-start-line="4361" selection-start-column="16" selection-end-line="4361" selection-end-column="16" />
+        <state relative-caret-position="205">
+          <caret line="202" column="14" lean-forward="true" selection-start-line="202" selection-start-column="14" selection-end-line="202" selection-end-column="14" />
+          <folding>
+            <element signature="e#5403#5404#0" expanded="true" />
+            <element signature="e#5437#5438#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/javax/swing/BoxLayout.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="309">
+          <caret line="178" column="11" selection-start-line="178" selection-start-column="11" selection-end-line="178" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/java/util/Iterator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="594">
+          <caret line="91" column="17" selection-start-line="91" selection-start-column="17" selection-end-line="91" selection-end-column="17" />
+          <folding>
+            <element signature="e#2496#2497#0" expanded="true" />
+            <element signature="e#2561#2562#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/javax/swing/Popup.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1">
+          <caret line="222" column="14" selection-start-line="222" selection-start-column="14" selection-end-line="222" selection-end-column="14" />
+          <folding>
+            <element signature="e#6730#6731#0" expanded="true" />
+            <element signature="e#6762#6763#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/javax/swing/PopupFactory.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="262">
+          <caret line="917" column="26" lean-forward="true" selection-start-line="917" selection-start-column="26" selection-end-line="918" selection-end-column="77" />
+          <folding>
+            <element signature="e#3677#3678#0" expanded="true" />
+            <element signature="e#3709#3710#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/logtable/LogTable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3276">
+          <caret line="332" column="17" selection-start-line="332" selection-start-column="17" selection-end-line="332" selection-end-column="17" />
+          <folding>
+            <element signature="e#1348#5032#0" expanded="true" />
+            <element signature="e#5031#5032#0" expanded="true" />
+            <element signature="e#12045#12046#0" expanded="true" />
+            <element signature="e#12080#12081#0" expanded="true" />
+            <element signature="e#12140#12141#0" expanded="true" />
+            <element signature="e#12188#12189#0" expanded="true" />
+            <element signature="e#12893#12894#0" expanded="true" />
+            <element signature="e#12937#12938#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/javax/swing/SwingUtilities.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="129">
+          <caret line="369" column="63" selection-start-line="369" selection-start-column="62" selection-end-line="369" selection-end-column="63" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/javax/swing/RootPaneContainer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="148" column="17" selection-start-line="148" selection-start-column="17" selection-end-line="148" selection-end-column="17" />
         </state>
       </provider>
     </entry>
     <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/java/awt/Component.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="537">
-          <caret line="3126" column="16" selection-start-line="3126" selection-start-column="16" selection-end-line="3126" selection-end-column="16" />
+        <state relative-caret-position="376">
+          <caret line="2129" column="12" lean-forward="true" selection-start-line="2129" selection-start-column="12" selection-end-line="2129" selection-end-column="12" />
+          <folding>
+            <element signature="e#69814#69815#0" expanded="true" />
+            <element signature="e#69847#69848#0" expanded="true" />
+            <element signature="e#72511#72512#0" expanded="true" />
+            <element signature="e#72537#72538#0" expanded="true" />
+            <element signature="e#73504#73505#0" expanded="true" />
+            <element signature="e#73541#73542#0" expanded="true" />
+            <element signature="e#74067#74068#0" expanded="true" />
+            <element signature="e#74096#74097#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/view/FixWidthPopup.java">
+    <entry file="file://$PROJECT_DIR$/src/com/legendmohe/tool/view/FixPopup.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="484">
-          <caret line="56" column="45" selection-start-line="56" selection-start-column="45" selection-end-line="56" selection-end-column="45" />
+        <state relative-caret-position="332">
+          <caret line="86" column="54" selection-start-line="86" selection-start-column="54" selection-end-line="86" selection-end-column="54" />
           <folding>
-            <element signature="e#1335#1336#0" expanded="true" />
-            <element signature="e#1389#1390#0" expanded="true" />
-            <element signature="e#1464#1465#0" expanded="true" />
-            <element signature="e#1519#1520#0" expanded="true" />
+            <element signature="e#1632#1633#0" expanded="true" />
+            <element signature="e#1686#1687#0" expanded="true" />
+            <element signature="e#1761#1762#0" expanded="true" />
+            <element signature="e#1816#1817#0" expanded="true" />
+            <element signature="e#4954#4955#0" expanded="true" />
+            <element signature="e#5019#5020#0" expanded="true" />
           </folding>
         </state>
       </provider>
