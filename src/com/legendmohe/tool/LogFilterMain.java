@@ -7,14 +7,15 @@ import com.legendmohe.tool.annotation.UIStateSaver;
 import com.legendmohe.tool.config.Constant;
 import com.legendmohe.tool.diff.DiffService;
 import com.legendmohe.tool.logtable.BaseLogTable;
-import com.legendmohe.tool.logtable.LogFilterTableModel;
 import com.legendmohe.tool.logtable.LogTable;
 import com.legendmohe.tool.logtable.SubLogTable;
+import com.legendmohe.tool.logtable.model.LogFilterTableModel;
 import com.legendmohe.tool.parser.BigoDevLogParser;
 import com.legendmohe.tool.parser.BigoXLogParser;
 import com.legendmohe.tool.parser.ILogParser;
 import com.legendmohe.tool.parser.LogCatParser;
 import com.legendmohe.tool.view.DumpsysViewDialog;
+import com.legendmohe.tool.view.ListDialog;
 import com.legendmohe.tool.view.PackageViewDialog;
 import com.legendmohe.tool.view.RecentFileMenu;
 import com.legendmohe.tool.view.RowsContentDialog;
@@ -66,15 +67,18 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -292,6 +296,9 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
     private LogFilterTableModel m_tSubLogTableModel;
     private JScrollPane m_subLogScrollVPane;
     ArrayList<LogInfo> m_arSubLogInfoAll;
+
+    @FieldSaveState
+    private Set<String> mFilterTagHistory = new HashSet<>();
 
     ///////////////////////////////////main///////////////////////////////////
 
@@ -1158,14 +1165,24 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         show.setText("Tag Include: ");
         jpShow.add(show, BorderLayout.WEST);
         jpShow.add(m_tfShowTag, BorderLayout.CENTER);
-        jpShow.add(m_chkEnableShowTag, BorderLayout.EAST);
+
+        JPanel tagIncludeExtPanel = new JPanel(new BorderLayout());
+        JButton tagIncludeExtBtn = getExtDialogButton(Constant.EXT_DIALOG_TYPE_INCLUDE_TAG);
+        tagIncludeExtPanel.add(tagIncludeExtBtn, BorderLayout.WEST);
+        tagIncludeExtPanel.add(m_chkEnableShowTag, BorderLayout.EAST);
+        jpShow.add(tagIncludeExtPanel, BorderLayout.EAST);
 
         JPanel jpRemoveTag = new JPanel(new BorderLayout());
         JLabel removeTag = new JLabel();
         removeTag.setText("Tag Exclude: ");
         jpRemoveTag.add(removeTag, BorderLayout.WEST);
         jpRemoveTag.add(m_tfRemoveTag, BorderLayout.CENTER);
-        jpRemoveTag.add(m_chkEnableRemoveTag, BorderLayout.EAST);
+
+        JPanel tagExcludeExtPanel = new JPanel(new BorderLayout());
+        JButton tagExcludeExtBtn = getExtDialogButton(Constant.EXT_DIALOG_TYPE_EXCLUDE_TAG);
+        tagExcludeExtPanel.add(tagExcludeExtBtn, BorderLayout.WEST);
+        tagExcludeExtPanel.add(m_chkEnableRemoveTag, BorderLayout.EAST);
+        jpRemoveTag.add(tagExcludeExtPanel, BorderLayout.EAST);
 
         JPanel jpBmTag = new JPanel(new BorderLayout());
         JLabel bkTag = new JLabel();
@@ -1202,6 +1219,87 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         jpMain.add(jpTagFilter, BorderLayout.CENTER);
 
         return jpMain;
+    }
+
+    private JButton getExtDialogButton(int type) {
+        JButton tagIncludeExtBtn = new JButton("...");
+        tagIncludeExtBtn.setBorder(new EmptyBorder(3, 3, 3, 3));
+        tagIncludeExtBtn.setBorderPainted(false);
+        tagIncludeExtBtn.setContentAreaFilled(false);
+        tagIncludeExtBtn.setOpaque(false);
+        tagIncludeExtBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Set<String> tagSet = getAllInfoContent(LogFilterTableModel.COLUMN_TAG);
+                if (tagSet.size() <= 0) {
+                    return;
+                }
+                // 字典序
+                List<String> resultList = new ArrayList<>(tagSet);
+                Collections.sort(resultList, new Comparator<String>() {
+                    @Override
+                    public int compare(String o1, String o2) {
+                        boolean containsO1 = mFilterTagHistory.contains(o1);
+                        boolean containsO2 = mFilterTagHistory.contains(o2);
+                        if (containsO1 && containsO2) {
+                            return o1.compareTo(o2);
+                        }
+                        if (containsO1) {
+                            return -1;
+                        }
+                        if (containsO2) {
+                            return 1;
+                        }
+                        return o1.compareTo(o2);
+                    }
+                });
+
+                JList list = new JList(resultList.toArray(new String[resultList.size()]));
+                ListDialog dialog = new ListDialog("Please select an item in the list: ", list);
+                dialog.setOnOk(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        List selectedItems = dialog.getSelectedItems();
+                        for (Object selectedItem : selectedItems) {
+                            String tag = (String) selectedItem;
+                            switch (type) {
+                                case Constant.EXT_DIALOG_TYPE_INCLUDE_TAG: {
+                                    getLogTable().appendFilterShowTag(tag);
+                                }
+                                break;
+                                case Constant.EXT_DIALOG_TYPE_EXCLUDE_TAG: {
+                                    getLogTable().appendFilterRemoveTag(tag);
+                                }
+                                break;
+                            }
+                            mFilterTagHistory.add(tag);
+                        }
+                        switch (type) {
+                            case Constant.EXT_DIALOG_TYPE_INCLUDE_TAG: {
+                                postEvent(new EventBus.Event(TYPE.EVENT_CHANGE_FILTER_SHOW_TAG));
+                            }
+                            break;
+                            case Constant.EXT_DIALOG_TYPE_EXCLUDE_TAG: {
+                                postEvent(new EventBus.Event(TYPE.EVENT_CHANGE_FILTER_REMOVE_TAG));
+                            }
+                            break;
+                        }
+                    }
+                });
+                dialog.show();
+            }
+
+            private Set<String> getAllInfoContent(int column) {
+                Set<String> tagSet = new HashSet<>();
+                for (LogInfo logInfo : m_arLogInfoAll) {
+                    if (logInfo != null && logInfo.getTag() != null && logInfo.getTag().length() > 0) {
+                        tagSet.add(logInfo.getData(column).toString());
+                    }
+                }
+                return tagSet;
+            }
+        });
+        return tagIncludeExtBtn;
     }
 
     Component getHighlightPanel() {

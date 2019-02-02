@@ -1,4 +1,4 @@
-package com.legendmohe.tool.logtable;
+package com.legendmohe.tool.logtable.model;
 
 import com.legendmohe.tool.LogInfo;
 import com.legendmohe.tool.T;

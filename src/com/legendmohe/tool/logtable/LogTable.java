@@ -5,6 +5,7 @@ import com.legendmohe.tool.LogFilterMain;
 import com.legendmohe.tool.LogInfo;
 import com.legendmohe.tool.T;
 import com.legendmohe.tool.diff.DiffService;
+import com.legendmohe.tool.logtable.model.LogFilterTableModel;
 import com.legendmohe.tool.view.FixPopup;
 
 import java.awt.EventQueue;
@@ -60,13 +61,7 @@ public class LogTable extends BaseLogTable {
                     } else if (m_bAltPressed) {
                         LogInfo logInfo = ((LogFilterTableModel) getModel()).getRow(row);
                         if (column == LogFilterTableModel.COLUMN_TAG) {
-                            if (m_strTagShow.contains("|" + logInfo.getData(column))) {
-                                m_strTagShow = m_strTagShow.replace("|" + logInfo.getData(column), "");
-                            } else if (m_strTagShow.contains((String) logInfo.getData(column))) {
-                                m_strTagShow = m_strTagShow.replace((String) logInfo.getData(column), "");
-                            } else {
-                                m_strTagShow += "|" + logInfo.getData(column);
-                            }
+                            appendFilterShowTag((String) logInfo.getData(column));
                             mBaseLogTableListener.postEvent(new EventBus.Event(EventBus.TYPE.EVENT_CHANGE_FILTER_SHOW_TAG));
                         } else if (column == LogFilterTableModel.COLUMN_TIME) {
                             mBaseLogTableListener.postEvent(
@@ -92,7 +87,7 @@ public class LogTable extends BaseLogTable {
                     if (m_bAltPressed) {
                         LogInfo logInfo = ((LogFilterTableModel) getModel()).getRow(row);
                         if (column == LogFilterTableModel.COLUMN_TAG) {
-                            m_strTagRemove += "|" + logInfo.getData(column);
+                            appendFilterRemoveTag((String) logInfo.getData(column));
                             mBaseLogTableListener.postEvent(new EventBus.Event(EventBus.TYPE.EVENT_CHANGE_FILTER_REMOVE_TAG));
                         } else if (column == LogFilterTableModel.COLUMN_TIME) {
                             mBaseLogTableListener.postEvent(

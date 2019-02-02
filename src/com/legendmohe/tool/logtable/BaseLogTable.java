@@ -5,6 +5,7 @@ import com.legendmohe.tool.ILogRenderResolver;
 import com.legendmohe.tool.LogInfo;
 import com.legendmohe.tool.T;
 import com.legendmohe.tool.Utils;
+import com.legendmohe.tool.logtable.model.LogFilterTableModel;
 import com.legendmohe.tool.parser.LogCatParser;
 
 import java.awt.Component;
@@ -461,7 +462,6 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
         return sbf.toString();
     }
 
-
     @Override
     public void focusGained(FocusEvent arg0) {
     }
@@ -643,6 +643,30 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
     public long GetFilterToTime() {
         return mFilterToTime;
     }
+
+    ///////////////////////////////////append///////////////////////////////////
+
+    public void appendFilterShowTag(String newTag) {
+        if (m_strTagShow.contains("|" + newTag)) {
+            m_strTagShow = m_strTagShow.replace("|" + newTag, "");
+        } else if (m_strTagShow.contains(newTag)) {
+            m_strTagShow = m_strTagShow.replace(newTag, "");
+        } else {
+            m_strTagShow += "|" + newTag;
+        }
+    }
+
+    public void appendFilterRemoveTag(String newTag) {
+        if (m_strTagRemove.contains("|" + newTag)) {
+            m_strTagRemove = m_strTagRemove.replace("|" + newTag, "");
+        } else if (m_strTagRemove.contains(newTag)) {
+            m_strTagRemove = m_strTagRemove.replace(newTag, "");
+        } else {
+            m_strTagRemove += "|" + newTag;
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////
 
     public void gotoNextBookmark() {
         int nSeletectRow = getSelectedRow();

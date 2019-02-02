@@ -1,6 +1,6 @@
 package com.legendmohe.tool;
 
-import com.legendmohe.tool.logtable.LogFilterTableModel;
+import com.legendmohe.tool.logtable.model.LogFilterTableModel;
 
 import java.awt.Color;
 

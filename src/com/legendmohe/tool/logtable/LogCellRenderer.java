@@ -3,6 +3,7 @@ package com.legendmohe.tool.logtable;
 import com.legendmohe.tool.ILogRenderResolver;
 import com.legendmohe.tool.LogInfo;
 import com.legendmohe.tool.config.Constant;
+import com.legendmohe.tool.logtable.model.LogFilterTableModel;
 
 import java.awt.Color;
 import java.awt.Component;

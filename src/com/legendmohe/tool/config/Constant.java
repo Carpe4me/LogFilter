@@ -25,6 +25,9 @@ public class Constant {
     public static final int PARSING_STATUS_READY = 4;
     public static final String DIFF_PROGRAM_PATH = "C:\\Program Files\\KDiff3\\kdiff3.exe";
 
+    public static final int EXT_DIALOG_TYPE_INCLUDE_TAG = 0;
+    public static final int EXT_DIALOG_TYPE_EXCLUDE_TAG = 1;
+
     ///////////////////////////////////logcat command///////////////////////////////////
 
     public static final String COMBO_ANDROID = "Android";
