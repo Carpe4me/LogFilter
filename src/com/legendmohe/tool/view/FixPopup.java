@@ -124,7 +124,7 @@ public class FixPopup extends JPanel {
 
     private JTextArea createMultiLineLabel(String message) {
         JTextArea textArea = new JTextArea(message);
-        textArea.setEditable(true);
+        textArea.setEditable(false);
         textArea.setCursor(null);
         textArea.setOpaque(false);
         textArea.setFocusable(true);
