@@ -188,9 +188,6 @@ public class FixPopup extends JPanel {
         FontMetrics fm = textArea.getFontMetrics(textArea.getFont());
         int textWidth = SwingUtilities.computeStringWidth(fm, textArea.getText());
         int textHeight = fm.getHeight();
-//        textArea.setSize(Short.MAX_VALUE,Short.MAX_VALUE);
-//        int textWidth =  textArea.getPreferredSize().width;
-//        int textHeight =  textArea.getPreferredSize().height;
 
         int targetWidth = Math.max(minWidth, Math.min(width, textWidth));
         double targetHeight = textHeight * Math.ceil((double) textWidth / (double) targetWidth);

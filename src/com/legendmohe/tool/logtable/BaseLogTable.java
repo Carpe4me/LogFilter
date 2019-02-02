@@ -842,7 +842,7 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
                         mTimer = new Timer(CELL_HOVER_DELAY, new ActionListener() {
                             @Override
                             public void actionPerformed(ActionEvent e) {
-                                onHoverTrigger(value, row, col);
+                                onHoverTriggerShow(value, row, col);
 //                                    Utils.showMsgDialog(BaseLogTable.this, "trigger!");
                             }
                         });
@@ -859,7 +859,7 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
                 if (mTimer != null) {
                     mTimer.stop();
                     mTimer = null;
-                    onHoverTimerStop();
+                    onHoverTriggerHide();
                 }
             }
         };
@@ -868,16 +868,16 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
         addFocusListener(new FocusAdapter() {
             @Override
             public void focusLost(FocusEvent e) {
-                onHoverTimerStop();
+                onHoverTriggerHide();
             }
         });
     }
 
-    protected void onHoverTrigger(Object value, int row, int col) {
+    protected void onHoverTriggerShow(Object value, int row, int col) {
 
     }
 
-    protected void onHoverTimerStop() {
+    protected void onHoverTriggerHide() {
 
     }
 

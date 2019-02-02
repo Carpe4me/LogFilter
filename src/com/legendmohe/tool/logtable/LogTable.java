@@ -302,13 +302,13 @@ public class LogTable extends BaseLogTable {
     private List<FixPopup> mMsgTipsPopups = new ArrayList<>();
 
     @Override
-    protected void onHoverTrigger(Object value, int row, int col) {
+    protected void onHoverTriggerShow(Object value, int row, int col) {
         hidePopups();
         showPopup(value, row, col);
     }
 
     @Override
-    protected void onHoverTimerStop() {
+    protected void onHoverTriggerHide() {
         // 让popup的mouse adapter先执行，否则isMouseEntered()无效
         EventQueue.invokeLater(new Runnable() {
             @Override
