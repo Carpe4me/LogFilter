@@ -13,6 +13,9 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.JMenuItem;
@@ -294,20 +297,12 @@ public class LogTable extends BaseLogTable {
 
     private static final int FIX_POPUP_WIDTH = 350;
 
-    private FixPopup mMsgTipsPopup;
+    private List<FixPopup> mMsgTipsPopups = new ArrayList<>();
 
     @Override
     protected void onHoverTrigger(Object value) {
-        Point location = MouseInfo.getPointerInfo().getLocation();
-//        SwingUtilities.convertPointFromScreen(location, this);
-
-        if (mMsgTipsPopup != null) {
-            mMsgTipsPopup.hidePopup();
-            mMsgTipsPopup = null;
-        }
-
-        mMsgTipsPopup = new FixPopup(String.valueOf(value), FIX_POPUP_WIDTH);
-        mMsgTipsPopup.showPopup(this, location.x, location.y + 1);
+        hidePopups();
+        showPopup(value);
     }
 
     @Override
@@ -316,11 +311,26 @@ public class LogTable extends BaseLogTable {
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                if (mMsgTipsPopup != null && !mMsgTipsPopup.isMouseEntered()) {
-                    mMsgTipsPopup.hidePopup();
-                    mMsgTipsPopup = null;
-                }
+                hidePopups();
             }
         });
+    }
+
+    private void hidePopups() {
+        Iterator<FixPopup> iter = mMsgTipsPopups.iterator();
+        while (iter.hasNext()) {
+            FixPopup popup = iter.next();
+            if (popup != null && !popup.isMouseEntered() && !popup.isPinned()) {
+                popup.hidePopup();
+                iter.remove();
+            }
+        }
+    }
+
+    private void showPopup(Object value) {
+        Point location = MouseInfo.getPointerInfo().getLocation();
+        FixPopup popup = new FixPopup(String.valueOf(value), FIX_POPUP_WIDTH);
+        popup.showPopup(this, location.x, location.y + 1);
+        mMsgTipsPopups.add(popup);
     }
 }

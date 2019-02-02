@@ -5,10 +5,14 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.Popup;
@@ -21,7 +25,9 @@ import javax.swing.border.EmptyBorder;
  */
 public class FixPopup extends JPanel {
 
-    private static final int PANEL_PADDING = 4;
+    private static final int CONTENT_PANEL_PADDING = 4;
+
+    private static final int TOOLBAR_PANEL_PADDING = 4;
 
     private static final int BORDER_THICKNESS = 1;
 
@@ -30,17 +36,20 @@ public class FixPopup extends JPanel {
     // 鼠标是否悬停在上面
     private boolean mIsMouseEntered;
 
+    private boolean mIsPinned;
+
     public FixPopup(String message, int maxWidth) {
-        setLayout(new BorderLayout());
-        setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Color.DARK_GRAY, BORDER_THICKNESS, true),
-                new EmptyBorder(PANEL_PADDING, PANEL_PADDING, PANEL_PADDING, PANEL_PADDING)
-        ));
-        setBackground(Color.LIGHT_GRAY);
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, BORDER_THICKNESS, true));
+        setBackground(Color.WHITE);
+
+        JPanel btnPanel = new JPanel(new BorderLayout());
+        setupToolBar(btnPanel);
+        add(btnPanel);
 
         JTextArea textArea = createMultiLineLabel(message);
+        setupTextArea(textArea, maxWidth);
         add(textArea);
-        setSize(textArea, maxWidth);
 
         MouseAdapter mouseAdapter = new MouseAdapter() {
             @Override
@@ -55,8 +64,6 @@ public class FixPopup extends JPanel {
         };
         addMouseListener(mouseAdapter);
         addMouseMotionListener(mouseAdapter);
-        textArea.addMouseListener(mouseAdapter);
-        textArea.addMouseMotionListener(mouseAdapter);
     }
 
     private JTextArea createMultiLineLabel(String message) {
@@ -71,23 +78,57 @@ public class FixPopup extends JPanel {
         return textArea;
     }
 
-    private void setSize(JTextArea textArea, int width) {
+    private void setupToolBar(JPanel btnPanel) {
+        btnPanel.setBorder(null);
+        btnPanel.setBackground(null);
+        btnPanel.setOpaque(false);
+        btnPanel.setBorder(new EmptyBorder(TOOLBAR_PANEL_PADDING, TOOLBAR_PANEL_PADDING, 0, TOOLBAR_PANEL_PADDING));
+
+        JButton pinBtn = new JButton();
+        setupPinButton(pinBtn);
+        btnPanel.add(pinBtn, BorderLayout.EAST);
+    }
+
+    private void setupPinButton(JButton pinBtn) {
+        pinBtn.setBorder(null);
+        pinBtn.setBorderPainted(false);
+        pinBtn.setContentAreaFilled(false);
+        pinBtn.setOpaque(false);
+        pinBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                mIsPinned = !mIsPinned;
+                syncPinBtnState(pinBtn);
+            }
+        });
+        syncPinBtnState(pinBtn);
+    }
+
+    private void syncPinBtnState(JButton pinBtn) {
+        pinBtn.setText(mIsPinned ? "unpin" : "pin");
+        pinBtn.setForeground(mIsPinned ? Color.DARK_GRAY : Color.lightGray);
+    }
+
+    private void setupTextArea(JTextArea textArea, int width) {
         FontMetrics fm = textArea.getFontMetrics(textArea.getFont());
         int textWidth = SwingUtilities.computeStringWidth(fm, textArea.getText());
-
         Dimension d = new Dimension();
-        d.setSize(Math.min(width, textWidth) + (PANEL_PADDING + BORDER_THICKNESS) * 2, fm.getHeight() * Math.ceil((double) textWidth / (double) width) + (PANEL_PADDING + BORDER_THICKNESS) * 2);
+        d.setSize(Math.min(width, textWidth) + (CONTENT_PANEL_PADDING + BORDER_THICKNESS) * 2, fm.getHeight() * Math.ceil((double) textWidth / (double) width) + (CONTENT_PANEL_PADDING + BORDER_THICKNESS) * 2);
 
-        setPreferredSize(d);
+        textArea.setPreferredSize(d);
+        textArea.setBorder(new EmptyBorder(CONTENT_PANEL_PADDING, CONTENT_PANEL_PADDING, CONTENT_PANEL_PADDING, CONTENT_PANEL_PADDING));
     }
 
     public boolean isMouseEntered() {
         return mIsMouseEntered;
     }
 
+    public boolean isPinned() {
+        return mIsPinned;
+    }
+
     public void showPopup(Component owner, int x, int y) {
         hidePopup();
-        mInternalPopup = PopupFactory.getSharedInstance().getPopup(owner, this, x, y);
+        mInternalPopup = new PopupFactory().getPopup(owner, this, x, y);
         mInternalPopup.show();
     }
 
