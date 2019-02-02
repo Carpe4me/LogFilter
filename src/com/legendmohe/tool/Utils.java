@@ -1,5 +1,6 @@
 package com.legendmohe.tool;
 
+import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -17,6 +18,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 import javax.swing.AbstractAction;
+import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.event.UndoableEditListener;
@@ -200,5 +202,9 @@ public class Utils {
                 KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_DOWN_MASK), UNDO_ACTION);
         pTextComponent.getInputMap().put(
                 KeyStroke.getKeyStroke(KeyEvent.VK_Y, InputEvent.CTRL_DOWN_MASK), REDO_ACTION);
+    }
+
+    public static void showMsgDialog(Component component, String s) {
+        JOptionPane.showMessageDialog(component, s);
     }
 }

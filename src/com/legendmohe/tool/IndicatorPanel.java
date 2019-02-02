@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.JCheckBox;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JViewport;
 import javax.swing.border.EmptyBorder;
@@ -103,10 +102,6 @@ public class IndicatorPanel extends JPanel {
                 m_LogFilterMain.m_logScrollVPane.dispatchEvent(e);
             }
         });
-    }
-
-    public void testMsg(String strMsg) {
-        JOptionPane.showMessageDialog(this, strMsg);
     }
 
     public void paintComponent(Graphics g) {

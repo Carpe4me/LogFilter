@@ -13,6 +13,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.InputEvent;
@@ -29,6 +30,7 @@ import javax.swing.JTable;
 import javax.swing.JViewport;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
@@ -98,11 +100,11 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
         setIntercellSpacing(new Dimension(0, 0));
         setShowGrid(false);
 
-//        setFont(new Font("monospaced", Font.BOLD, 12));
-
         for (int iIndex = 0; iIndex < getColumnCount(); iIndex++) {
             getColumnModel().getColumn(iIndex).setCellRenderer(new LogCellRenderer(this, this));
         }
+
+        initHoverListener();
     }
 
 
@@ -805,6 +807,78 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
             showRowCenterIfNotInRect(minIdx, true);
             return;
         }
+    }
+
+    ///////////////////////////////////cell hover///////////////////////////////////
+
+    private static final int CELL_HOVER_DELAY = 1500;
+
+    private void initHoverListener() {
+        MouseAdapter mouseAdapter = new MouseAdapter() {
+
+            private Timer mTimer;
+            private Point mHintCell;
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                stopHoverTimer();
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                stopHoverTimer();
+            }
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                Point p = e.getPoint();
+                int row = rowAtPoint(p);
+                int col = columnAtPoint(p);
+                if ((row > -1 && row < getRowCount()) && (col > -1 && col < getColumnCount())) {
+                    if (mHintCell == null || (mHintCell.x != col || mHintCell.y != row)) {
+                        mHintCell = new Point(col, row);
+                        Object value = getValueAt(row, col);
+                        stopHoverTimer();
+                        mTimer = new Timer(CELL_HOVER_DELAY, new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                onHoverTrigger(value);
+//                                    Utils.showMsgDialog(BaseLogTable.this, "trigger!");
+                            }
+                        });
+                        mTimer.setRepeats(false);
+                        mTimer.setCoalesce(true);
+                        mTimer.start();
+                    }
+                } else {
+                    stopHoverTimer();
+                }
+            }
+
+            private void stopHoverTimer() {
+                if (mTimer != null) {
+                    mTimer.stop();
+                    mTimer = null;
+                    onHoverTimerStop();
+                }
+            }
+        };
+        addMouseListener(mouseAdapter);
+        addMouseMotionListener(mouseAdapter);
+        addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                onHoverTimerStop();
+            }
+        });
+    }
+
+    protected void onHoverTrigger(Object value) {
+
+    }
+
+    protected void onHoverTimerStop() {
+
     }
 
     ///////////////////////////////////classes///////////////////////////////////

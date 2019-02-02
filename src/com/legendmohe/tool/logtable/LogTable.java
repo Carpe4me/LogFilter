@@ -5,7 +5,10 @@ import com.legendmohe.tool.LogFilterMain;
 import com.legendmohe.tool.LogInfo;
 import com.legendmohe.tool.T;
 import com.legendmohe.tool.diff.DiffService;
+import com.legendmohe.tool.view.FixPopup;
 
+import java.awt.EventQueue;
+import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
@@ -285,5 +288,39 @@ public class LogTable extends BaseLogTable {
 
     public void setDiffService(DiffService mDiffService) {
         this.mDiffService = mDiffService;
+    }
+
+    ///////////////////////////////////hover///////////////////////////////////
+
+    private static final int FIX_POPUP_WIDTH = 350;
+
+    private FixPopup mMsgTipsPopup;
+
+    @Override
+    protected void onHoverTrigger(Object value) {
+        Point location = MouseInfo.getPointerInfo().getLocation();
+//        SwingUtilities.convertPointFromScreen(location, this);
+
+        if (mMsgTipsPopup != null) {
+            mMsgTipsPopup.hidePopup();
+            mMsgTipsPopup = null;
+        }
+
+        mMsgTipsPopup = new FixPopup(String.valueOf(value), FIX_POPUP_WIDTH);
+        mMsgTipsPopup.showPopup(this, location.x, location.y + 1);
+    }
+
+    @Override
+    protected void onHoverTimerStop() {
+        // 让popup的mouse adapter先执行，否则isMouseEntered()无效
+        EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                if (mMsgTipsPopup != null && !mMsgTipsPopup.isMouseEntered()) {
+                    mMsgTipsPopup.hidePopup();
+                    mMsgTipsPopup = null;
+                }
+            }
+        });
     }
 }
