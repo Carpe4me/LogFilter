@@ -169,15 +169,15 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
         if (Constant.COLOR_HIGHLIGHT != null && Constant.COLOR_HIGHLIGHT.length > 0) {
             strText = highLightCell(strText, mResolver.GetHighlight(), Constant.COLOR_HIGHLIGHT, true);
         } else {
-            strText = highLightCell(strText, mResolver.GetHighlight(), new String[]{"#00FF00"}, true);
+            strText = highLightCell(strText, mResolver.GetHighlight(), new String[]{"00FF00"}, true);
         }
 
         if (columnIndex == LogFilterTableModel.COLUMN_MESSAGE || columnIndex == LogFilterTableModel.COLUMN_TAG) {
             String strFind = columnIndex == LogFilterTableModel.COLUMN_MESSAGE ? mResolver.GetFilterFind() : mResolver.GetFilterShowTag();
-            strText = highLightCell(strText, strFind, new String[]{"#FF0000"}, false);
+            strText = highLightCell(strText, strFind, new String[]{"FF0000"}, false);
         }
 
-        strText = highLightCell(strText, mResolver.GetSearchHighlight(), new String[]{"#FFFF00"}, true);
+        strText = highLightCell(strText, mResolver.GetSearchHighlight(), new String[]{"FFFF00"}, true);
         if (mIsDataChanged)
             strText = "<html><nobr>" + strText + "</nobr></html>";
 
