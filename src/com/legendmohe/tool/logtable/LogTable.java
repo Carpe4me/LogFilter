@@ -300,9 +300,9 @@ public class LogTable extends BaseLogTable {
     private List<FixPopup> mMsgTipsPopups = new ArrayList<>();
 
     @Override
-    protected void onHoverTrigger(Object value) {
+    protected void onHoverTrigger(Object value, int row, int col) {
         hidePopups();
-        showPopup(value);
+        showPopup(value, row, col);
     }
 
     @Override
@@ -327,10 +327,24 @@ public class LogTable extends BaseLogTable {
         }
     }
 
-    private void showPopup(Object value) {
+    private void showPopup(Object value, int row, int col) {
         Point location = MouseInfo.getPointerInfo().getLocation();
-        FixPopup popup = new FixPopup(String.valueOf(value), FIX_POPUP_WIDTH);
+        FixPopup popup = new FixPopup(String.valueOf(value), FIX_POPUP_WIDTH, row);
+        popup.setListener(new FixPopup.Listener() {
+            @Override
+            public void onGoButtonClick(FixPopup popup) {
+                handlePopupGoButtonClicked(popup);
+            }
+        });
         popup.showPopup(this, location.x, location.y + 1);
         mMsgTipsPopups.add(popup);
+    }
+
+    private void handlePopupGoButtonClicked(FixPopup popup) {
+        Object context = popup.getContext();
+        if (context instanceof Integer) {
+            Integer row = (Integer) context;
+            changeSelection(row, 0, false, false);
+        }
     }
 }

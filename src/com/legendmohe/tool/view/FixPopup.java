@@ -38,6 +38,8 @@ public class FixPopup extends JPanel {
 
     private Popup mInternalPopup;
 
+    private Listener mListener;
+
     // 鼠标是否悬停在上面
     private boolean mIsMouseEntered;
 
@@ -46,10 +48,14 @@ public class FixPopup extends JPanel {
     // popup内部的component，用于drag
     private Component mInternalPopupComponent;
 
-    public FixPopup(String message, int maxWidth) {
+    private Object mContext;
+
+    public FixPopup(String message, int maxWidth, Object context) {
+        mContext = context;
+
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, BORDER_THICKNESS, true));
-        setBackground(Color.WHITE);
+        setBackground(new Color(0xDAD8E5));
 
         JPanel btnPanel = new JPanel(new BorderLayout());
         setupToolBar(btnPanel);
@@ -81,7 +87,7 @@ public class FixPopup extends JPanel {
 
             @Override
             public void mouseDragged(MouseEvent e) {
-                if (mInternalPopupComponent != null) {
+                if (mInternalPopupComponent != null && mIsPinned) {
                     Point point = SwingUtilities.convertPoint(FixPopup.this, e.getX(), e.getY(), mInternalPopupComponent.getParent());
                     mInternalPopupComponent.setLocation(point.x - mMouseX, point.y - mMouseY);
                 }
@@ -112,6 +118,10 @@ public class FixPopup extends JPanel {
         JButton pinBtn = new JButton();
         setupPinButton(pinBtn);
         btnPanel.add(pinBtn, BorderLayout.EAST);
+
+        JButton goButton = new JButton();
+        setupGoButton(goButton);
+        btnPanel.add(goButton, BorderLayout.WEST);
     }
 
     private void setupPinButton(JButton pinBtn) {
@@ -128,9 +138,25 @@ public class FixPopup extends JPanel {
         syncPinBtnState(pinBtn);
     }
 
+    private void setupGoButton(JButton goButton) {
+        goButton.setText("<<");
+        goButton.setBorder(null);
+        goButton.setBorderPainted(false);
+        goButton.setContentAreaFilled(false);
+        goButton.setOpaque(false);
+        goButton.setForeground(Color.GRAY);
+        goButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (mListener != null) {
+                    mListener.onGoButtonClick(FixPopup.this);
+                }
+            }
+        });
+    }
+
     private void syncPinBtnState(JButton pinBtn) {
         pinBtn.setText(mIsPinned ? "unpin" : "pin");
-        pinBtn.setForeground(mIsPinned ? Color.DARK_GRAY : Color.lightGray);
+        pinBtn.setForeground(mIsPinned ? Color.DARK_GRAY : Color.GRAY);
     }
 
     private void setupTextArea(JTextArea textArea, int width) {
@@ -141,6 +167,19 @@ public class FixPopup extends JPanel {
 
         textArea.setPreferredSize(d);
         textArea.setBorder(new EmptyBorder(CONTENT_PANEL_PADDING, CONTENT_PANEL_PADDING, CONTENT_PANEL_PADDING, CONTENT_PANEL_PADDING));
+
+        MouseAdapter mouseAdapter = new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                mIsMouseEntered = true;
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                mIsMouseEntered = false;
+            }
+        };
+        textArea.addMouseListener(mouseAdapter);
     }
 
     public boolean isMouseEntered() {
@@ -179,5 +218,19 @@ public class FixPopup extends JPanel {
             mInternalPopup = null;
             mInternalPopupComponent = null;
         }
+    }
+
+    public void setListener(Listener listener) {
+        mListener = listener;
+    }
+
+    public Object getContext() {
+        return mContext;
+    }
+
+    ///////////////////////////////////listener///////////////////////////////////
+
+    public interface Listener {
+        void onGoButtonClick(FixPopup popup);
     }
 }
