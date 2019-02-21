@@ -61,10 +61,10 @@ public class BigoXLogParser extends AbstractLogParser {
     处理不规范的日期格式
      */
     private long getTimestampFromTime(String time) throws ParseException {
-        if (time.contains(".0")) {
+        if (time.contains("+") || time.contains("-")) {
             int indexOfPlus = time.indexOf(" +");
             int headIndex = indexOfPlus > -1 ? indexOfPlus : time.indexOf(" -");
-            int tailIndex = time.indexOf(".0");
+            int tailIndex = time.indexOf(".");
             if (tailIndex - headIndex == 3) {
                 if (indexOfPlus > -1) {
                     time = time.replace(" +", " +0");
@@ -72,7 +72,7 @@ public class BigoXLogParser extends AbstractLogParser {
                     time = time.replace(" -", " -0");
                 }
             }
-            time = time.replaceFirst("\\.0", "00");
+            time = time.replaceFirst("\\.(\\d)", "$10");
         }
         return TIMESTAMP_FORMAT_WITH_TIMEZONE.parse(time).getTime();
     }
