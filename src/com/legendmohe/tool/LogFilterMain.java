@@ -46,6 +46,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -97,6 +99,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
@@ -300,6 +303,8 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
     @FieldSaveState
     private Set<String> mFilterTagHistory = new HashSet<>();
 
+    private Map<Component, List<String>> mRecentlyInputHistory = new HashMap<>();
+
     ///////////////////////////////////main///////////////////////////////////
 
     public static void main(final String args[]) {
@@ -339,6 +344,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         setDnDListener();
         addChangeListener();
         addUndoListener();
+        bindRecentlyPopup();
         startFilterParse();
 
         setVisible(true);
@@ -1083,6 +1089,75 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         Utils.makeUndoable(m_tfGoto);
         Utils.makeUndoable(m_tfToTimeTag);
         Utils.makeUndoable(m_tfFromTimeTag);
+    }
+
+    private void bindRecentlyPopup() {
+        bindHistoryInput(m_tfSearch);
+        bindHistoryInput(m_tfHighlight);
+        bindHistoryInput(m_tfIncludeWord);
+        bindHistoryInput(m_tfExcludeWord);
+        bindHistoryInput(m_tfShowTag);
+        bindHistoryInput(m_tfRemoveTag);
+        bindHistoryInput(m_tfShowPid);
+        bindHistoryInput(m_tfShowTid);
+        bindHistoryInput(m_tfBookmarkTag);
+        bindHistoryInput(m_tfFontSize);
+        bindHistoryInput(m_tfGoto);
+        bindHistoryInput(m_tfToTimeTag);
+        bindHistoryInput(m_tfFromTimeTag);
+    }
+
+    /*
+    添加输入历史功能
+     */
+    private void bindHistoryInput(JTextField textField) {
+        if (!mRecentlyInputHistory.containsKey(textField)) {
+            mRecentlyInputHistory.put(textField, new ArrayList<>());
+        }
+
+        textField.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                List<String> historyInputList = mRecentlyInputHistory.get(textField);
+                if (historyInputList == null || historyInputList.size() <= 0)
+                    return;
+
+                // build poup menu
+                final JPopupMenu popup = new JPopupMenu();
+                for (String his : historyInputList) {
+                    // New project menu item
+                    JMenuItem menuItem = new JMenuItem(his);
+                    menuItem.addActionListener(new ActionListener() {
+
+                        public void actionPerformed(ActionEvent e) {
+                            historyInputList.remove(his);
+                            historyInputList.add(0, his);
+                            textField.setText(his);
+                            popup.setVisible(false);
+                        }
+                    });
+                    popup.add(menuItem);
+                }
+                if (!popup.isVisible()) {
+                    popup.show(textField,
+                            0, textField.getHeight());
+                    textField.requestFocus();
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                super.focusLost(e);
+                List<String> historyInputList = mRecentlyInputHistory.get(textField);
+                if (historyInputList == null)
+                    return;
+                String newContent = textField.getText();
+                if (newContent != null && newContent.length() > 0 && !historyInputList.contains(newContent)) {
+                    historyInputList.remove(newContent);
+                    historyInputList.add(0, newContent);
+                }
+            }
+        });
     }
 
     Component getFilterPanel() {
