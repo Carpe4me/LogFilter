@@ -52,6 +52,8 @@ import java.awt.event.InputEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
@@ -1114,43 +1116,50 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         if (!mRecentlyInputHistory.containsKey(textField)) {
             mRecentlyInputHistory.put(textField, new ArrayList<>());
         }
-
-        textField.addFocusListener(new FocusAdapter() {
+        // build poup menu
+        final JPopupMenu popup = new JPopupMenu();
+        textField.addMouseListener(new MouseAdapter() {
             @Override
-            public void focusGained(FocusEvent e) {
-                List<String> historyInputList = mRecentlyInputHistory.get(textField);
-                if (historyInputList == null || historyInputList.size() <= 0)
-                    return;
-
-                // build poup menu
-                final JPopupMenu popup = new JPopupMenu();
-                for (String his : historyInputList) {
-                    // New project menu item
-                    JMenuItem menuItem = new JMenuItem(his);
-                    menuItem.addActionListener(new ActionListener() {
-
-                        public void actionPerformed(ActionEvent e) {
-                            historyInputList.remove(his);
-                            historyInputList.add(0, his);
-                            textField.setText(his);
-                            popup.setVisible(false);
-                        }
-                    });
-                    popup.add(menuItem);
-                }
+            public void mouseClicked(MouseEvent e) {
                 if (!popup.isVisible()) {
+                    List<String> historyInputList = mRecentlyInputHistory.get(textField);
+                    if (historyInputList == null || historyInputList.size() <= 0)
+                        return;
+                    popup.removeAll();
+                    for (String his : historyInputList) {
+                        // New project menu item
+                        JMenuItem menuItem = new JMenuItem(his);
+                        menuItem.addActionListener(new ActionListener() {
+
+                            public void actionPerformed(ActionEvent e) {
+                                historyInputList.remove(his);
+                                historyInputList.add(0, his);
+                                textField.setText(his);
+                                popup.setVisible(false);
+                            }
+                        });
+                        popup.add(menuItem);
+                    }
                     popup.show(textField,
                             0, textField.getHeight());
                     textField.requestFocus();
                 }
             }
+        });
+
+        textField.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+            }
 
             @Override
             public void focusLost(FocusEvent e) {
-                super.focusLost(e);
                 List<String> historyInputList = mRecentlyInputHistory.get(textField);
                 if (historyInputList == null)
                     return;
+                if (historyInputList.size() > 0 && !popup.isVisible()) {
+                    return;
+                }
                 String newContent = textField.getText();
                 if (newContent != null && newContent.length() > 0 && !historyInputList.contains(newContent)) {
                     historyInputList.remove(newContent);
