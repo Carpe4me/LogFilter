@@ -870,6 +870,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         m_hmMarkedInfoFiltered.clear();
         m_hmErrorAll.clear();
         m_hmErrorFiltered.clear();
+        LogFlowManager.getInstance().reset();
     }
 
     Component getIndicatorPanel() {
@@ -1028,6 +1029,8 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
                                     m_arLogInfoFiltered.size());
                 }
             }
+
+            LogFlowManager.getInstance().check(logInfo);
         }
     }
 
@@ -3248,33 +3251,33 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         // test
 //        LogInfo logInfo1 = new LogInfo();
 //        logInfo1.setLine(1);
-//        logInfo1.setTag("RoomPro");
-//        logInfo1.setMessage("enterroom");
+//        logInfo1.setTag("RoomProXLog");
+//        logInfo1.setMessage("enterRoom");
 //
 //        LogInfo logInfo2 = new LogInfo();
 //        logInfo2.setLine(2);
-//        logInfo2.setTag("RoomPro");
-//        logInfo2.setMessage("leaveroom");
+//        logInfo2.setTag("RoomProXLog");
+//        logInfo2.setMessage("leaveRoom");
 //
 //        LogInfo logInfo3 = new LogInfo();
 //        logInfo3.setLine(3);
-//        logInfo3.setTag("RoomPro");
-//        logInfo3.setMessage("enterroom");
+//        logInfo3.setTag("RoomProXLog");
+//        logInfo3.setMessage("enterRoom");
 //
 //        LogInfo logInfo4 = new LogInfo();
 //        logInfo4.setLine(4);
-//        logInfo4.setTag("RoomPro");
-//        logInfo4.setMessage("enterroom");
+//        logInfo4.setTag("RoomProXLog");
+//        logInfo4.setMessage("enterRoom");
 //
 //        LogInfo logInfo5 = new LogInfo();
 //        logInfo5.setLine(5);
-//        logInfo5.setTag("RoomPro");
-//        logInfo5.setMessage("leaveroom");
+//        logInfo5.setTag("RoomProXLog");
+//        logInfo5.setMessage("leaveRoom");
 //
 //        LogInfo logInfo6 = new LogInfo();
 //        logInfo6.setLine(6);
-//        logInfo6.setTag("RoomPro");
-//        logInfo6.setMessage("leaveroom");
+//        logInfo6.setTag("RoomProXLog");
+//        logInfo6.setMessage("leaveRoom");
 //
 //        LogFlowManager.getInstance().check(logInfo1);
 //        LogFlowManager.getInstance().check(logInfo2);

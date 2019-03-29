@@ -1,17 +1,18 @@
 {
   "name": "enter live room",
   "desc": "enter live room process",
+  "recursive": true,
   "flow": [
     {
-      "tag": "RoomPro",
+      "tag": "RoomProXLog",
       "match_type": "contains",
-      "pattern": "enterroom",
+      "pattern": "enterRoom",
       "desc": "enter room"
     },
     {
-      "tag": "RoomPro",
+      "tag": "RoomProXLog",
       "match_type": "contains",
-      "pattern": "leaveroom",
+      "pattern": "leaveRoom",
       "desc": "leave room"
     }
   ]

@@ -77,6 +77,7 @@ public class LogFlowManager {
             FlowPatternHolder holder = new FlowPatternHolder();
             holder.name = configJson.getString("name");
             holder.desc = configJson.getString("desc");
+            holder.supportRecursion = configJson.getBoolean("recursive");
 
             JSONArray flow = configJson.getJSONArray("flow");
             for (int i = 0; i < flow.length(); i++) {
@@ -124,6 +125,10 @@ public class LogFlowManager {
                     }
                     return i;
                 } else if (patternHolder.matchFirst(logInfo)) {
+                    if (flowPatternItem != null && !patternHolder.supportRecursion) {
+                        // 不支持嵌套匹配，这里标记上一个isCompleted为false，然后继续
+                        flowStack.breakResultStack();
+                    }
                     flowStack.push(new Pair<>(0, logInfo));
                     flowStack.markCurrentFlowResults(0, logInfo, patternHolder);
                     if (patternHolder.patterns.size() == 1) {
@@ -188,6 +193,17 @@ public class LogFlowManager {
             }
         }
 
+        void breakResultStack() {
+            while (peek() != null && peek().getKey() >= 0) {
+                pop();
+            }
+            if (!curFlowResult.empty()) {
+                FlowResult pop = curFlowResult.pop();
+                pop.isCompleted = false;
+                flowResults.add(pop);
+            }
+        }
+
         void markCurrentFlowResults(int idx, LogInfo info, FlowPatternHolder holder) {
             curFlowResult.peek().infoPair.add(
                     new Pair<>(
@@ -206,6 +222,7 @@ public class LogFlowManager {
     private static class FlowPatternHolder {
         String name;
         String desc;
+        boolean supportRecursion;
 
         List<FlowPatternItem> patterns = new ArrayList<>();
 
@@ -225,6 +242,7 @@ public class LogFlowManager {
             return "FlowPatternHolder{" +
                     "name='" + name + '\'' +
                     ", desc='" + desc + '\'' +
+                    ", supportRecursion=" + supportRecursion +
                     ", patterns=" + patterns +
                     '}';
         }
