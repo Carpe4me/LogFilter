@@ -17,6 +17,7 @@ import com.legendmohe.tool.parser.ILogParser;
 import com.legendmohe.tool.parser.LogCatParser;
 import com.legendmohe.tool.view.DumpsysViewDialog;
 import com.legendmohe.tool.view.ListDialog;
+import com.legendmohe.tool.view.LogFlowDialog;
 import com.legendmohe.tool.view.PackageViewDialog;
 import com.legendmohe.tool.view.RecentFileMenu;
 import com.legendmohe.tool.view.RowsContentDialog;
@@ -528,9 +529,19 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         parserBG.add(bigoParserMenu);
         parserBG.add(bigoXLogParserMenu);
 
+        JMenu flowMenu = new JMenu("Flow");
+        JMenuItem showAllFlow = new JMenuItem("show all log flow");
+        showAllFlow.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                LogFilterMain.this.showAllFlow();
+            }
+        });
+        flowMenu.add(showAllFlow);
+
         menuBar.add(fileMenu);
         menuBar.add(toolsMenu);
         menuBar.add(parserMenu);
+        menuBar.add(flowMenu);
         this.setJMenuBar(menuBar);
     }
 
@@ -851,7 +862,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
     public void showInMarkTable(int selectedRow, int line) {
         synchronized (FILTER_LOCK) {
             LogInfo target = m_arLogInfoAll.get(line);
-            getSubTable().changeSelection(target, false, false);
+            getSubTable().changeSelection(target);
         }
     }
 
@@ -2620,7 +2631,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
             break;
             case EVENT_CHANGE_SELECTION: {
                 LogInfo target = (LogInfo) param.param1;
-                m_tbLogTable.changeSelection(target, false, false);
+                m_tbLogTable.changeSelection(target);
             }
             break;
         }
@@ -3288,6 +3299,26 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
 //
 //        List<LogFlowManager.FlowResult> currentResult = LogFlowManager.getInstance().getCurrentResult();
 //        System.out.println(currentResult);
+    }
+
+    private void showAllFlow() {
+        List<LogFlowManager.FlowResult> flowResults = LogFlowManager.getInstance().getCurrentResult();
+        if (flowResults.size() > 0) {
+            LogFlowDialog dialog = new LogFlowDialog(flowResults);
+            dialog.setListener(new LogFlowDialog.Listener() {
+                @Override
+                public void onOkButtonClicked(LogFlowDialog dialog) {
+                    dialog.hide();
+                }
+
+                @Override
+                public void onItemSelected(LogFlowDialog dialog, LogFlowDialog.ResultItem result) {
+                    // jump to result line
+                    m_tbLogTable.changeSelection(result.logInfo);
+                }
+            });
+            dialog.show();
+        }
     }
 
     //////////////////////////////////////////////////////////////////////

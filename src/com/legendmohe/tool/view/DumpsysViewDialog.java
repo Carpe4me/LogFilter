@@ -292,7 +292,7 @@ public class DumpsysViewDialog extends JDialog implements ActionListener {
                     T.d("vColIndex == -1");
                     return;
                 }
-                packColumn(vColIndex, 1);
+                packColumn(vColIndex, 5);
             }
         }
     }

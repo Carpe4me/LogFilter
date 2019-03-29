@@ -205,6 +205,8 @@ public class LogFlowManager {
         }
 
         void markCurrentFlowResults(int idx, LogInfo info, FlowPatternHolder holder) {
+            curFlowResult.peek().name = holder.name;
+            curFlowResult.peek().desc = holder.desc;
             curFlowResult.peek().infoPair.add(
                     new Pair<>(
                             info,
@@ -219,10 +221,10 @@ public class LogFlowManager {
         }
     }
 
-    private static class FlowPatternHolder {
-        String name;
-        String desc;
-        boolean supportRecursion;
+    public static class FlowPatternHolder {
+        public String name;
+        public String desc;
+        public boolean supportRecursion;
 
         List<FlowPatternItem> patterns = new ArrayList<>();
 
@@ -248,13 +250,13 @@ public class LogFlowManager {
         }
     }
 
-    private static class FlowPatternItem {
-        FlowPatternHolder patternHolder;
+    public static class FlowPatternItem {
+        public FlowPatternHolder patternHolder;
 
-        String tag;
-        String matchType;
-        String pattern;
-        String desc;
+        public String tag;
+        public String matchType;
+        public String pattern;
+        public String desc;
 
         private Matcher<String> mMatcher;
 
@@ -311,8 +313,14 @@ public class LogFlowManager {
     }
 
     public static class FlowResult {
-        boolean isCompleted;
-        List<Pair<LogInfo, FlowPatternItem>> infoPair = new ArrayList<>();
+        public String name;
+        public String desc;
+        public boolean isCompleted;
+
+        public List<Pair<LogInfo, FlowPatternItem>> infoPair = new ArrayList<>();
+
+        FlowResult() {
+        }
 
         @Override
         public String toString() {

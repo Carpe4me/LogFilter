@@ -109,7 +109,7 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
     }
 
 
-    public void changeSelection(LogInfo target, boolean toggle, boolean extend) {
+    public void changeSelection(LogInfo target) {
         for (int nIndex = 0; nIndex < getRowCount(); nIndex++) {
             LogInfo logInfo = ((LogFilterTableModel) getModel()).getRow(nIndex);
             if (logInfo.getLine() != null && target.getLine() == logInfo.getLine()) {
@@ -374,7 +374,7 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
                     T.d("vColIndex == -1");
                     return;
                 }
-                packColumn(vColIndex, 1);
+                packColumn(vColIndex, 5);
             }
         }
     }
