@@ -6,6 +6,7 @@ import com.legendmohe.tool.annotation.TextFieldSaveState;
 import com.legendmohe.tool.annotation.UIStateSaver;
 import com.legendmohe.tool.config.Constant;
 import com.legendmohe.tool.diff.DiffService;
+import com.legendmohe.tool.logflow.LogFlowManager;
 import com.legendmohe.tool.logtable.BaseLogTable;
 import com.legendmohe.tool.logtable.LogTable;
 import com.legendmohe.tool.logtable.SubLogTable;
@@ -361,6 +362,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         loadCmd();
         loadParser();
         initDiffService();
+        initLogFlow();
 
         setTitle(Constant.WINDOW_TITLE + " " + Constant.VERSION);
         addWindowStateListener(new WindowStateListener() {
@@ -3192,6 +3194,60 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         mDiffService = new DiffService(this, port);
         m_tbLogTable.setDiffService(mDiffService);
     }
+
+    ///////////////////////////////////log flow///////////////////////////////////
+
+    private void initLogFlow() {
+        File confDir = new File(Constant.LOG_FLOW_CONFIG_DIR);
+        if (!confDir.exists()) {
+            confDir.mkdirs();
+            T.d("create log flow config directory: " + confDir.getAbsolutePath());
+        }
+        LogFlowManager.getInstance().init(confDir);
+
+        // test
+//        LogInfo logInfo1 = new LogInfo();
+//        logInfo1.setLine(1);
+//        logInfo1.setTag("RoomPro");
+//        logInfo1.setMessage("enterroom");
+//
+//        LogInfo logInfo2 = new LogInfo();
+//        logInfo2.setLine(2);
+//        logInfo2.setTag("RoomPro");
+//        logInfo2.setMessage("leaveroom");
+//
+//        LogInfo logInfo3 = new LogInfo();
+//        logInfo3.setLine(3);
+//        logInfo3.setTag("RoomPro");
+//        logInfo3.setMessage("enterroom");
+//
+//        LogInfo logInfo4 = new LogInfo();
+//        logInfo4.setLine(4);
+//        logInfo4.setTag("RoomPro");
+//        logInfo4.setMessage("enterroom");
+//
+//        LogInfo logInfo5 = new LogInfo();
+//        logInfo5.setLine(5);
+//        logInfo5.setTag("RoomPro");
+//        logInfo5.setMessage("leaveroom");
+//
+//        LogInfo logInfo6 = new LogInfo();
+//        logInfo6.setLine(6);
+//        logInfo6.setTag("RoomPro");
+//        logInfo6.setMessage("leaveroom");
+//
+//        LogFlowManager.getInstance().check(logInfo1);
+//        LogFlowManager.getInstance().check(logInfo2);
+//        LogFlowManager.getInstance().check(logInfo3);
+//        LogFlowManager.getInstance().check(logInfo4);
+//        LogFlowManager.getInstance().check(logInfo5);
+//        LogFlowManager.getInstance().check(logInfo6);
+//
+//        List<LogFlowManager.FlowResult> currentResult = LogFlowManager.getInstance().getCurrentResult();
+//        System.out.println(currentResult);
+    }
+
+    //////////////////////////////////////////////////////////////////////
 
     public LogTable getLogTable() {
         return m_tbLogTable;

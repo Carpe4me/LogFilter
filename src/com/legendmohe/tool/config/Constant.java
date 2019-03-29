@@ -28,6 +28,8 @@ public class Constant {
     public static final int EXT_DIALOG_TYPE_INCLUDE_TAG = 0;
     public static final int EXT_DIALOG_TYPE_EXCLUDE_TAG = 1;
 
+    public static final String LOG_FLOW_CONFIG_DIR = "logflow";
+
     ///////////////////////////////////logcat command///////////////////////////////////
 
     public static final String COMBO_ANDROID = "Android";

@@ -1,8 +1,6 @@
 package com.legendmohe.tool.parser;
 
 import com.legendmohe.tool.LogInfo;
-import com.legendmohe.tool.processor.BaseEventProcessor;
-import com.legendmohe.tool.processor.MessagePostProcessor;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -19,15 +17,7 @@ public class LogCatParser extends AbstractLogParser {
 
     public static final DateFormat TIMESTAMP_FORMAT = new SimpleDateFormat("HH:mm:ss.SSS");
 
-    public MessagePostProcessor mMessagePostProcessor;
-
     public LogCatParser() {
-        loadProcessorFromConfig();
-    }
-
-    @Override
-    public void loadProcessorFromConfig() {
-        mMessagePostProcessor = new BaseEventProcessor();
     }
 
     @Override
@@ -41,7 +31,6 @@ public class LogCatParser extends AbstractLogParser {
         else {
             LogInfo logInfo = new LogInfo();
             logInfo.setMessage(strText);
-            logInfo = mMessagePostProcessor.postProcess(logInfo);
             return logInfo;
         }
     }
@@ -128,7 +117,6 @@ public class LogCatParser extends AbstractLogParser {
                 logInfo.setMessage(logInfo.getMessage() + stk.nextToken(TOKEN_MESSAGE));
             }
             logInfo.setMessage(logInfo.getMessage().replaceFirst("\\): ", ""));
-            logInfo = mMessagePostProcessor.postProcess(logInfo);
         }
         logInfo.setTextColor(getColor(logInfo));
         return logInfo;
@@ -171,7 +159,6 @@ public class LogCatParser extends AbstractLogParser {
                 logInfo.setMessage(logInfo.getMessage() + stk.nextToken(TOKEN_MESSAGE));
             }
             logInfo.setMessage(logInfo.getMessage().replaceFirst("\\): ", ""));
-            logInfo = mMessagePostProcessor.postProcess(logInfo);
         }
         logInfo.setTextColor(getColor(logInfo));
         return logInfo;
@@ -198,7 +185,6 @@ public class LogCatParser extends AbstractLogParser {
                 logInfo.setMessage(logInfo.getMessage() + " " + stk.nextToken(TOKEN_SPACE));
             }
             logInfo.setMessage(logInfo.getMessage().replaceFirst("  ", ""));
-            logInfo = mMessagePostProcessor.postProcess(logInfo);
         }
         logInfo.setTextColor(getColor(logInfo));
         return logInfo;

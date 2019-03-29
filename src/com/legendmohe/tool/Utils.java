@@ -10,6 +10,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileFilter;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -18,6 +20,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -130,10 +133,31 @@ public class Utils {
         return Math.max(l1, l2) - lcss;
     }
 
-    public static String readFileAsString(String filePath) throws IOException {
+    ///////////////////////////////////file///////////////////////////////////
+
+    public static List<File> listFiles(File folder) {
+        List<File> files = new ArrayList<>();
+        if (folder != null && folder.exists() && folder.isDirectory()) {
+            File[] listFiles = folder.listFiles(new FileFilter() {
+                @Override
+                public boolean accept(File pathname) {
+                    return pathname.isFile();
+                }
+            });
+            if (listFiles != null) {
+                files = Arrays.asList(listFiles);
+            }
+        }
+        return files;
+    }
+
+    public static String fileContent2String(File src) throws IOException {
+        if (src == null || !src.exists() || !src.isFile()) {
+            return "";
+        }
         StringBuffer fileData = new StringBuffer();
         BufferedReader reader = new BufferedReader(
-                new FileReader(filePath));
+                new FileReader(src));
         char[] buf = new char[1024];
         int numRead = 0;
         while ((numRead = reader.read(buf)) != -1) {

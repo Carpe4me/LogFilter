@@ -76,9 +76,4 @@ public class BigoXLogParser extends AbstractLogParser {
         }
         return TIMESTAMP_FORMAT_WITH_TIMEZONE.parse(time).getTime();
     }
-
-    @Override
-    public void loadProcessorFromConfig() {
-        // ignore
-    }
 }

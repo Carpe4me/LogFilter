@@ -56,9 +56,4 @@ public class BigoDevLogParser extends AbstractLogParser {
         }
         return logInfo;
     }
-
-    @Override
-    public void loadProcessorFromConfig() {
-        // ignore
-    }
 }

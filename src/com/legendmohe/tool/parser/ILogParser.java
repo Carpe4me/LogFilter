@@ -13,6 +13,4 @@ public interface ILogParser {
     LogInfo parseLog(String strText);
 
     Color getColor(LogInfo logInfo);
-
-    void loadProcessorFromConfig();
 }
