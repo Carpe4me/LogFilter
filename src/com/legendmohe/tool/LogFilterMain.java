@@ -318,8 +318,11 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         if (args != null && args.length > 0) {
             EventQueue.invokeLater(new Runnable() {
                 public void run() {
-                    File argFile = new File(args[0]);
-                    main.parseLogFile(argFile.getAbsoluteFile());
+                    File[] files = new File[args.length];
+                    for (int i = 0; i < args.length; i++) {
+                        files[i] = new File(args[i]).getAbsoluteFile();
+                    }
+                    main.parseLogFile(files);
                 }
             });
         }
@@ -418,7 +421,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         mRecentMenu = new RecentFileMenu("RecentFile", 10) {
             public void onSelectFile(String filePath) {
                 File recentFile = new File(filePath);
-                LogFilterMain.this.parseLogFile(recentFile);
+                LogFilterMain.this.parseLogFile(new File[]{recentFile});
             }
         };
 
@@ -1736,61 +1739,93 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         // m_strProcessCmd = ANDROID_DEFAULT_CMD + m_strLogFileName;
     }
 
-    void parseLogFile(final File file) {
-        if (file == null) {
-            T.e("file == null");
+    void parseLogFile(final File[] files) {
+        if (files == null) {
+            T.e("files == null");
+            return;
+        }
+        if (files.length <= 0) {
+            T.e("files size <= 0");
             return;
         }
 
-        mRecentMenu.addEntry(file.getAbsolutePath());
-
-        setTitle(file.getPath());
+        StringBuilder title = new StringBuilder();
+        for (File file : files) {
+            mRecentMenu.addEntry(file.getAbsolutePath());
+            title.append(file.getName()).append("|");
+        }
+        if (title.length() > 0) {
+            title.deleteCharAt(title.length() - 1);
+        }
+        setTitle(title.toString());
+        // parsing
         new Thread(new Runnable() {
             public void run() {
-                FileInputStream fstream = null;
-                DataInputStream in = null;
-                BufferedReader br = null;
-                int nIndex = 1;
+                setStatus("Parsing");
+                clearData();
+                getLogTable().clearSelection();
+                getSubTable().clearSelection();
 
-                try {
-                    fstream = new FileInputStream(file);
-                    in = new DataInputStream(fstream);
-                    if (m_comboEncode.getSelectedItem().equals("UTF-8"))
-                        br = new BufferedReader(new InputStreamReader(in,
-                                "UTF-8"));
-                    else
-                        br = new BufferedReader(new InputStreamReader(in));
+                List<LogInfo> newLogInfos = new ArrayList<>();
+                for (File file : files) {
+                    FileInputStream fstream = null;
+                    DataInputStream in = null;
+                    BufferedReader br = null;
+                    try {
+                        fstream = new FileInputStream(file);
+                        in = new DataInputStream(fstream);
+                        if (m_comboEncode.getSelectedItem().equals("UTF-8"))
+                            br = new BufferedReader(new InputStreamReader(in,
+                                    "UTF-8"));
+                        else
+                            br = new BufferedReader(new InputStreamReader(in));
 
-                    String strLine;
-
-                    setStatus("Parsing");
-                    clearData();
-                    getLogTable().clearSelection();
-                    getSubTable().clearSelection();
-
-                    while ((strLine = br.readLine()) != null) {
-                        if (!"".equals(strLine.trim())) {
-                            LogInfo logInfo = m_iLogParser.parseLog(strLine);
-                            logInfo.setType(LogInfo.TYPE.SYSTEM);
-                            logInfo.setLine(nIndex++);
-                            addLogInfo(logInfo);
+                        String strLine;
+                        while ((strLine = br.readLine()) != null) {
+                            if (!"".equals(strLine.trim())) {
+                                LogInfo logInfo = m_iLogParser.parseLog(strLine);
+                                logInfo.setType(LogInfo.TYPE.SYSTEM);
+                                if (logInfo.getTag() == null || logInfo.getTag().length() <= 0) {
+                                    if (newLogInfos.size() > 1) {
+                                        LogInfo oldInfo = newLogInfos.get(newLogInfos.size() - 1);
+                                        logInfo.setTimestamp(oldInfo.getTimestamp());
+                                    } else {
+                                        logInfo.setTimestamp(0);
+                                    }
+                                }
+                                newLogInfos.add(logInfo);
+                            }
                         }
+                    } catch (Exception ioe) {
+                        T.e(ioe);
                     }
-                    runFilter();
-                    setStatus("Parse complete");
-                } catch (Exception ioe) {
-                    T.e(ioe);
+                    try {
+                        if (br != null)
+                            br.close();
+                        if (in != null)
+                            in.close();
+                        if (fstream != null)
+                            fstream.close();
+                    } catch (Exception e) {
+                        T.e(e);
+                    }
                 }
-                try {
-                    if (br != null)
-                        br.close();
-                    if (in != null)
-                        in.close();
-                    if (fstream != null)
-                        fstream.close();
-                } catch (Exception e) {
-                    T.e(e);
+                // merge and sort
+                if (files.length > 1) {
+                    newLogInfos.sort(new Comparator<LogInfo>() {
+                        @Override
+                        public int compare(LogInfo o1, LogInfo o2) {
+                            return (int) (o1.getTimestamp() - o2.getTimestamp());
+                        }
+                    });
                 }
+                int lineIdx = 1;
+                for (LogInfo info : newLogInfos) {
+                    info.setLine(lineIdx++);
+                    addLogInfo(info);
+                }
+                runFilter();
+                setStatus("Parse complete");
             }
         }).start();
     }
@@ -1893,12 +1928,16 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
                             List<?> list = (List<?>) (t
                                     .getTransferData(DataFlavor.javaFileListFlavor));
                             Iterator<?> i = list.iterator();
-                            if (i.hasNext()) {
+                            List<File> files = new ArrayList<>();
+                            while (i.hasNext()) {
                                 File file = (File) i.next();
-                                setTitle(file.getPath());
-
+                                if (file.isFile()) {
+                                    files.add(file);
+                                }
+                            }
+                            if (files.size() > 0) {
                                 stopProcess();
-                                parseLogFile(file);
+                                parseLogFile(files.toArray(new File[0]));
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -3045,11 +3084,12 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         if (type == FileType.LOG) {
             fd.setDirectory(m_strLastDir);
         }
+        fd.setMultipleMode(type == FileType.LOG);
         fd.setVisible(true);
         if (fd.getFile() != null) {
             switch (type) {
                 case LOG:
-                    parseLogFile(new File(fd.getDirectory() + fd.getFile()));
+                    parseLogFile(fd.getFiles()); // multi files
                     m_strLastDir = fd.getDirectory();
                     break;
                 case MODE:
