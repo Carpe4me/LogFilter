@@ -15,6 +15,12 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
+ * 日志逻辑流检测
+ *
+ * 1. 读取配置文件
+ * 2. 逐行检测，通过匹配规则驱动状态机变化
+ * 3. 外围逻辑导出结果，显示ui
+ *
  * Created by hexinyu on 2019/3/29.
  */
 public class LogFlowManager {
@@ -94,6 +100,7 @@ public class LogFlowManager {
                 logMassage.matchType = matchType;
                 logMassage.pattern = pattern;
                 logMassage.desc = desc;
+                logMassage.name = msgName;
                 holder.mMassageMap.put(msgName, logMassage);
             }
 
@@ -179,7 +186,7 @@ public class LogFlowManager {
 
         Map<String, LogMassage> mMassageMap = new HashMap<>();
         Map<String, LogState> mStateMap = new HashMap<>();
-        Map<String, Map<String, String>> mLinkDescMap = new HashMap<>();
+        Map<String, Map<String, Map<String, String>>> mLinkDescMap = new HashMap<>();
         List<LogStateLink> mStateLinks = new ArrayList<>();
 
         void initStateMachine() {
@@ -204,12 +211,17 @@ public class LogFlowManager {
 
             // 状态转移
             for (LogStateLink link : mStateLinks) {
-                Map<String, String> toDescMap = mLinkDescMap.get(link.from);
+                Map<String, Map<String, String>> toDescMap = mLinkDescMap.get(link.from);
                 if (toDescMap == null) {
                     toDescMap = new HashMap<>();
                     mLinkDescMap.put(link.from, toDescMap);
                 }
-                toDescMap.put(link.to, link.desc);
+                Map<String, String> msgDescMap = toDescMap.get(link.to);
+                if (msgDescMap == null) {
+                    msgDescMap = new HashMap<>();
+                    toDescMap.put(link.to, msgDescMap);
+                }
+                msgDescMap.put(link.msg, link.desc);
 
                 StateMachine.State fromState = internalStateMap.get(link.from);
                 StateMachine.State toState = internalStateMap.get(link.to);
@@ -253,6 +265,7 @@ public class LogFlowManager {
                 FlowResultLine resultLine = new FlowResultLine();
                 resultLine.desc = msg.desc;
                 resultLine.logInfo = info;
+                resultLine.isStartLine = fromState.type == LogState.TYPE.START;
                 currentResult.resultLines.add(resultLine);
             }
 
@@ -262,7 +275,7 @@ public class LogFlowManager {
                 boolean isError = inState.type == LogState.TYPE.ERROR;
 
                 if (currentResult != null) {
-                    currentResult.errorCause = isError ? mLinkDescMap.get(fromState.name).get(inState.name) : null;
+                    currentResult.errorCause = isError ? mLinkDescMap.get(fromState.name).get(inState.name).get(msg.name) : null;
                 }
                 results.add(currentResult);
                 handleResultCollected(currentResult);
@@ -287,11 +300,11 @@ public class LogFlowManager {
     }
 
     public static class LogMassage {
-
         public String tag;
         public String matchType;
         public String pattern;
         public String desc;
+        public String name;
 
         private Matcher<String> mMatcher;
 
@@ -310,6 +323,13 @@ public class LogFlowManager {
                     @Override
                     public boolean match(String o1) {
                         return o1.contains(pattern);
+                    }
+                };
+            } else if (matchType.equalsIgnoreCase("startsWith")) {
+                mMatcher = new Matcher<String>() {
+                    @Override
+                    public boolean match(String o1) {
+                        return o1.startsWith(pattern);
                     }
                 };
             } else {
@@ -388,6 +408,7 @@ public class LogFlowManager {
     public static class FlowResultLine {
         public LogInfo logInfo;
         public String desc;
+        public boolean isStartLine;
 
         @Override
         public String toString() {

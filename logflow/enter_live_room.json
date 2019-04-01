@@ -10,13 +10,13 @@
     },
     "leave": {
       "tag": "RoomProXLog",
-      "match_type": "contains",
-      "pattern": "leaveRoom",
+      "match_type": "startsWith",
+      "pattern": "leaveRoom ",
       "desc": "leave room"
     },
     "error": {
       "tag": "RoomProXLog",
-      "match_type": "contains",
+      "match_type": "startsWith",
       "pattern": "leaveRoomForError",
       "desc": "leave room with error"
     }

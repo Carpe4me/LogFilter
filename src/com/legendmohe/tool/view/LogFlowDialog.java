@@ -8,6 +8,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -77,6 +78,7 @@ public class LogFlowDialog {
                 dataList.add(new ResultItem(
                         line.logInfo,
                         flowResult,
+                        line,
                         flowResult.errorCause == null
                 ));
             }
@@ -121,7 +123,13 @@ public class LogFlowDialog {
 
             private void renderCellContent(JLabel contentLabel, int column, ResultItem result) {
                 if (column == 0) {
-                    contentLabel.setText(result.flowResult.name);
+                    if (result.resultLine.isStartLine) {
+                        contentLabel.setText(result.flowResult.name);
+                    } else if (!result.isCompleted) {
+                        contentLabel.setText(result.flowResult.errorCause);
+                    } else {
+                        contentLabel.setText("");
+                    }
                 } else if (column == 1) {
                     contentLabel.setText(result.logInfo.getTime());
                 } else if (column == 2) {
@@ -165,6 +173,15 @@ public class LogFlowDialog {
         resultTable.getTableHeader().addMouseListener(new ColumnHeaderListener());
         resultTable.setRowHeight(20);
         resultTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+
+        // pack all columns
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                for (int i = 0; i < tableModel.getColumnCount(); i++) {
+                    packColumn(resultTable, i, 5);
+                }
+            }
+        });
 
         JPanel panel = new JPanel(new BorderLayout(5, 5));
         panel.add(label, BorderLayout.NORTH);
@@ -248,11 +265,13 @@ public class LogFlowDialog {
     public static class ResultItem {
         public LogInfo logInfo;
         public LogFlowManager.FlowResult flowResult;
+        public LogFlowManager.FlowResultLine resultLine;
         public boolean isCompleted;
 
-        ResultItem(LogInfo logInfo, LogFlowManager.FlowResult flowResult, boolean isCompleted) {
+        ResultItem(LogInfo logInfo, LogFlowManager.FlowResult flowResult, LogFlowManager.FlowResultLine resultLine, boolean isCompleted) {
             this.logInfo = logInfo;
             this.flowResult = flowResult;
+            this.resultLine = resultLine;
             this.isCompleted = isCompleted;
         }
     }
