@@ -12,13 +12,14 @@ import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -157,7 +158,7 @@ public class Utils {
         }
         StringBuffer fileData = new StringBuffer();
         BufferedReader reader = new BufferedReader(
-                new FileReader(src));
+                new InputStreamReader(new FileInputStream(src), StandardCharsets.UTF_8));
         char[] buf = new char[1024];
         int numRead = 0;
         while ((numRead = reader.read(buf)) != -1) {
