@@ -35,8 +35,6 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
-import javafx.util.Pair;
-
 public class LogFlowDialog {
     private List<LogFlowManager.FlowResult> mFlowResults;
     private JLabel label;
@@ -75,11 +73,11 @@ public class LogFlowDialog {
     private JPanel setupLogTable() {
         List<ResultItem> dataList = new ArrayList<>();
         for (LogFlowManager.FlowResult flowResult : mFlowResults) {
-            for (Pair<LogInfo, LogFlowManager.FlowPatternItem> itemPair : flowResult.infoPair) {
+            for (LogFlowManager.FlowResultLine line : flowResult.resultLines) {
                 dataList.add(new ResultItem(
-                        itemPair.getKey(),
-                        itemPair.getValue(),
-                        flowResult.isCompleted
+                        line.logInfo,
+                        flowResult,
+                        flowResult.errorCause == null
                 ));
             }
         }
@@ -123,13 +121,13 @@ public class LogFlowDialog {
 
             private void renderCellContent(JLabel contentLabel, int column, ResultItem result) {
                 if (column == 0) {
-                    contentLabel.setText(result.patternItem.patternHolder.name);
+                    contentLabel.setText(result.flowResult.name);
                 } else if (column == 1) {
                     contentLabel.setText(result.logInfo.getTime());
                 } else if (column == 2) {
                     contentLabel.setText(result.logInfo.getMessage());
                 }
-                contentLabel.setToolTipText(result.patternItem.patternHolder.desc);
+                contentLabel.setToolTipText(result.flowResult.desc);
                 if (!result.isCompleted) {
                     contentLabel.setBackground(Color.RED);
                 } else {
@@ -249,12 +247,12 @@ public class LogFlowDialog {
 
     public static class ResultItem {
         public LogInfo logInfo;
-        public LogFlowManager.FlowPatternItem patternItem;
+        public LogFlowManager.FlowResult flowResult;
         public boolean isCompleted;
 
-        ResultItem(LogInfo logInfo, LogFlowManager.FlowPatternItem patternItem, boolean isCompleted) {
+        ResultItem(LogInfo logInfo, LogFlowManager.FlowResult flowResult, boolean isCompleted) {
             this.logInfo = logInfo;
-            this.patternItem = patternItem;
+            this.flowResult = flowResult;
             this.isCompleted = isCompleted;
         }
     }

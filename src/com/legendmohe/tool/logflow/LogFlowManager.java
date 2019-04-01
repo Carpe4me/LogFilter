@@ -9,11 +9,10 @@ import com.legendmohe.tool.thirdparty.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Stack;
+import java.util.Map;
 import java.util.regex.Pattern;
-
-import javafx.util.Pair;
 
 /**
  * Created by hexinyu on 2019/3/29.
@@ -39,10 +38,10 @@ public class LogFlowManager {
 
         reset();
 
-        List<FlowPatternHolder> holders = new ArrayList<>();
+        List<LogStateMachineHolder> holders = new ArrayList<>();
         List<File> configFiles = Utils.listFiles(configFolder);
         for (File configFile : configFiles) {
-            FlowPatternHolder holder = loadConfigFile(configFile);
+            LogStateMachineHolder holder = loadConfigFile(configFile);
             if (holder != null) {
                 holders.add(holder);
             }
@@ -60,35 +59,82 @@ public class LogFlowManager {
 
     public List<FlowResult> getCurrentResult() {
         List<FlowResult> results = new ArrayList<>();
-        for (FlowStack flowStack : mPatternChecker.mFlowStacks) {
-            results.addAll(flowStack.flowResults);
-            results.addAll(flowStack.curFlowResult);
+        for (LogStateMachineHolder holder : mPatternChecker.holders) {
+            results.addAll(holder.results);
+            if (holder.currentResult != null) {
+                results.add(holder.currentResult);
+            }
         }
         return results;
     }
 
     ///////////////////////////////////private///////////////////////////////////
 
-    private FlowPatternHolder loadConfigFile(File configFile) {
+    private LogStateMachineHolder loadConfigFile(File configFile) {
         try {
             String content = Utils.fileContent2String(configFile);
             JSONObject configJson = new JSONObject(content);
 
-            FlowPatternHolder holder = new FlowPatternHolder();
+            LogStateMachineHolder holder = new LogStateMachineHolder();
             holder.name = configJson.getString("name");
             holder.desc = configJson.getString("desc");
-            holder.supportRecursion = configJson.getBoolean("recursive");
 
-            JSONArray flow = configJson.getJSONArray("flow");
-            for (int i = 0; i < flow.length(); i++) {
-                JSONObject flowItem = flow.getJSONObject(i);
-                String tag = flowItem.getString("tag");
-                String matchType = flowItem.getString("match_type");
-                String pattern = flowItem.getString("pattern");
-                String desc = flowItem.getString("desc");
+            // msg
+            JSONObject msgObject = configJson.getJSONObject("msg");
+            for (String msgName : msgObject.keySet()) {
+                JSONObject msgItem = msgObject.getJSONObject(msgName);
 
-                holder.addPatternItem(new FlowPatternItem(tag, matchType, pattern, desc));
+                String tag = msgItem.getString("tag");
+                String matchType = msgItem.getString("match_type");
+                String pattern = msgItem.getString("pattern");
+                String desc = msgItem.getString("desc");
+
+                LogMassage logMassage = new LogMassage();
+                logMassage.tag = tag;
+                logMassage.matchType = matchType;
+                logMassage.pattern = pattern;
+                logMassage.desc = desc;
+                holder.mMassageMap.put(msgName, logMassage);
             }
+
+            // state
+            JSONArray stateObject = configJson.getJSONArray("state");
+            for (Object stateObj : stateObject) {
+                JSONObject stateItem = ((JSONObject) stateObj);
+
+                String type = stateItem.optString("type", "normal");
+                String name = stateItem.getString("name");
+
+                LogState logState = new LogState();
+                logState.type = LogState.typeMap.get(type);
+                logState.name = name;
+                holder.mStateMap.put(name, logState);
+            }
+
+            // link
+            JSONArray linkObject = configJson.getJSONArray("link");
+            for (Object linkObj : linkObject) {
+                JSONObject linkItem = ((JSONObject) linkObj);
+
+                JSONArray fromArray = linkItem.getJSONArray("from");
+                String to = linkItem.getString("to");
+                String msg = linkItem.getString("msg");
+                String desc = linkItem.optString("desc", "unknown");
+
+                for (int i = 0; i < fromArray.length(); i++) {
+                    String from = fromArray.getString(i);
+
+                    LogStateLink linkState = new LogStateLink();
+                    linkState.from = from;
+                    linkState.to = to;
+                    linkState.msg = msg;
+                    linkState.desc = desc;
+                    holder.mStateLinks.add(linkState);
+                }
+            }
+
+            // init state machine
+            holder.initStateMachine();
             return holder;
         } catch (IOException | JSONException e) {
             e.printStackTrace();
@@ -100,158 +146,147 @@ public class LogFlowManager {
 
     private static class FlowPatternChecker {
 
-        List<FlowPatternHolder> mPatternLists;
-
-        List<FlowStack> mFlowStacks;
+        private List<LogStateMachineHolder> holders = new ArrayList<>();
 
         int check(LogInfo logInfo) {
-            for (int i = 0; i < mPatternLists.size(); i++) {
-                FlowStack flowStack = mFlowStacks.get(i);
-                FlowPatternHolder patternHolder = mPatternLists.get(i);
-
-                Pair<Integer, LogInfo> infoPair = flowStack.peek();
-                FlowPatternItem flowPatternItem = null;
-                int idx = -1;
-                if (infoPair != null) { // 如果stack上已经有匹配
-                    idx = infoPair.getKey() + 1;
-                    flowPatternItem = patternHolder.patterns.get(idx);
-                }
-                if (flowPatternItem != null && logInfo != null && flowPatternItem.match(logInfo)) {
-                    flowStack.push(new Pair<>(idx, logInfo));
-                    flowStack.markCurrentFlowResults(idx, logInfo, patternHolder);
-                    if (idx + 1 >= patternHolder.patterns.size()) {
-                        // 已经匹配完了, stack回退，添加result
-                        flowStack.collectFlowResults(patternHolder.patterns.size());
-                    }
-                    return i;
-                } else if (patternHolder.matchFirst(logInfo)) {
-                    if (flowPatternItem != null && !patternHolder.supportRecursion) {
-                        // 不支持嵌套匹配，这里标记上一个isCompleted为false，然后继续
-                        flowStack.breakResultStack();
-                    }
-                    flowStack.push(new Pair<>(0, logInfo));
-                    flowStack.markCurrentFlowResults(0, logInfo, patternHolder);
-                    if (patternHolder.patterns.size() == 1) {
-                        // 已经匹配完了, stack回退，添加result
-                        flowStack.collectFlowResults(patternHolder.patterns.size());
-                    }
-                    return 0;
+            for (LogStateMachineHolder holder : holders) {
+                if (holder.check(logInfo)) {
+                    return 1;
                 }
             }
             return -1;
         }
 
         void reset() {
-            if (mFlowStacks != null) {
-                for (FlowStack flowStack : mFlowStacks) {
-                    flowStack.reset();
-                }
+            for (LogStateMachineHolder holder : holders) {
+                holder.reset();
             }
         }
 
-        void init(List<FlowPatternHolder> holders) {
-            mPatternLists = holders;
-            mFlowStacks = new ArrayList<>(mPatternLists.size());
-            for (int i = 0; i < mPatternLists.size(); i++) {
-                mFlowStacks.add(new FlowStack());
-            }
+        void init(List<LogStateMachineHolder> holders) {
+            this.holders = holders;
         }
     }
 
-    private static class FlowStack {
+    public static class LogStateMachineHolder {
+        public String name;
+        public String desc;
 
-        List<FlowResult> flowResults = new ArrayList<>();
+        List<FlowResult> results = new ArrayList<>();
+        FlowResult currentResult = new FlowResult();
 
-        Stack<FlowResult> curFlowResult = new Stack();
+        StateMachine mStateMachine;
 
-        Stack<Pair<Integer, LogInfo>> mIdxStack = new Stack<>();
+        Map<String, LogMassage> mMassageMap = new HashMap<>();
+        Map<String, LogState> mStateMap = new HashMap<>();
+        Map<String, Map<String, String>> mLinkDescMap = new HashMap<>();
+        List<LogStateLink> mStateLinks = new ArrayList<>();
 
-        Pair<Integer, LogInfo> pop() {
-            return mIdxStack.size() > 0 ? mIdxStack.pop() : null;
+        void initStateMachine() {
+            mStateMachine = StateMachine.createSync();
+            // 初始化状态机，转换state实现
+            Map<String, StateMachine.State> internalStateMap = new HashMap<>();
+            for (String stateName : mStateMap.keySet()) {
+                LogState logState = mStateMap.get(stateName);
+                StateMachine.State internalState = new InternalState(logState) {
+                    @Override
+                    public void onEnter(StateMachine.State fromState, Object event, Object data) {
+                        handleStateOnEnter(((InternalState) fromState).myState, myState, (LogMassage) event, (LogInfo) data);
+                    }
+                };
+                internalStateMap.put(stateName, internalState);
+                mStateMachine.addState(internalState);
+
+                if (logState.type == LogState.TYPE.START) {
+                    mStateMachine.setInitState(internalState);
+                }
+            }
+
+            // 状态转移
+            for (LogStateLink link : mStateLinks) {
+                Map<String, String> toDescMap = mLinkDescMap.get(link.from);
+                if (toDescMap == null) {
+                    toDescMap = new HashMap<>();
+                    mLinkDescMap.put(link.from, toDescMap);
+                }
+                toDescMap.put(link.to, link.desc);
+
+                StateMachine.State fromState = internalStateMap.get(link.from);
+                StateMachine.State toState = internalStateMap.get(link.to);
+                fromState.linkTo(toState, mMassageMap.get(link.msg));
+            }
+
+            mStateMachine.start();
         }
 
-        Pair<Integer, LogInfo> peek() {
-            return mIdxStack.size() > 0 ? mIdxStack.peek() : null;
-        }
-
-        void push(Pair<Integer, LogInfo> idx) {
-            mIdxStack.push(idx);
-            // 第一个匹配
-            if (idx.getKey() == 0) {
-                curFlowResult.push(new FlowResult());
+        boolean check(LogInfo logInfo) {
+            // 只匹配可处理的event
+            List<Object> events = mStateMachine.listAcceptableEvent();
+            for (Object event : events) {
+                LogMassage logMsg = (LogMassage) event;
+                if (logMsg.match(logInfo)) {
+                    mStateMachine.postEvent(logMsg, logInfo);
+                    return true;
+                }
             }
-        }
-
-        void collectFlowResults(int patternSize) {
-            for (int i = 0; i < patternSize; i++) {
-                pop();
-            }
-            if (!curFlowResult.empty()) {
-                FlowResult pop = curFlowResult.pop();
-                pop.isCompleted = true;
-                flowResults.add(pop);
-            }
-        }
-
-        void breakResultStack() {
-            while (peek() != null && peek().getKey() >= 0) {
-                pop();
-            }
-            if (!curFlowResult.empty()) {
-                FlowResult pop = curFlowResult.pop();
-                pop.isCompleted = false;
-                flowResults.add(pop);
-            }
-        }
-
-        void markCurrentFlowResults(int idx, LogInfo info, FlowPatternHolder holder) {
-            curFlowResult.peek().name = holder.name;
-            curFlowResult.peek().desc = holder.desc;
-            curFlowResult.peek().infoPair.add(
-                    new Pair<>(
-                            info,
-                            holder.patterns.get(idx)
-                    )
-            );
+            return false;
         }
 
         void reset() {
-            curFlowResult.clear();
-            flowResults = new ArrayList<>();
+            results.clear();
+            mStateMachine.reset(0);
         }
-    }
 
-    public static class FlowPatternHolder {
-        public String name;
-        public String desc;
-        public boolean supportRecursion;
+        /*
+        处理状态变化
+         */
+        private void handleStateOnEnter(LogState fromState, LogState inState, LogMassage msg, LogInfo info) {
+            // 是否后开始第一个状态
+            if (fromState.type == LogState.TYPE.START) {
+                currentResult = new FlowResult();
+                currentResult.name = name;
+                currentResult.desc = desc;
+            }
 
-        List<FlowPatternItem> patterns = new ArrayList<>();
+            // 记录info轨迹
+            if (currentResult != null) {
+                FlowResultLine resultLine = new FlowResultLine();
+                resultLine.desc = msg.desc;
+                resultLine.logInfo = info;
+                currentResult.resultLines.add(resultLine);
+            }
 
-        void addPatternItem(FlowPatternItem item) {
-            if (item != null) {
-                item.patternHolder = this;
-                patterns.add(item);
+            // 当前是否结束态
+            if (inState.type == LogState.TYPE.END
+                    || inState.type == LogState.TYPE.ERROR) {
+                boolean isError = inState.type == LogState.TYPE.ERROR;
+
+                if (currentResult != null) {
+                    currentResult.errorCause = isError ? mLinkDescMap.get(fromState.name).get(inState.name) : null;
+                }
+                results.add(currentResult);
+                handleResultCollected(currentResult);
+                currentResult = null;
+                // 结束后reset一下，重新开始检测
+                mStateMachine.reset(0);
             }
         }
 
-        boolean matchFirst(LogInfo logInfo) {
-            return patterns.get(0).match(logInfo);
-        }
-
-        @Override
-        public String toString() {
-            return "FlowPatternHolder{" +
-                    "name='" + name + '\'' +
-                    ", desc='" + desc + '\'' +
-                    ", supportRecursion=" + supportRecursion +
-                    ", patterns=" + patterns +
-                    '}';
+        private void handleResultCollected(FlowResult result) {
         }
     }
 
-    public static class FlowPatternItem {
-        public FlowPatternHolder patternHolder;
+    private static class InternalState extends StateMachine.State {
+
+        LogState myState;
+
+        public InternalState(LogState state) {
+            super(state.name);
+            this.myState = state;
+        }
+    }
+
+    public static class LogMassage {
 
         public String tag;
         public String matchType;
@@ -259,14 +294,6 @@ public class LogFlowManager {
         public String desc;
 
         private Matcher<String> mMatcher;
-
-        FlowPatternItem(String tag, String matchType, String pattern, String desc) {
-            this.tag = tag;
-            this.matchType = matchType;
-            this.pattern = pattern;
-            this.desc = desc;
-            this.init();
-        }
 
         void init() {
             if (matchType.equalsIgnoreCase("regex")) {
@@ -294,17 +321,10 @@ public class LogFlowManager {
             if (!logInfo.getTag().equalsIgnoreCase(tag)) {
                 return false;
             }
+            if (mMatcher == null) {
+                init();
+            }
             return mMatcher.match(logInfo.getMessage());
-        }
-
-        @Override
-        public String toString() {
-            return "{" +
-                    "tag='" + tag + '\'' +
-                    ", matchType='" + matchType + '\'' +
-                    ", pattern='" + pattern + '\'' +
-                    ", desc='" + desc + '\'' +
-                    '}';
         }
     }
 
@@ -312,12 +332,44 @@ public class LogFlowManager {
         boolean match(T o1);
     }
 
+    public static class LogState {
+
+        enum TYPE {
+            NORMAL,
+            START,
+            END,
+            ERROR,
+        }
+
+        static final Map<String, TYPE> typeMap = new HashMap<>();
+
+        static {
+            typeMap.put("normal", TYPE.NORMAL);
+            typeMap.put("start", TYPE.START);
+            typeMap.put("end", TYPE.END);
+            typeMap.put("error", TYPE.ERROR);
+        }
+
+        public TYPE type = TYPE.NORMAL;
+        public String name;
+    }
+
+    public static class LogStateLink {
+
+        public String from;
+        public String to;
+        public String msg;
+        public String desc;
+    }
+
+    //////////////////////////////////////////////////////////////////////
+
     public static class FlowResult {
         public String name;
         public String desc;
-        public boolean isCompleted;
+        public String errorCause = "not complete";
 
-        public List<Pair<LogInfo, FlowPatternItem>> infoPair = new ArrayList<>();
+        public List<FlowResultLine> resultLines = new ArrayList<>();
 
         FlowResult() {
         }
@@ -325,8 +377,23 @@ public class LogFlowManager {
         @Override
         public String toString() {
             return "FlowResult{" +
-                    "isCompleted=" + isCompleted +
-                    ", infoPair=" + infoPair +
+                    "name='" + name + '\'' +
+                    ", desc='" + desc + '\'' +
+                    ", errorCause='" + errorCause + '\'' +
+                    ", resultLines=" + resultLines +
+                    '}';
+        }
+    }
+
+    public static class FlowResultLine {
+        public LogInfo logInfo;
+        public String desc;
+
+        @Override
+        public String toString() {
+            return "FlowResultLine{" +
+                    "logInfo line=" + logInfo.getLine() +
+                    ", desc='" + desc + '\'' +
                     '}';
         }
     }

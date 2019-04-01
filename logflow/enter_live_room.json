@@ -1,19 +1,75 @@
 {
   "name": "enter live room",
   "desc": "enter live room process",
-  "recursive": true,
-  "flow": [
-    {
+  "msg": {
+    "enter": {
       "tag": "RoomProXLog",
       "match_type": "contains",
       "pattern": "enterRoom",
       "desc": "enter room"
     },
-    {
+    "leave": {
       "tag": "RoomProXLog",
       "match_type": "contains",
       "pattern": "leaveRoom",
       "desc": "leave room"
+    },
+    "error": {
+      "tag": "RoomProXLog",
+      "match_type": "contains",
+      "pattern": "leaveRoomForError",
+      "desc": "leave room with error"
+    }
+  },
+  "state": [
+    {
+      "type": "start",
+      "name": "START"
+    },
+    {
+      "name": "InRoom"
+    },
+    {
+      "type": "end",
+      "name": "END"
+    },
+    {
+      "type": "error",
+      "name": "ERROR"
+    }
+  ],
+  "link": [
+    {
+      "from": [
+        "START"
+      ],
+      "to": "InRoom",
+      "msg": "enter",
+      "desc": "进入房间"
+    },
+    {
+      "from": [
+        "InRoom"
+      ],
+      "to": "END",
+      "msg": "leave",
+      "desc": "关闭房间"
+    },
+    {
+      "from": [
+        "InRoom"
+      ],
+      "to": "ERROR",
+      "msg": "error",
+      "desc": "因错误退出房间"
+    },
+    {
+      "from": [
+        "InRoom"
+      ],
+      "to": "ERROR",
+      "msg": "enter",
+      "desc": "重复打开房间"
     }
   ]
 }
