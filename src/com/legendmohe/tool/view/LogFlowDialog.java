@@ -57,6 +57,7 @@ public class LogFlowDialog {
         optionPane.setPreferredSize(new Dimension(800, 500));
         optionPane.setOptions(new Object[]{okButton});
         dialog = optionPane.createDialog("Log Flow");
+        dialog.setModal(false);
     }
 
     private void setupButtons() {

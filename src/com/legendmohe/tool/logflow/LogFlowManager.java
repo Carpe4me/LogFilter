@@ -67,7 +67,7 @@ public class LogFlowManager {
         List<FlowResult> results = new ArrayList<>();
         for (LogStateMachineHolder holder : mPatternChecker.holders) {
             results.addAll(holder.results);
-            if (holder.currentResult != null) {
+            if (holder.currentResult != null && holder.currentResult.isValid()) {
                 results.add(holder.currentResult);
             }
         }
@@ -392,6 +392,10 @@ public class LogFlowManager {
         public List<FlowResultLine> resultLines = new ArrayList<>();
 
         FlowResult() {
+        }
+
+        boolean isValid() {
+            return name != null && name.length() > 0;
         }
 
         @Override
