@@ -260,6 +260,7 @@ public class LogFlowManager {
 
         void reset() {
             results.clear();
+            currentResult = new FlowResult();
             mStateMachine.reset(0);
         }
 
