@@ -1,12 +1,24 @@
 {
-  "name": "enter live room",
-  "desc": "enter live room process",
+  "name": "join group流程",
+  "desc": "进入房间join group",
   "msg": {
     "enter": {
       "tag": "RoomProXLog",
-      "match_type": "contains",
+      "match_type": "startsWith",
       "pattern": "enterRoom",
       "desc": "enter room"
+    },
+    "join_living": {
+      "tag": "RoomProXLog",
+      "match_type": "startsWith",
+      "pattern": "[RoomLogin] joinLiving,",
+      "desc": "start join living"
+    },
+    "join_living_success": {
+      "tag": "RoomProXLog",
+      "match_type": "startsWith",
+      "pattern": "[RoomLogin] handleJoinMediaGroupCallRes:",
+      "desc": "join living success"
     },
     "leave": {
       "tag": "RoomProXLog",
@@ -27,6 +39,12 @@
       "name": "START"
     },
     {
+      "name": "PrepareForJoin"
+    },
+    {
+      "name": "JoiningLive"
+    },
+    {
       "name": "InRoom"
     },
     {
@@ -43,9 +61,25 @@
       "from": [
         "START"
       ],
-      "to": "InRoom",
+      "to": "PrepareForJoin",
       "msg": "enter",
       "desc": "进入房间"
+    },
+    {
+      "from": [
+        "PrepareForJoin"
+      ],
+      "to": "JoiningLive",
+      "msg": "join_living",
+      "desc": "发起join group"
+    },
+    {
+      "from": [
+        "JoiningLive"
+      ],
+      "to": "InRoom",
+      "msg": "join_living_success",
+      "desc": "join group 成功"
     },
     {
       "from": [
@@ -57,7 +91,9 @@
     },
     {
       "from": [
-        "InRoom"
+        "InRoom",
+        "PrepareForJoin",
+        "JoiningLive"
       ],
       "to": "ERROR",
       "msg": "error",

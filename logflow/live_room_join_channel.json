@@ -1,0 +1,167 @@
+{
+  "enable": true,
+  "name": "join media",
+  "desc": "进入房间媒体相关过程",
+  "msg": {
+    "enter": {
+      "tag": "RoomProXLog",
+      "match_type": "startsWith",
+      "pattern": "markSdkJoinChannelExecBegin",
+      "desc": "start join channel"
+    },
+    "start_media": {
+      "tag": "MediaSdkManagerRoomProXLog",
+      "match_type": "startsWith",
+      "pattern": "[issue] mMedia.",
+      "desc": "start media"
+    },
+    "start_video": {
+      "tag": "MediaSdkManagerRoomProXLog",
+      "match_type": "startsWith",
+      "pattern": "[issue] mVideo.",
+      "desc": "start video"
+    },
+    "media_connected": {
+      "tag": "MediaSdkManagerRoomProXLog",
+      "match_type": "startsWith",
+      "pattern": "OnMediaSDKStatusListener MEDIA_SERVER_CONNECTED",
+      "desc": "media server connected"
+    },
+    "video_connected": {
+      "tag": "MediaSdkManagerRoomProXLog",
+      "match_type": "startsWith",
+      "pattern": "OnVideoStatusListener OP_NETWORK_CONNECTED",
+      "desc": "video server connected"
+    },
+    "media_recv_first_frame": {
+      "tag": "MediaSdkManagerRoomProXLog",
+      "match_type": "startsWith",
+      "pattern": "OnMediaSDKStatusListener MEDIA_FIRST_FRAME_PLAYED",
+      "desc": "media server connected"
+    },
+    "video_recv_first_iframe": {
+      "tag": "MediaSdkManagerRoomProXLog",
+      "match_type": "startsWith",
+      "pattern": "OnVideoStatusListener OP_FIRST_IFRAME_ARRIVE",
+      "desc": "video server connected"
+    },
+    "leave": {
+      "tag": "RoomProXLog",
+      "match_type": "startsWith",
+      "pattern": "leaveRoom ",
+      "desc": "leave room"
+    },
+    "error": {
+      "tag": "RoomProXLog",
+      "match_type": "startsWith",
+      "pattern": "leaveRoomForError",
+      "desc": "leave room with error"
+    }
+  },
+  "state": [
+    {
+      "type": "start",
+      "name": "START"
+    },
+    {
+      "name": [
+        "MediaStarted",
+        "VideoStarted",
+        "MediaConnected",
+        "VideoConnected",
+        "MediaDone",
+        "VideoDone"
+      ]
+    },
+    {
+      "type": "end",
+      "name": "END"
+    },
+    {
+      "type": "error",
+      "name": "ERROR"
+    }
+  ],
+  "link": [
+    {
+      "from": [
+        "START"
+      ],
+      "to": "MediaStarted",
+      "msg": "start_media",
+      "desc": "启动media"
+    },
+    {
+      "from": [
+        "MediaStarted"
+      ],
+      "to": "VideoStarted",
+      "msg": "start_video",
+      "desc": "启动video"
+    },
+    {
+      "from": [
+        "VideoStarted",
+        "MediaConnected"
+      ],
+      "to": "VideoConnected",
+      "msg": "video_connected",
+      "desc": "vs连接成功"
+    },
+    {
+      "from": [
+        "VideoConnected",
+        "MediaConnected",
+        "MediaDone"
+      ],
+      "to": "VideoDone",
+      "msg": "video_recv_first_iframe",
+      "desc": "vs收到iframe"
+    },
+    {
+      "from": [
+        "VideoStarted",
+        "VideoConnected"
+      ],
+      "to": "MediaConnected",
+      "msg": "media_connected",
+      "desc": "ms连接成功"
+    },
+    {
+      "from": [
+        "MediaConnected",
+        "VideoConnected",
+        "VideoDone"
+      ],
+      "to": "MediaDone",
+      "msg": "media_recv_first_frame",
+      "desc": "ms收到iframe"
+    },
+    {
+      "from": [
+        "MediaStarted",
+        "VideoStarted",
+        "MediaConnected",
+        "VideoConnected",
+        "MediaDone",
+        "VideoDone"
+      ],
+      "to": "END",
+      "msg": "leave",
+      "desc": "退出房间"
+    },
+    {
+      "from": [
+        "MediaStarted",
+        "VideoStarted",
+        "MediaConnected",
+        "VideoConnected",
+        "MediaDone",
+        "VideoDone"
+      ],
+      "to": "END",
+      "msg": "error",
+      "desc": "因错误退出房间"
+    }
+  ]
+}

@@ -16,11 +16,11 @@ import java.util.regex.Pattern;
 
 /**
  * 日志逻辑流检测
- *
+ * <p>
  * 1. 读取配置文件
  * 2. 逐行检测，通过匹配规则驱动状态机变化
  * 3. 外围逻辑导出结果，显示ui
- *
+ * <p>
  * Created by hexinyu on 2019/3/29.
  */
 public class LogFlowManager {
@@ -82,6 +82,10 @@ public class LogFlowManager {
             JSONObject configJson = new JSONObject(content);
 
             LogStateMachineHolder holder = new LogStateMachineHolder();
+            boolean enable = configJson.optBoolean("enable", true);
+            if (!enable) {
+                return null;
+            }
             holder.name = configJson.getString("name");
             holder.desc = configJson.getString("desc");
 
@@ -110,12 +114,22 @@ public class LogFlowManager {
                 JSONObject stateItem = ((JSONObject) stateObj);
 
                 String type = stateItem.optString("type", "normal");
-                String name = stateItem.getString("name");
-
-                LogState logState = new LogState();
-                logState.type = LogState.typeMap.get(type);
-                logState.name = name;
-                holder.mStateMap.put(name, logState);
+                Object nameObj = stateItem.get("name");
+                if (nameObj instanceof JSONArray) {
+                    JSONArray nameArray = (JSONArray) nameObj;
+                    for (Object name : nameArray) {
+                        LogState logState = new LogState();
+                        logState.type = LogState.typeMap.get(type);
+                        logState.name = (String) name;
+                        holder.mStateMap.put((String) name, logState);
+                    }
+                } else if (nameObj instanceof String) {
+                    String name = (String) nameObj;
+                    LogState logState = new LogState();
+                    logState.type = LogState.typeMap.get(type);
+                    logState.name = name;
+                    holder.mStateMap.put(name, logState);
+                }
             }
 
             // link
