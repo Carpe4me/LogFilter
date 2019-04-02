@@ -17,13 +17,16 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JViewport;
 import javax.swing.ListSelectionModel;
@@ -37,23 +40,32 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
 public class LogFlowDialog {
-    private List<LogFlowManager.FlowResult> mFlowResults;
-    private JLabel label;
+    private Map<String, List<LogFlowManager.FlowResult>> mFlowResults;
     private JOptionPane optionPane;
     private JButton okButton;
     private Listener mListener;
     private JDialog dialog;
 
-    public LogFlowDialog(List<LogFlowManager.FlowResult> flowResultList) {
+    public LogFlowDialog(Map<String, List<LogFlowManager.FlowResult>> flowResultList) {
         mFlowResults = flowResultList;
-        label = new JLabel("double click to jump");
         createAndDisplayOptionPane();
     }
 
     private void createAndDisplayOptionPane() {
         setupButtons();
-        JPanel pane = setupLogTable();
-        optionPane = new JOptionPane(pane);
+
+        JTabbedPane tabbedPane = new JTabbedPane();
+        for (String resultName : mFlowResults.keySet()) {
+            List<LogFlowManager.FlowResult> resultList = mFlowResults.get(resultName);
+            JComponent table = setupLogTable(resultList);
+            tabbedPane.addTab(resultName, table);
+        }
+
+        JPanel panel = new JPanel(new BorderLayout(1, 1));
+        panel.add(new JLabel("double click to jump"), BorderLayout.NORTH);
+        panel.add(tabbedPane, BorderLayout.CENTER);
+
+        optionPane = new JOptionPane(panel);
         optionPane.setPreferredSize(new Dimension(800, 500));
         optionPane.setOptions(new Object[]{okButton});
         dialog = optionPane.createDialog("Log Flow");
@@ -72,9 +84,9 @@ public class LogFlowDialog {
         });
     }
 
-    private JPanel setupLogTable() {
+    private JScrollPane setupLogTable(List<LogFlowManager.FlowResult> resultList) {
         List<ResultItem> dataList = new ArrayList<>();
-        for (LogFlowManager.FlowResult flowResult : mFlowResults) {
+        for (LogFlowManager.FlowResult flowResult : resultList) {
             for (LogFlowManager.FlowResultLine line : flowResult.resultLines) {
                 dataList.add(new ResultItem(
                         line.logInfo,
@@ -184,10 +196,7 @@ public class LogFlowDialog {
             }
         });
 
-        JPanel panel = new JPanel(new BorderLayout(5, 5));
-        panel.add(label, BorderLayout.NORTH);
-        panel.add(new JScrollPane(resultTable), BorderLayout.CENTER);
-        return panel;
+        return new JScrollPane(resultTable);
     }
 
     public void setListener(Listener listener) {

@@ -63,12 +63,16 @@ public class LogFlowManager {
         return mPatternChecker.check(logInfo);
     }
 
-    public List<FlowResult> getCurrentResult() {
-        List<FlowResult> results = new ArrayList<>();
+    public Map<String, List<FlowResult>> getCurrentResult() {
+        Map<String, List<FlowResult>> results = new HashMap<>();
         for (LogStateMachineHolder holder : mPatternChecker.holders) {
-            results.addAll(holder.results);
+            List<FlowResult> resultList = new ArrayList<>();
+            resultList.addAll(holder.results);
             if (holder.currentResult != null && holder.currentResult.isValid()) {
-                results.add(holder.currentResult);
+                resultList.add(holder.currentResult);
+            }
+            if (resultList.size() > 0) {
+                results.put(holder.name, resultList);
             }
         }
         return results;

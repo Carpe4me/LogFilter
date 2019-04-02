@@ -3302,7 +3302,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
     }
 
     private void showAllFlow() {
-        List<LogFlowManager.FlowResult> flowResults = LogFlowManager.getInstance().getCurrentResult();
+        Map<String, List<LogFlowManager.FlowResult>> flowResults = LogFlowManager.getInstance().getCurrentResult();
         if (flowResults.size() > 0) {
             LogFlowDialog dialog = new LogFlowDialog(flowResults);
             dialog.setListener(new LogFlowDialog.Listener() {
