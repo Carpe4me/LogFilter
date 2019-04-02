@@ -174,12 +174,13 @@ public class LogFlowManager {
         private List<LogStateMachineHolder> holders = new ArrayList<>();
 
         int check(LogInfo logInfo) {
+            int successCount = 0;
             for (LogStateMachineHolder holder : holders) {
                 if (holder.check(logInfo)) {
-                    return 1;
+                    successCount++;
                 }
             }
-            return -1;
+            return successCount > 0 ? successCount : -1;
         }
 
         void reset() {

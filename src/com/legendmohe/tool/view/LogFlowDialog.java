@@ -143,12 +143,14 @@ public class LogFlowDialog {
                     } else {
                         contentLabel.setText("");
                     }
+                    contentLabel.setToolTipText(result.flowResult.desc);
                 } else if (column == 1) {
                     contentLabel.setText(result.logInfo.getTime());
+                    contentLabel.setToolTipText(result.logInfo.getTime());
                 } else if (column == 2) {
                     contentLabel.setText(result.logInfo.getMessage());
+                    contentLabel.setToolTipText(result.resultLine.desc);
                 }
-                contentLabel.setToolTipText(result.flowResult.desc);
                 if (!result.isCompleted) {
                     contentLabel.setBackground(Color.RED);
                 } else {
