@@ -3,7 +3,7 @@
   "desc": "观众端上麦流程，包含自由上麦、申请上麦和邀请上麦",
   "msg": {
     "recv_pull_audience_to_mic": {
-      "tag": "RoomVideoShowActivity",
+      "tag": "RoomVideoViewerActivity",
       "match_type": "startsWith",
       "pattern": "onPullAudienceToMicListener() called",
       "desc": "show invite dialog"
@@ -138,6 +138,22 @@
       "to": "OnMic",
       "msg": "up_mic_success",
       "desc": "成功上麦"
+    },
+    {
+      "from": [
+        "WaitingInvite",
+        "WaitingJoinWaitList",
+        "WaitingFreeMicRequest"
+      ],
+      "dropIfError": false,
+      "addToResultIfError": false,
+      "to": "ERROR",
+      "msg": [
+        "request_free_mic",
+        "join_wait_list",
+        "recv_pull_audience_to_mic"
+      ],
+      "desc": "上麦请求没有处理"
     }
   ]
 }

@@ -141,20 +141,31 @@ public class LogFlowManager {
             for (Object linkObj : linkObject) {
                 JSONObject linkItem = ((JSONObject) linkObj);
 
+                JSONArray msgList = new JSONArray();
+                if (!(linkItem.get("msg") instanceof JSONArray)) {
+                    msgList.put(linkItem.getString("msg"));
+                } else {
+                    msgList = linkItem.getJSONArray("msg");
+                }
                 JSONArray fromArray = linkItem.getJSONArray("from");
                 String to = linkItem.getString("to");
-                String msg = linkItem.getString("msg");
+                boolean dropIfError = linkItem.optBoolean("dropIfError", true);
+                boolean addToResultIfError = linkItem.optBoolean("addToResultIfError", true);
                 String desc = linkItem.optString("desc", "unknown");
 
                 for (int i = 0; i < fromArray.length(); i++) {
                     String from = fromArray.getString(i);
-
-                    LogStateLink linkState = new LogStateLink();
-                    linkState.from = from;
-                    linkState.to = to;
-                    linkState.msg = msg;
-                    linkState.desc = desc;
-                    holder.mStateLinks.add(linkState);
+                    for (Object msgObj : msgList) {
+                        String msg = (String) msgObj;
+                        LogStateLink stateLink = new LogStateLink();
+                        stateLink.from = from;
+                        stateLink.to = to;
+                        stateLink.msg = msg;
+                        stateLink.desc = desc;
+                        stateLink.dropIfError = dropIfError;
+                        stateLink.addToResultIfError = addToResultIfError;
+                        holder.mStateLinks.add(stateLink);
+                    }
                 }
             }
 
@@ -205,7 +216,7 @@ public class LogFlowManager {
 
         Map<String, LogMassage> mMassageMap = new HashMap<>();
         Map<String, LogState> mStateMap = new HashMap<>();
-        Map<String, Map<String, Map<String, String>>> mLinkDescMap = new HashMap<>();
+        Map<String, Map<String, Map<String, LineDesc>>> mLinkDescMap = new HashMap<>();
         List<LogStateLink> mStateLinks = new ArrayList<>();
 
         void initStateMachine() {
@@ -230,17 +241,19 @@ public class LogFlowManager {
 
             // 状态转移
             for (LogStateLink link : mStateLinks) {
-                Map<String, Map<String, String>> toDescMap = mLinkDescMap.get(link.from);
+                Map<String, Map<String, LineDesc>> toDescMap = mLinkDescMap.get(link.from);
                 if (toDescMap == null) {
                     toDescMap = new HashMap<>();
                     mLinkDescMap.put(link.from, toDescMap);
                 }
-                Map<String, String> msgDescMap = toDescMap.get(link.to);
+                Map<String, LineDesc> msgDescMap = toDescMap.get(link.to);
                 if (msgDescMap == null) {
                     msgDescMap = new HashMap<>();
                     toDescMap.put(link.to, msgDescMap);
                 }
-                msgDescMap.put(link.msg, link.desc);
+                msgDescMap.put(link.msg,
+                        new LineDesc(link.desc, link.dropIfError, link.addToResultIfError)
+                );
 
                 StateMachine.State fromState = internalStateMap.get(link.from);
                 StateMachine.State toState = internalStateMap.get(link.to);
@@ -281,12 +294,12 @@ public class LogFlowManager {
             }
 
             // 触发当前状态转换的描述（连线的备注）
-            String linkDesc = mLinkDescMap.get(fromState.name).get(inState.name).get(msg.name);
+            LineDesc linkDesc = mLinkDescMap.get(fromState.name).get(inState.name).get(msg.name);
             // 记录info轨迹
             if (currentResult != null) {
                 FlowResultLine resultLine = new FlowResultLine();
                 resultLine.desc = msg.desc;
-                resultLine.linkDesc = linkDesc;
+                resultLine.linkDesc = linkDesc.desc;
                 resultLine.logInfo = info;
                 resultLine.isStartLine = fromState.type == LogState.TYPE.START;
                 currentResult.resultLines.add(resultLine);
@@ -298,17 +311,21 @@ public class LogFlowManager {
                 boolean isError = inState.type == LogState.TYPE.ERROR;
 
                 if (currentResult != null) {
-                    currentResult.errorCause = isError ? linkDesc : null;
+                    currentResult.errorCause = isError ? linkDesc.desc : null;
+                }
+                if (isError && !linkDesc.addToResultIfError) {
+                    // remove last
+                    currentResult.resultLines.remove(currentResult.resultLines.size() - 1);
                 }
                 results.add(currentResult);
-                handleResultCollected(currentResult);
                 currentResult = null;
                 // 结束后reset一下，重新开始检测
                 mStateMachine.reset(0);
-            }
-        }
 
-        private void handleResultCollected(FlowResult result) {
+                if (isError && !linkDesc.dropIfError) {
+                    mStateMachine.postEvent(msg, info);
+                }
+            }
         }
     }
 
@@ -403,6 +420,20 @@ public class LogFlowManager {
         public String to;
         public String msg;
         public String desc;
+        public boolean dropIfError;
+        public boolean addToResultIfError;
+    }
+
+    private static class LineDesc {
+        String desc;
+        private boolean dropIfError;
+        boolean addToResultIfError;
+
+        LineDesc(String desc, boolean dropIfError, boolean addToResultIfError) {
+            this.desc = desc;
+            this.dropIfError = dropIfError;
+            this.addToResultIfError = addToResultIfError;
+        }
     }
 
     //////////////////////////////////////////////////////////////////////

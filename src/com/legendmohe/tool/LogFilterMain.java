@@ -1041,6 +1041,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
                 }
             }
 
+            // 如果有性能问题，就把收集log的逻辑放到dialog打开时才执行
             LogFlowManager.getInstance().check(logInfo);
         }
     }
