@@ -1,0 +1,143 @@
+{
+  "name": "观众端上麦流程",
+  "desc": "观众端上麦流程，包含自由上麦、申请上麦和邀请上麦",
+  "msg": {
+    "recv_pull_audience_to_mic": {
+      "tag": "RoomVideoShowActivity",
+      "match_type": "startsWith",
+      "pattern": "onPullAudienceToMicListener() called",
+      "desc": "show invite dialog"
+    },
+    "request_free_mic": {
+      "tag": "MicconnectController",
+      "match_type": "startsWith",
+      "pattern": "requestFreeMic PCS_GetFreeMicReq",
+      "desc": "send request free mic"
+    },
+    "request_free_mic_success": {
+      "tag": "MicconnectController",
+      "match_type": "startsWith",
+      "pattern": "requestFreeMic onResponse",
+      "desc": "send request free mic success"
+    },
+    "join_wait_list": {
+      "tag": "MicconnectController",
+      "match_type": "startsWith",
+      "pattern": "joinWaitList seqId",
+      "desc": "join wait list"
+    },
+    "join_wait_list_success": {
+      "tag": "MicconnectController",
+      "match_type": "startsWith",
+      "pattern": "joinWaitList res seqId",
+      "desc": "join wait list success"
+    },
+    "on_incoming_invite": {
+      "tag": "MicconnectController",
+      "match_type": "startsWith",
+      "pattern": "onIncomingInvite() called with",
+      "desc": "recv invite request from owner"
+    },
+    "accept_mic_connect": {
+      "tag": "MicconnectManager",
+      "match_type": "startsWith",
+      "pattern": "accept micconnectId:",
+      "desc": "accept mic connect"
+    },
+    "up_mic_success": {
+      "tag": "MediaSdkManagerRoom",
+      "match_type": "startsWith",
+      "pattern": "setInteractiveUids mic:",
+      "desc": "user on mic"
+    }
+  },
+  "state": [
+    {
+      "type": "start",
+      "name": "START"
+    },
+    {
+      "name": [
+        "WaitingFreeMicRequest",
+        "WaitingJoinWaitList",
+        "WaitingInvite",
+        "SendingAccept",
+        "WaitingUpMic"
+      ]
+    },
+    {
+      "type": "end",
+      "name": "OnMic"
+    },
+    {
+      "type": "error",
+      "name": "ERROR"
+    }
+  ],
+  "link": [
+    {
+      "from": [
+        "START"
+      ],
+      "to": "WaitingFreeMicRequest",
+      "msg": "request_free_mic",
+      "desc": "申请自由上麦"
+    },
+    {
+      "from": [
+        "START"
+      ],
+      "to": "WaitingJoinWaitList",
+      "msg": "join_wait_list",
+      "desc": "申请加入waiting list"
+    },
+    {
+      "from": [
+        "START"
+      ],
+      "to": "WaitingInvite",
+      "msg": "recv_pull_audience_to_mic",
+      "desc": "收到上麦邀请"
+    },
+    {
+      "from": [
+        "WaitingFreeMicRequest"
+      ],
+      "to": "WaitingInvite",
+      "msg": "request_free_mic_success",
+      "desc": "申请自由上麦成功"
+    },
+    {
+      "from": [
+        "WaitingJoinWaitList"
+      ],
+      "to": "WaitingInvite",
+      "msg": "join_wait_list_success",
+      "desc": "申请加入waiting list成功"
+    },
+    {
+      "from": [
+        "WaitingInvite"
+      ],
+      "to": "SendingAccept",
+      "msg": "on_incoming_invite",
+      "desc": "收到主播invite"
+    },
+    {
+      "from": [
+        "SendingAccept"
+      ],
+      "to": "WaitingUpMic",
+      "msg": "accept_mic_connect",
+      "desc": "发送Accept给主播"
+    },
+    {
+      "from": [
+        "WaitingUpMic"
+      ],
+      "to": "OnMic",
+      "msg": "up_mic_success",
+      "desc": "成功上麦"
+    }
+  ]
+}

@@ -100,7 +100,7 @@ public class LogFlowDialog {
         int finalCount = dataList.size();
         AbstractTableModel tableModel = new AbstractTableModel() {
 
-            private String[] columnNames = new String[]{"flow", "time", "log"};
+            private String[] columnNames = new String[]{"flow", "desc", "time", "log"};
 
             @Override
             public String getColumnName(int column) {
@@ -145,9 +145,11 @@ public class LogFlowDialog {
                     }
                     contentLabel.setToolTipText(result.flowResult.desc);
                 } else if (column == 1) {
+                    contentLabel.setText(result.resultLine.linkDesc);
+                } else if (column == 2) {
                     contentLabel.setText(result.logInfo.getTime());
                     contentLabel.setToolTipText(result.logInfo.getTime());
-                } else if (column == 2) {
+                } else if (column == 3) {
                     contentLabel.setText(result.logInfo.getMessage());
                     contentLabel.setToolTipText(result.resultLine.desc);
                 }

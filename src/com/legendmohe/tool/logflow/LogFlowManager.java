@@ -280,10 +280,13 @@ public class LogFlowManager {
                 currentResult.desc = desc;
             }
 
+            // 触发当前状态转换的描述（连线的备注）
+            String linkDesc = mLinkDescMap.get(fromState.name).get(inState.name).get(msg.name);
             // 记录info轨迹
             if (currentResult != null) {
                 FlowResultLine resultLine = new FlowResultLine();
                 resultLine.desc = msg.desc;
+                resultLine.linkDesc = linkDesc;
                 resultLine.logInfo = info;
                 resultLine.isStartLine = fromState.type == LogState.TYPE.START;
                 currentResult.resultLines.add(resultLine);
@@ -295,7 +298,7 @@ public class LogFlowManager {
                 boolean isError = inState.type == LogState.TYPE.ERROR;
 
                 if (currentResult != null) {
-                    currentResult.errorCause = isError ? mLinkDescMap.get(fromState.name).get(inState.name).get(msg.name) : null;
+                    currentResult.errorCause = isError ? linkDesc : null;
                 }
                 results.add(currentResult);
                 handleResultCollected(currentResult);
@@ -432,6 +435,7 @@ public class LogFlowManager {
     public static class FlowResultLine {
         public LogInfo logInfo;
         public String desc;
+        public String linkDesc;
         public boolean isStartLine;
 
         @Override
