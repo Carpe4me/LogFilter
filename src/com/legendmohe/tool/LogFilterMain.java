@@ -881,7 +881,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         m_hmMarkedInfoFiltered.clear();
         m_hmErrorAll.clear();
         m_hmErrorFiltered.clear();
-        mHasRunLogFlow = false;
+        mLastProcessFlowLine = 0;
     }
 
     Component getIndicatorPanel() {
@@ -3299,15 +3299,19 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
 //        System.out.println(currentResult);
     }
 
-    private boolean mHasRunLogFlow;
+    // 当前LogFlow运行到哪一行
+    private int mLastProcessFlowLine;
 
     private void showAllFlow() {
-        if (!mHasRunLogFlow || m_parserType == Constant.PARSER_TYPE_LOGCAT) {
+        if (mLastProcessFlowLine <= 0) {
             LogFlowManager.getInstance().reset();
-            for (LogInfo logInfo : new ArrayList<>(m_arLogInfoAll)) {
+        }
+        if (mLastProcessFlowLine < m_arLogInfoAll.size()) {
+            List<LogInfo> logInfos = new ArrayList<>(m_arLogInfoAll).subList(mLastProcessFlowLine, m_arLogInfoAll.size());
+            for (LogInfo logInfo : logInfos) {
                 LogFlowManager.getInstance().check(logInfo);
             }
-            mHasRunLogFlow = m_parserType != Constant.PARSER_TYPE_LOGCAT;
+            mLastProcessFlowLine += logInfos.size();
         }
         Map<String, List<LogFlowManager.FlowResult>> flowResults = LogFlowManager.getInstance().getCurrentResult();
         if (flowResults.size() > 0) {
