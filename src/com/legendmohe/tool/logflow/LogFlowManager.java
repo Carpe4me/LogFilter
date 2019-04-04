@@ -313,6 +313,7 @@ public class LogFlowManager {
                 if (currentResult != null) {
                     currentResult.errorCause = isError ? linkDesc.desc : null;
                 }
+                // 当错误发生时，addToResultIfError为false的话，不会把它添加到resultLines中
                 if (isError && !linkDesc.addToResultIfError) {
                     // remove last
                     currentResult.resultLines.remove(currentResult.resultLines.size() - 1);
@@ -322,6 +323,7 @@ public class LogFlowManager {
                 // 结束后reset一下，重新开始检测
                 mStateMachine.reset(0);
 
+                // dropifError为false表明当错误发生时，当前log重新推入状态机再判断一次（应对重复开始case）
                 if (isError && !linkDesc.dropIfError) {
                     mStateMachine.postEvent(msg, info);
                 }

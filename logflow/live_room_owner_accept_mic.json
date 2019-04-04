@@ -1,0 +1,161 @@
+{
+  "name": "主播端同意上麦流程",
+  "desc": "主播端同意上麦流程，包含自由上麦、申请上麦和邀请上麦",
+  "msg": {
+    "send_pull_user_request": {
+      "tag": "MicconnectController",
+      "match_type": "startsWith",
+      "pattern": "ownerInviteAudience() called",
+      "desc": "send pull user request to audience"
+    },
+    "recv_audience_accept_pull": {
+      "tag": "LiveOwnerActivity",
+      "match_type": "regex",
+      "pattern": "onPullAudienceToMicListener\\(\\) called with: fromUid = \\[\\d+\\], action = \\[2\\]",
+      "desc": "audience accept pull request"
+    },
+    "recv_audience_reject_pull": {
+      "tag": "LiveOwnerActivity",
+      "match_type": "regex",
+      "pattern": "onPullAudienceToMicListener\\(\\) called with: fromUid = \\[\\d+\\], action = \\[3\\]",
+      "desc": "audience reject pull request"
+    },
+    "recv_free_mic_req": {
+      "tag": "MicconnectController",
+      "match_type": "startsWith",
+      "pattern": "PCS_GetFreeMicReq:",
+      "desc": "receive free mic request from audience"
+    },
+    "recv_join_wait_list": {
+      "tag": "multiAutoInvite",
+      "match_type": "startsWith",
+      "pattern": "autoInvite()",
+      "desc": "audience join wait list with auto invite"
+    },
+    "send_mic_invite": {
+      "tag": "MicconnectController",
+      "match_type": "startsWith",
+      "pattern": "inviteMicconnect() called",
+      "desc": "send invite request to audience"
+    },
+    "accept_mic_success": {
+      "tag": "LiveOwnerActivity",
+      "match_type": "startsWith",
+      "pattern": "onMicconnectAccepted() called",
+      "desc": "audience on mic"
+    }
+  },
+  "state": [
+    {
+      "type": "start",
+      "name": "START"
+    },
+    {
+      "name": [
+        "WaitingPullAudienceRequest",
+        "HandlingFreeMicRequest",
+        "HandlingAutoJoin",
+        "PreparingSendMicConnect",
+        "WaitingInviteAccept"
+      ]
+    },
+    {
+      "type": "end",
+      "name": "OnMic"
+    },
+    {
+      "type": "error",
+      "name": "ERROR"
+    }
+  ],
+  "link": [
+    {
+      "from": [
+        "START"
+      ],
+      "to": "WaitingPullAudienceRequest",
+      "msg": "send_pull_user_request",
+      "desc": "向观众发起邀请"
+    },
+    {
+      "from": [
+        "START"
+      ],
+      "to": "HandlingFreeMicRequest",
+      "msg": "recv_free_mic_req",
+      "desc": "申请加入waiting list"
+    },
+    {
+      "from": [
+        "START"
+      ],
+      "to": "HandlingAutoJoin",
+      "msg": "recv_join_wait_list",
+      "desc": "收到自动同意上麦请求"
+    },
+    {
+      "from": [
+        "WaitingPullAudienceRequest"
+      ],
+      "to": "PreparingSendMicConnect",
+      "msg": "recv_audience_accept_pull",
+      "desc": "观众通过上麦邀请"
+    },
+    {
+      "from": [
+        "PreparingSendMicConnect"
+      ],
+      "to": "WaitingInviteAccept",
+      "msg": "send_mic_invite",
+      "desc": "处理观众通过上麦邀请，发送invite给观众"
+    },
+    {
+      "from": [
+        "WaitingPullAudienceRequest"
+      ],
+      "to": "ERROR",
+      "msg": "recv_audience_reject_pull",
+      "desc": "观众拒绝上麦邀请"
+    },
+    {
+      "from": [
+        "HandlingFreeMicRequest"
+      ],
+      "to": "WaitingInviteAccept",
+      "msg": "send_mic_invite",
+      "desc": "处理自由上麦请求，发送invite给观众"
+    },
+    {
+      "from": [
+        "HandlingAutoJoin"
+      ],
+      "to": "WaitingInviteAccept",
+      "msg": "send_mic_invite",
+      "desc": "处理自动同意，发送invite给观众"
+    },
+    {
+      "from": [
+        "WaitingInviteAccept"
+      ],
+      "to": "OnMic",
+      "msg": "accept_mic_success",
+      "desc": "成功上麦"
+    },
+    {
+      "from": [
+        "WaitingPullAudienceRequest",
+        "HandlingFreeMicRequest",
+        "HandlingAutoJoin"
+      ],
+      "dropIfError": false,
+      "addToResultIfError": false,
+      "to": "ERROR",
+      "msg": [
+        "send_pull_user_request",
+        "recv_free_mic_req",
+        "recv_join_wait_list"
+      ],
+      "desc": "本次上麦请求没有处理"
+    }
+  ]
+}

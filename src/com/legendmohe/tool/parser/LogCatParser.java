@@ -106,7 +106,8 @@ public class LogCatParser extends AbstractLogParser {
             logInfo.setLogLV(stk.nextToken().trim());
         }
         if (stk.hasMoreElements()) {
-            logInfo.setTag(stk.nextToken().trim());
+            String tag = stk.nextToken().trim();
+            logInfo.setTag(tag.substring(0, tag.length() - 1));
         }
         if (stk.hasMoreElements()) {
             logInfo.setPid(stk.nextToken().trim());
@@ -147,14 +148,11 @@ public class LogCatParser extends AbstractLogParser {
             logInfo.setLogLV(stk.nextToken().trim());
         }
         if (stk.hasMoreElements()) {
-            logInfo.setTag(stk.nextToken().trim());
+            String tag = stk.nextToken().trim();
+            logInfo.setTag(tag.substring(0, tag.length() - 1));
         }
         if (stk.hasMoreElements()) {
             logInfo.setMessage(stk.nextToken(TOKEN_MESSAGE).trim());
-            if (logInfo.getMessage().length() != 0 && logInfo.getMessage().charAt(0) == ':') {
-                logInfo.setTag(logInfo.getTag() + ":");
-                logInfo.setMessage(logInfo.getMessage().substring(1).trim());
-            }
             while (stk.hasMoreElements()) {
                 logInfo.setMessage(logInfo.getMessage() + stk.nextToken(TOKEN_MESSAGE));
             }

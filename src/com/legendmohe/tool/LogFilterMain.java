@@ -3302,12 +3302,12 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
     private boolean mHasRunLogFlow;
 
     private void showAllFlow() {
-        if (!mHasRunLogFlow) {
+        if (!mHasRunLogFlow || m_parserType == Constant.PARSER_TYPE_LOGCAT) {
             LogFlowManager.getInstance().reset();
-            for (LogInfo logInfo : m_arLogInfoAll) {
+            for (LogInfo logInfo : new ArrayList<>(m_arLogInfoAll)) {
                 LogFlowManager.getInstance().check(logInfo);
             }
-            mHasRunLogFlow = true;
+            mHasRunLogFlow = m_parserType != Constant.PARSER_TYPE_LOGCAT;
         }
         Map<String, List<LogFlowManager.FlowResult>> flowResults = LogFlowManager.getInstance().getCurrentResult();
         if (flowResults.size() > 0) {
