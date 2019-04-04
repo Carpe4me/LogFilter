@@ -881,7 +881,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         m_hmMarkedInfoFiltered.clear();
         m_hmErrorAll.clear();
         m_hmErrorFiltered.clear();
-        LogFlowManager.getInstance().reset();
+        mHasRunLogFlow = false;
     }
 
     Component getIndicatorPanel() {
@@ -1040,9 +1040,6 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
                                     m_arLogInfoFiltered.size());
                 }
             }
-
-            // 如果有性能问题，就把收集log的逻辑放到dialog打开时才执行
-            LogFlowManager.getInstance().check(logInfo);
         }
     }
 
@@ -3302,7 +3299,16 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
 //        System.out.println(currentResult);
     }
 
+    private boolean mHasRunLogFlow;
+
     private void showAllFlow() {
+        if (!mHasRunLogFlow) {
+            LogFlowManager.getInstance().reset();
+            for (LogInfo logInfo : m_arLogInfoAll) {
+                LogFlowManager.getInstance().check(logInfo);
+            }
+            mHasRunLogFlow = true;
+        }
         Map<String, List<LogFlowManager.FlowResult>> flowResults = LogFlowManager.getInstance().getCurrentResult();
         if (flowResults.size() > 0) {
             LogFlowDialog dialog = new LogFlowDialog(flowResults);
