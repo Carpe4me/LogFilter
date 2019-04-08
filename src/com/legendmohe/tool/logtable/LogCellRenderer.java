@@ -105,6 +105,10 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
             JComponent cc = (JComponent) c;
             if (isSelected) {
                 int[] rows = mTable.getSelectedRows();
+                if (rows == null || rows.length == 0) {
+                    cc.setBorder(SELECTED_BORDER_NONE);
+                    return;
+                }
                 if (rows.length == 1) {
                     if (mResolver.getMinShownColumn() == column) {
                         cc.setBorder(SELECTED_BORDER_TOP_BOTTOM_LEFT);
