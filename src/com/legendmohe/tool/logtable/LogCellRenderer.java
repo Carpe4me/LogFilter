@@ -13,6 +13,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.border.Border;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 
 /**
@@ -73,6 +74,7 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
         this.mResolver = resolver;
     }
 
+    @Override
     public Component getTableCellRendererComponent(JTable table,
                                                    Object value,
                                                    boolean isSelected,
@@ -95,57 +97,84 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
 
         renderFont(c);
         renderBackground(isSelected, logInfo, c);
-        renderBorder(isSelected, row, column, c);
-
+        renderBorder(row, column, c);
         return c;
     }
 
-    private void renderBorder(boolean isSelected, int row, int column, Component c) {
+    private void renderBorder(int row, int column, Component c) {
         if (c instanceof JComponent) {
             JComponent cc = (JComponent) c;
-            if (isSelected) {
-                int[] rows = mTable.getSelectedRows();
-                if (rows == null || rows.length == 0) {
-                    cc.setBorder(SELECTED_BORDER_NONE);
-                    return;
-                }
-                if (rows.length == 1) {
-                    if (mResolver.getMinShownColumn() == column) {
-                        cc.setBorder(SELECTED_BORDER_TOP_BOTTOM_LEFT);
-                    } else if (mResolver.getMaxShownColumn() == column) {
-                        cc.setBorder(SELECTED_BORDER_TOP_BOTTOM_RIGHT);
-                    } else {
-                        cc.setBorder(SELECTED_BORDER_TOP_BOTTOM);
-                    }
+            if (!mTable.isRowSelected(row - 1) && mTable.isRowSelected(row)) {
+                // 如果选中的行是下面连着的
+                if (mTable.isRowSelected(row + 1)) {
+                    renderBorderFirstLine(column, cc);
                 } else {
-                    if (rows[0] == row) {
-                        if (mResolver.getMinShownColumn() == column) {
-                            cc.setBorder(SELECTED_BORDER_TOP_LEFT);
-                        } else if (mResolver.getMaxShownColumn() == column) {
-                            cc.setBorder(SELECTED_BORDER_TOP_RIGHT);
-                        } else {
-                            cc.setBorder(SELECTED_BORDER_TOP);
-                        }
-                    } else if (rows[rows.length - 1] == row) {
-                        if (mResolver.getMinShownColumn() == column) {
-                            cc.setBorder(SELECTED_BORDER_BOTTOM_LEFT);
-                        } else if (mResolver.getMaxShownColumn() == column) {
-                            cc.setBorder(SELECTED_BORDER_BOTTOM_RIGHT);
-                        } else {
-                            cc.setBorder(SELECTED_BORDER_BOTTOM);
-                        }
-                    } else if (mResolver.getMinShownColumn() == column) {
-                        cc.setBorder(SELECTED_BORDER_LEFT);
-                    } else if (mResolver.getMaxShownColumn() == column) {
-                        cc.setBorder(SELECTED_BORDER_RIGHT);
-                    } else {
-                        cc.setBorder(SELECTED_BORDER_NONE);
-                    }
+                    renderBorderSingleLine(column, cc);
                 }
+            } else if (!mTable.isRowSelected(row + 1) && mTable.isRowSelected(row)) {
+                // 如果选中的行是上面连着的
+                if (mTable.isRowSelected(row - 1)) {
+                    renderBorderLastLine(column, cc);
+                } else {
+                    renderBorderSingleLine(column, cc);
+                }
+            } else if (mTable.isRowSelected(row)) {
+                renderBorderMiddleLine(column, cc);
             } else {
-                cc.setBorder(SELECTED_BORDER_NONE);
+                renderNoBorderLine(column, cc);
+                // 刷新上下的cell（有时候系统不会回调上下的cell的render方DefaultTableModel 法）
+                if (mTable.isRowSelected(row - 1)) {
+                    ((AbstractTableModel) mTable.getModel()).fireTableCellUpdated(row - 1, column);
+                }
+                if (mTable.isRowSelected(row + 1)) {
+                    ((AbstractTableModel) mTable.getModel()).fireTableCellUpdated(row + 1, column);
+                }
             }
         }
+    }
+
+    private void renderBorderSingleLine(int column, JComponent cc) {
+        if (mResolver.getMinShownColumn() == column) {
+            cc.setBorder(SELECTED_BORDER_TOP_BOTTOM_LEFT);
+        } else if (mResolver.getMaxShownColumn() == column) {
+            cc.setBorder(SELECTED_BORDER_TOP_BOTTOM_RIGHT);
+        } else {
+            cc.setBorder(SELECTED_BORDER_TOP_BOTTOM);
+        }
+    }
+
+    private void renderBorderFirstLine(int column, JComponent cc) {
+        if (mResolver.getMinShownColumn() == column) {
+            cc.setBorder(SELECTED_BORDER_TOP_LEFT);
+        } else if (mResolver.getMaxShownColumn() == column) {
+            cc.setBorder(SELECTED_BORDER_TOP_RIGHT);
+        } else {
+            cc.setBorder(SELECTED_BORDER_TOP);
+        }
+    }
+
+    private void renderBorderLastLine(int column, JComponent cc) {
+        if (mResolver.getMinShownColumn() == column) {
+            cc.setBorder(SELECTED_BORDER_BOTTOM_LEFT);
+        } else if (mResolver.getMaxShownColumn() == column) {
+            cc.setBorder(SELECTED_BORDER_BOTTOM_RIGHT);
+        } else {
+            cc.setBorder(SELECTED_BORDER_BOTTOM);
+        }
+    }
+
+    private void renderBorderMiddleLine(int column, JComponent cc) {
+        if (mResolver.getMinShownColumn() == column) {
+            cc.setBorder(SELECTED_BORDER_LEFT);
+        } else if (mResolver.getMaxShownColumn() == column) {
+            cc.setBorder(SELECTED_BORDER_RIGHT);
+        } else {
+            cc.setBorder(SELECTED_BORDER_NONE);
+        }
+    }
+
+    private void renderNoBorderLine(int column, JComponent cc) {
+        cc.setBorder(SELECTED_BORDER_NONE);
     }
 
     private void renderBackground(boolean isSelected, LogInfo logInfo, Component c) {
