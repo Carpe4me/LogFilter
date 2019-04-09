@@ -24,6 +24,7 @@ public class LogInfo {
     private String m_strThread = "";
     private String m_strTag = "";
     private String m_strMessage = "";
+    private String m_strFileName = "";
     private long m_timestamp = -1l;
     private Color m_TextColor;
     private TYPE mType = TYPE.SYSTEM;
@@ -64,6 +65,8 @@ public class LogInfo {
                 return getBookmark();
             case LogFilterTableModel.COLUMN_MESSAGE:
                 return getMessage();
+            case LogFilterTableModel.COLUMN_FILE:
+                return getFileName();
         }
         return null;
     }
@@ -91,6 +94,9 @@ public class LogInfo {
             return true;
         }
         if (getThread().toLowerCase().contains(src.toLowerCase())) {
+            return true;
+        }
+        if (getFileName().toLowerCase().contains(src.toLowerCase())) {
             return true;
         }
         return false;
@@ -174,6 +180,14 @@ public class LogInfo {
 
     public void setMessage(String m_strMessage) {
         this.m_strMessage = m_strMessage;
+    }
+
+    public String getFileName() {
+        return m_strFileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.m_strFileName = fileName;
     }
 
     public long getTimestamp() {

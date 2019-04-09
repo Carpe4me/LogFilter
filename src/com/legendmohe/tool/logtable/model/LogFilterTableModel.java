@@ -9,21 +9,22 @@ import javax.swing.table.AbstractTableModel;
 
 public class LogFilterTableModel extends AbstractTableModel {
     public static final int COLUMN_LINE = 0;
-    public static final int COLUMN_DATE = 1;
-    public static final int COLUMN_TIME = 2;
-    public static final int COLUMN_LOGLV = 3;
-    public static final int COLUMN_PID = 4;
-    public static final int COLUMN_THREAD = 5;
-    public static final int COLUMN_TAG = 6;
-    public static final int COLUMN_BOOKMARK = 7;
-    public static final int COLUMN_MESSAGE = 8;
-    public static final int COLUMN_MAX = 9;
+    public static final int COLUMN_FILE = 1;
+    public static final int COLUMN_DATE = 2;
+    public static final int COLUMN_TIME = 3;
+    public static final int COLUMN_LOGLV = 4;
+    public static final int COLUMN_PID = 5;
+    public static final int COLUMN_THREAD = 6;
+    public static final int COLUMN_TAG = 7;
+    public static final int COLUMN_BOOKMARK = 8;
+    public static final int COLUMN_MESSAGE = 9;
+    public static final int COLUMN_MAX = 10;
 
     private static final long serialVersionUID = 1L;
 
-    public static String ColName[] = {"Line", "Date", "Time", "LogLV", "Pid", "Thread", "Tag", "Bookmark", "Message"};
-    public static int ColWidth[] = {50, 50, 100, 20, 50, 50, 100, 100, 600};
-    public static int DEFAULT_WIDTH[] = {50, 50, 100, 20, 50, 50, 100, 100, 600};
+    public static String ColName[] = {"Line", "File", "Date", "Time", "LogLV", "Pid", "Thread", "Tag", "Bookmark", "Message"};
+    public static int ColWidth[] = {50, 50, 50, 100, 20, 50, 50, 100, 100, 600};
+    public static int DEFAULT_WIDTH[] = {50, 50, 50, 100, 20, 50, 50, 100, 100, 600};
 
     ArrayList<LogInfo> m_arData;
 

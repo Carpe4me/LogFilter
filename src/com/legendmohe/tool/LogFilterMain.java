@@ -242,6 +242,8 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
     JCheckBox m_chkClmTag;
     @CheckBoxSaveState
     JCheckBox m_chkClmMessage;
+    @CheckBoxSaveState
+    JCheckBox m_chkClmFile;
 
     JComboBox<String> m_comboEncode;
     //    JComboBox m_jcFontType;
@@ -1081,6 +1083,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         m_chkClmThread.addItemListener(m_itemListener);
         m_chkClmTag.addItemListener(m_itemListener);
         m_chkClmMessage.addItemListener(m_itemListener);
+        m_chkClmFile.addItemListener(m_itemListener);
 
         m_logScrollVPane.getViewport().addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
@@ -1475,6 +1478,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         m_chkClmThread = new JCheckBox();
         m_chkClmTag = new JCheckBox();
         m_chkClmMessage = new JCheckBox();
+        m_chkClmFile = new JCheckBox();
 
         JPanel jpMain = new JPanel();
         jpMain.setLayout(new BoxLayout(jpMain, BoxLayout.X_AXIS));
@@ -1522,6 +1526,8 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         m_chkClmTag.setSelected(true);
         m_chkClmMessage.setText("Msg");
         m_chkClmMessage.setSelected(true);
+        m_chkClmFile.setText("File");
+        m_chkClmFile.setSelected(true);
         jpShowColumn.add(m_chkClmLine);
         jpShowColumn.add(m_chkClmDate);
         jpShowColumn.add(m_chkClmTime);
@@ -1531,6 +1537,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         jpShowColumn.add(m_chkClmTag);
         jpShowColumn.add(m_chkClmBookmark);
         jpShowColumn.add(m_chkClmMessage);
+        jpShowColumn.add(m_chkClmFile);
 
         jpMain.add(jpLogFilter);
         jpMain.add(jpShowColumn);
@@ -1764,7 +1771,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         StringBuilder title = new StringBuilder();
         for (File file : files) {
             mRecentMenu.addEntry(file.getAbsolutePath());
-            title.append(file.getName()).append("|");
+            title.append(file.getName()).append(" | ");
         }
         if (title.length() > 0) {
             title.deleteCharAt(title.length() - 1);
@@ -1779,10 +1786,12 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
                 getSubTable().clearSelection();
 
                 List<LogInfo> newLogInfos = new ArrayList<>();
+                int fileIdx = 0;
                 for (File file : files) {
                     FileInputStream fstream = null;
                     DataInputStream in = null;
                     BufferedReader br = null;
+                    fileIdx++;
                     try {
                         fstream = new FileInputStream(file);
                         in = new DataInputStream(fstream);
@@ -1797,6 +1806,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
                             if (!"".equals(strLine.trim())) {
                                 LogInfo logInfo = m_iLogParser.parseLog(strLine);
                                 logInfo.setType(LogInfo.TYPE.SYSTEM);
+                                // 处理空白行
                                 if (logInfo.getTag() == null || logInfo.getTag().length() <= 0) {
                                     if (newLogInfos.size() > 1) {
                                         LogInfo oldInfo = newLogInfos.get(newLogInfos.size() - 1);
@@ -1805,6 +1815,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
                                         logInfo.setTimestamp(0);
                                     }
                                 }
+                                logInfo.setFileName(String.valueOf(fileIdx));
                                 newLogInfos.add(logInfo);
                             }
                         }
@@ -2136,6 +2147,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
                                     LogInfo logInfo = m_iLogParser
                                             .parseLog(strLine);
                                     logInfo.setLine(nLine++);
+                                    logInfo.setFileName("logcat");
                                     addLogInfo(logInfo);
                                     nAddCount++;
                                 }
@@ -2887,7 +2899,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
 
 
     private void loadTableColumnState() {
-        for (int nIndex = 0; nIndex < LogFilterTableModel.COLUMN_MAX; nIndex++) {
+        for (int nIndex = 0; nIndex < m_colWidths.length; nIndex++) {
             LogFilterTableModel.setColumnWidth(nIndex, m_colWidths[nIndex]);
         }
         m_colWidths = LogFilterTableModel.ColWidth;
@@ -2910,6 +2922,8 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
                 m_chkClmTag.isSelected());
         getLogTable().showColumn(LogFilterTableModel.COLUMN_MESSAGE,
                 m_chkClmMessage.isSelected());
+        getLogTable().showColumn(LogFilterTableModel.COLUMN_FILE,
+                m_chkClmFile.isSelected());
 
         getSubTable().showColumn(LogFilterTableModel.COLUMN_BOOKMARK,
                 m_chkClmBookmark.isSelected());
@@ -2929,6 +2943,8 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
                 m_chkClmTag.isSelected());
         getSubTable().showColumn(LogFilterTableModel.COLUMN_MESSAGE,
                 m_chkClmMessage.isSelected());
+        getSubTable().showColumn(LogFilterTableModel.COLUMN_FILE,
+                m_chkClmFile.isSelected());
     }
 
     ItemListener m_itemListener = new ItemListener() {
@@ -2951,6 +2967,11 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
                 getLogTable().showColumn(LogFilterTableModel.COLUMN_BOOKMARK,
                         check.isSelected());
                 getSubTable().showColumn(LogFilterTableModel.COLUMN_BOOKMARK,
+                        check.isSelected());
+            } else if (check.equals(m_chkClmFile)) {
+                getLogTable().showColumn(LogFilterTableModel.COLUMN_FILE,
+                        check.isSelected());
+                getSubTable().showColumn(LogFilterTableModel.COLUMN_FILE,
                         check.isSelected());
             } else if (check.equals(m_chkClmLine)) {
                 getLogTable().showColumn(LogFilterTableModel.COLUMN_LINE,
