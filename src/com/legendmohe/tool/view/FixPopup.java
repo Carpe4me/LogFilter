@@ -248,7 +248,10 @@ public class FixPopup extends JPanel {
         }
         if (parent instanceof RootPaneContainer) {
             parent = ((RootPaneContainer) parent).getLayeredPane();
-            return parent.getComponentAt(x, y);
+
+            Point location = new Point(x, y);
+            SwingUtilities.convertPointFromScreen(location, parent);
+            return parent.getComponentAt(location.x, location.y);
         }
 
         return null;
