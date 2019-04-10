@@ -94,6 +94,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -126,6 +127,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
+import javax.swing.table.AbstractTableModel;
 
 public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.BaseLogTableListener, IDiffCmdHandler {
     private static final long serialVersionUID = 1L;
@@ -538,6 +540,16 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
                 LogFilterMain.this.showAllFlow();
             }
         });
+
+        JCheckBoxMenuItem showFlowInLogTable = new JCheckBoxMenuItem("show log flow in line");
+        showFlowInLogTable.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
+                handleShowFlowInLogTableStateChanged(showFlowInLogTable.getState());
+            }
+        });
+        showFlowInLogTable.setState(mShowFlowInLogTable);
+
+        flowMenu.add(showFlowInLogTable);
         flowMenu.add(showAllFlow);
 
         menuBar.add(fileMenu);
@@ -883,7 +895,8 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         m_hmMarkedInfoFiltered.clear();
         m_hmErrorAll.clear();
         m_hmErrorFiltered.clear();
-        mLastProcessFlowLine = 0;
+        mLastProcessFlowLine = -1;
+        LogFlowManager.getInstance().reset();
     }
 
     Component getIndicatorPanel() {
@@ -988,7 +1001,11 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
     void addLogInfo(LogInfo logInfo) {
         synchronized (FILTER_LOCK) {
             m_arLogInfoAll.add(logInfo);
-            // addTagList(logInfo.m_strTag);
+            // 实时显示log flow
+            if (mShowFlowInLogTable) {
+                appendFlowLogAndSetLogState(logInfo);
+            }
+
             if (logInfo.getLogLV().equals("E")
                     || logInfo.getLogLV().equals("ERROR"))
                 m_hmErrorAll.put(logInfo.getLine() - 1,
@@ -3270,6 +3287,12 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
 
     ///////////////////////////////////log flow///////////////////////////////////
 
+    // 当前LogFlow运行到哪一行
+    private int mLastProcessFlowLine = -1;
+
+    @FieldSaveState
+    private boolean mShowFlowInLogTable;
+
     private void initLogFlow() {
         File confDir = new File(Constant.LOG_FLOW_CONFIG_DIR);
         if (!confDir.exists()) {
@@ -3277,6 +3300,9 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
             T.d("create log flow config directory: " + confDir.getAbsolutePath());
         }
         LogFlowManager.getInstance().init(confDir);
+
+        m_tbLogTable.setShowLogFlowResult(mShowFlowInLogTable);
+        m_tSublogTable.setShowLogFlowResult(mShowFlowInLogTable);
 
         // test
 //        LogInfo logInfo1 = new LogInfo();
@@ -3320,36 +3346,69 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
 //        System.out.println(currentResult);
     }
 
-    // 当前LogFlow运行到哪一行
-    private int mLastProcessFlowLine;
-
     private void showAllFlow() {
+        synchronized (FILTER_LOCK) {
+            appendAllFlowLogAndSetLogState();
+            Map<String, List<LogFlowManager.FlowResult>> flowResults = LogFlowManager.getInstance().getCurrentResult();
+            if (flowResults.size() > 0) {
+                LogFlowDialog dialog = new LogFlowDialog(flowResults);
+                dialog.setListener(new LogFlowDialog.Listener() {
+                    @Override
+                    public void onOkButtonClicked(LogFlowDialog dialog) {
+                        dialog.hide();
+                    }
+
+                    @Override
+                    public void onItemSelected(LogFlowDialog dialog, LogFlowDialog.ResultItem result) {
+                        // jump to result line
+                        m_tbLogTable.changeSelection(result.logInfo);
+                    }
+                });
+                dialog.show();
+            }
+        }
+    }
+
+    /*
+    把LogInfoAll全部推倒log flow manager里
+     */
+    private void appendAllFlowLogAndSetLogState() {
         if (mLastProcessFlowLine <= 0) {
             LogFlowManager.getInstance().reset();
         }
-        if (mLastProcessFlowLine < m_arLogInfoAll.size()) {
-            List<LogInfo> logInfos = new ArrayList<>(m_arLogInfoAll).subList(mLastProcessFlowLine, m_arLogInfoAll.size());
+        if (mLastProcessFlowLine < m_arLogInfoAll.size() - 1) {
+            List<LogInfo> logInfos = new ArrayList<>(m_arLogInfoAll).subList(mLastProcessFlowLine + 1, m_arLogInfoAll.size());
             for (LogInfo logInfo : logInfos) {
-                LogFlowManager.getInstance().check(logInfo);
+                appendFlowLogAndSetLogState(logInfo);
             }
-            mLastProcessFlowLine += logInfos.size();
         }
-        Map<String, List<LogFlowManager.FlowResult>> flowResults = LogFlowManager.getInstance().getCurrentResult();
-        if (flowResults.size() > 0) {
-            LogFlowDialog dialog = new LogFlowDialog(flowResults);
-            dialog.setListener(new LogFlowDialog.Listener() {
-                @Override
-                public void onOkButtonClicked(LogFlowDialog dialog) {
-                    dialog.hide();
-                }
+    }
 
-                @Override
-                public void onItemSelected(LogFlowDialog dialog, LogFlowDialog.ResultItem result) {
-                    // jump to result line
-                    m_tbLogTable.changeSelection(result.logInfo);
-                }
-            });
-            dialog.show();
+    /*
+    添加一条log到flow中
+     */
+    private boolean appendFlowLogAndSetLogState(LogInfo logInfo) {
+        mLastProcessFlowLine = logInfo.getLine();
+        Map<String, LogFlowManager.FlowResultLine> checkResult = LogFlowManager.getInstance().check(logInfo);
+        if (checkResult != null && checkResult.size() > 0) {
+            logInfo.setFlowResults(new ArrayList<>(checkResult.values()));
+            return true;
+        }
+        return false;
+    }
+
+    /*
+    是否在logtable显示flow result
+     */
+    private void handleShowFlowInLogTableStateChanged(boolean showInLogTable) {
+        if (mShowFlowInLogTable != showInLogTable) {
+            mShowFlowInLogTable = showInLogTable;
+            m_tbLogTable.setShowLogFlowResult(mShowFlowInLogTable);
+            m_tSublogTable.setShowLogFlowResult(mShowFlowInLogTable);
+            // refresh
+            appendAllFlowLogAndSetLogState();
+            ((AbstractTableModel) m_tbLogTable.getModel()).fireTableDataChanged();
+            ((AbstractTableModel) m_tSublogTable.getModel()).fireTableDataChanged();
         }
     }
 

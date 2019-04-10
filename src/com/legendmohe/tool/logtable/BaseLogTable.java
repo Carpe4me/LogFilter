@@ -70,6 +70,8 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
     private boolean mHistoryEnable;
     private LogInfoHistory curHistoryInfo = new LogInfoHistory();
 
+    private boolean mShowLogFlowResult;
+
     public BaseLogTable(TableModel model, BaseLogTableListener filterMain) {
         super(model);
         mBaseLogTableListener = filterMain;
@@ -642,6 +644,15 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
 
     public long GetFilterToTime() {
         return mFilterToTime;
+    }
+
+    @Override
+    public boolean isShowLogFlowResult() {
+        return mShowLogFlowResult;
+    }
+
+    public void setShowLogFlowResult(boolean showLogFlowResult) {
+        mShowLogFlowResult = showLogFlowResult;
     }
 
     ///////////////////////////////////append///////////////////////////////////

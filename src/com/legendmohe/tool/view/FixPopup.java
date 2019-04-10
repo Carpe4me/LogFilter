@@ -186,11 +186,20 @@ public class FixPopup extends JPanel {
 
     private void setupTextArea(JTextArea textArea, int width, int minWidth) {
         FontMetrics fm = textArea.getFontMetrics(textArea.getFont());
-        int textWidth = SwingUtilities.computeStringWidth(fm, textArea.getText());
-        int textHeight = fm.getHeight();
+        String content = textArea.getText();
+        int targetWidth = 0;
+        double targetHeight = 0;
 
-        int targetWidth = Math.max(minWidth, Math.min(width, textWidth));
-        double targetHeight = textHeight * Math.ceil((double) textWidth / (double) targetWidth);
+        String[] lines = content.split("\\r?\\n");
+        for (String line : lines) {
+            int textWidth = line.length() == 0 ? 1 : SwingUtilities.computeStringWidth(fm, line);
+            int textHeight = fm.getHeight();
+            // 选取最大的width
+            targetWidth = Math.max(targetWidth, Math.max(minWidth, Math.min(width, textWidth)));
+            // 累加height
+            targetHeight += textHeight * Math.ceil((double) textWidth / (double) targetWidth);
+        }
+
         Dimension d = new Dimension();
         d.setSize(targetWidth + (CONTENT_PANEL_PADDING) * 2, targetHeight + (CONTENT_PANEL_PADDING) * 2);
 

@@ -1,8 +1,10 @@
 package com.legendmohe.tool;
 
+import com.legendmohe.tool.logflow.LogFlowManager;
 import com.legendmohe.tool.logtable.model.LogFilterTableModel;
 
 import java.awt.Color;
+import java.util.List;
 
 public class LogInfo {
     public static final int LOG_LV_VERBOSE = 1;
@@ -28,6 +30,7 @@ public class LogInfo {
     private long m_timestamp = -1l;
     private Color m_TextColor;
     private TYPE mType = TYPE.SYSTEM;
+    private List<LogFlowManager.FlowResultLine> mFlowResults;
 
     public void display() {
         T.d("=============================================");
@@ -204,6 +207,14 @@ public class LogInfo {
 
     public void setTextColor(Color m_TextColor) {
         this.m_TextColor = m_TextColor;
+    }
+
+    public List<LogFlowManager.FlowResultLine> getFlowResults() {
+        return mFlowResults;
+    }
+
+    public void setFlowResults(List<LogFlowManager.FlowResultLine> flowResult) {
+        mFlowResults = flowResult;
     }
 
     public TYPE getType() {

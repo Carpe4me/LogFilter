@@ -3,6 +3,7 @@ package com.legendmohe.tool.logtable;
 import com.legendmohe.tool.ILogRenderResolver;
 import com.legendmohe.tool.LogInfo;
 import com.legendmohe.tool.config.Constant;
+import com.legendmohe.tool.logflow.LogFlowManager;
 import com.legendmohe.tool.logtable.model.LogFilterTableModel;
 
 import java.awt.Color;
@@ -40,7 +41,7 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
     private final Border SELECTED_BORDER_TOP_BOTTOM_RIGHT;
     private final Border SELECTED_BORDER_NONE;
 
-    private final int BRORDER_WIDTG = 1;
+    private final int BORDER_WIDTH = 1;
     private final Color BORDER_COLOR = new Color(100, 100, 100);
 
     boolean mIsDataChanged;
@@ -49,10 +50,10 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
 
     public LogCellRenderer(JTable table, ILogRenderResolver resolver) {
         super();
-        SELECTED_BORDER_TOP = BorderFactory.createCompoundBorder(null, BorderFactory.createMatteBorder(BRORDER_WIDTG, 0, 0, 0, BORDER_COLOR));
-        SELECTED_BORDER_BOTTOM = BorderFactory.createCompoundBorder(null, BorderFactory.createMatteBorder(0, 0, BRORDER_WIDTG, 0, BORDER_COLOR));
-        SELECTED_BORDER_LEFT = BorderFactory.createCompoundBorder(null, BorderFactory.createMatteBorder(0, BRORDER_WIDTG, 0, 0, BORDER_COLOR));
-        SELECTED_BORDER_RIGHT = BorderFactory.createCompoundBorder(null, BorderFactory.createMatteBorder(0, 0, 0, BRORDER_WIDTG, BORDER_COLOR));
+        SELECTED_BORDER_TOP = BorderFactory.createCompoundBorder(null, BorderFactory.createMatteBorder(BORDER_WIDTH, 0, 0, 0, BORDER_COLOR));
+        SELECTED_BORDER_BOTTOM = BorderFactory.createCompoundBorder(null, BorderFactory.createMatteBorder(0, 0, BORDER_WIDTH, 0, BORDER_COLOR));
+        SELECTED_BORDER_LEFT = BorderFactory.createCompoundBorder(null, BorderFactory.createMatteBorder(0, BORDER_WIDTH, 0, 0, BORDER_COLOR));
+        SELECTED_BORDER_RIGHT = BorderFactory.createCompoundBorder(null, BorderFactory.createMatteBorder(0, 0, 0, BORDER_WIDTH, BORDER_COLOR));
 
         SELECTED_BORDER_TOP_LEFT = BorderFactory.createCompoundBorder(SELECTED_BORDER_TOP, SELECTED_BORDER_LEFT);
         SELECTED_BORDER_TOP_RIGHT = BorderFactory.createCompoundBorder(SELECTED_BORDER_TOP, SELECTED_BORDER_RIGHT);
@@ -96,7 +97,7 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
                 column);
 
         renderFont(c);
-        renderBackground(isSelected, logInfo, c);
+        renderBackground(isSelected, logInfo, row, column, c);
         renderBorder(row, column, c);
         return c;
     }
@@ -122,7 +123,7 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
                 renderBorderMiddleLine(column, cc);
             } else {
                 renderNoBorderLine(column, cc);
-                // 刷新上下的cell（有时候系统不会回调上下的cell的render方DefaultTableModel 法）
+                // 刷新上下的cell（有时候系统不会回调上下的cell的render方法）
                 if (mTable.isRowSelected(row - 1)) {
                     ((AbstractTableModel) mTable.getModel()).fireTableCellUpdated(row - 1, column);
                 }
@@ -177,7 +178,7 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
         cc.setBorder(SELECTED_BORDER_NONE);
     }
 
-    private void renderBackground(boolean isSelected, LogInfo logInfo, Component c) {
+    private void renderBackground(boolean isSelected, LogInfo logInfo, int row, int column, Component c) {
         c.setForeground(logInfo.getTextColor());
         if (isSelected) {
             c.setFont(getFont().deriveFont(mResolver.getFontSize() + 1));
@@ -188,6 +189,21 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
             c.setBackground(new Color(Constant.COLOR_BOOKMARK));
         } else {
             c.setBackground(Color.WHITE);
+        }
+
+        // log flow显示逻辑
+        if (LogFilterTableModel.COLUMN_TIME == column && mResolver.isShowLogFlowResult()) {
+            if (logInfo.getFlowResults() != null && logInfo.getFlowResults().size() > 0) {
+                for (LogFlowManager.FlowResultLine flowResult : logInfo.getFlowResults()) {
+                    // 如果有大于一个错，就高亮出来
+                    if (flowResult.flowResult.errorCause != null) {
+                        c.setBackground(new Color(Constant.COLOR_LOG_FLOW_ERROR));
+                        break;
+                    }
+                    c.setBackground(new Color(Constant.COLOR_LOG_FLOW_NORMAL));
+                }
+                c.setForeground(Color.WHITE);
+            }
         }
     }
 

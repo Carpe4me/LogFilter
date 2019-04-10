@@ -19,4 +19,6 @@ public interface ILogRenderResolver {
     String GetFilterShowTag();
 
     String GetSearchHighlight();
+
+    boolean isShowLogFlowResult();
 }

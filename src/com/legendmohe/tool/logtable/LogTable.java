@@ -5,6 +5,7 @@ import com.legendmohe.tool.LogFilterMain;
 import com.legendmohe.tool.LogInfo;
 import com.legendmohe.tool.T;
 import com.legendmohe.tool.diff.DiffService;
+import com.legendmohe.tool.logflow.LogFlowManager;
 import com.legendmohe.tool.logtable.model.LogFilterTableModel;
 import com.legendmohe.tool.view.FixPopup;
 
@@ -326,7 +327,8 @@ public class LogTable extends BaseLogTable {
 
     private void showPopup(Object value, int row, int col) {
         Point location = MouseInfo.getPointerInfo().getLocation();
-        FixPopup popup = new FixPopup(String.valueOf(value).trim(), FIX_POPUP_MAX_WIDTH, FIX_POPUP_MIN_WIDTH, row);
+        String content = getPopupContent(value, row, col);
+        FixPopup popup = new FixPopup(content, FIX_POPUP_MAX_WIDTH, FIX_POPUP_MIN_WIDTH, row);
         popup.setListener(new FixPopup.Listener() {
             @Override
             public void onGoButtonClick(FixPopup popup) {
@@ -335,6 +337,24 @@ public class LogTable extends BaseLogTable {
         });
         popup.showPopup(this, location.x, location.y + 1);
         mMsgTipsPopups.add(popup);
+    }
+
+    private String getPopupContent(Object value, int row, int col) {
+        StringBuilder content = new StringBuilder(String.valueOf(value).trim());
+        // log flow显示
+        if (isShowLogFlowResult()) {
+            LogInfo logInfo = ((LogFilterTableModel) getModel()).getRow(row);
+            if (logInfo.getFlowResults() != null && logInfo.getFlowResults().size() > 0) {
+                content.append("\n\n").append("[info]");
+                for (LogFlowManager.FlowResultLine flowResult : logInfo.getFlowResults()) {
+                    content.append("\n").append(flowResult.linkDesc);
+                    if (flowResult.flowResult.errorCause != null) {
+                        content.append(" <-").append(flowResult.flowResult.errorCause);
+                    }
+                }
+            }
+        }
+        return content.toString();
     }
 
     private void handlePopupGoButtonClicked(FixPopup popup) {

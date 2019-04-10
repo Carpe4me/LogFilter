@@ -37,7 +37,7 @@ public class LogFlowManager {
 
     //////////////////////////////////////////////////////////////////////
 
-    public void init(File configFolder) {
+    public synchronized void init(File configFolder) {
         if (configFolder == null || !configFolder.exists() || !configFolder.isDirectory()) {
             throw new IllegalArgumentException("invalid config folder:" + configFolder);
         }
@@ -55,15 +55,15 @@ public class LogFlowManager {
         mPatternChecker.init(holders);
     }
 
-    public void reset() {
+    public synchronized void reset() {
         mPatternChecker.reset();
     }
 
-    public int check(LogInfo logInfo) {
+    public synchronized Map<String, FlowResultLine> check(LogInfo logInfo) {
         return mPatternChecker.check(logInfo);
     }
 
-    public Map<String, List<FlowResult>> getCurrentResult() {
+    public synchronized Map<String, List<FlowResult>> getCurrentResult() {
         Map<String, List<FlowResult>> results = new HashMap<>();
         for (LogStateMachineHolder holder : mPatternChecker.holders) {
             List<FlowResult> resultList = new ArrayList<>();
@@ -184,14 +184,15 @@ public class LogFlowManager {
 
         private List<LogStateMachineHolder> holders = new ArrayList<>();
 
-        int check(LogInfo logInfo) {
-            int successCount = 0;
+        Map<String, FlowResultLine> check(LogInfo logInfo) {
+            Map<String, FlowResultLine> tempResult = new HashMap<>();
             for (LogStateMachineHolder holder : holders) {
-                if (holder.check(logInfo)) {
-                    successCount++;
+                FlowResultLine result = holder.check(logInfo);
+                if (result != null) {
+                    tempResult.put(holder.name, result);
                 }
             }
-            return successCount > 0 ? successCount : -1;
+            return tempResult;
         }
 
         void reset() {
@@ -263,17 +264,27 @@ public class LogFlowManager {
             mStateMachine.start();
         }
 
-        boolean check(LogInfo logInfo) {
+        FlowResultLine check(LogInfo logInfo) {
             // 只匹配可处理的event
             List<Object> events = mStateMachine.listAcceptableEvent();
             for (Object event : events) {
                 LogMassage logMsg = (LogMassage) event;
                 if (logMsg.match(logInfo)) {
                     mStateMachine.postEvent(logMsg, logInfo);
-                    return true;
+                    // 取出最后一个
+                    FlowResult lastResult;
+                    if (currentResult.isValid()) {
+                        lastResult = currentResult;
+                    } else {
+                        if (results.size() == 0) {
+                            return null;
+                        }
+                        lastResult = results.get(results.size() - 1);
+                    }
+                    return lastResult.resultLines.size() == 0 ? null : lastResult.resultLines.get(lastResult.resultLines.size() - 1);
                 }
             }
-            return false;
+            return null;
         }
 
         void reset() {
@@ -299,6 +310,7 @@ public class LogFlowManager {
             if (currentResult != null) {
                 FlowResultLine resultLine = new FlowResultLine();
                 resultLine.desc = msg.desc;
+                resultLine.flowResult = currentResult;
                 resultLine.linkDesc = linkDesc.desc;
                 resultLine.logInfo = info;
                 resultLine.isStartLine = fromState.type == LogState.TYPE.START;
@@ -319,7 +331,7 @@ public class LogFlowManager {
                     currentResult.resultLines.remove(currentResult.resultLines.size() - 1);
                 }
                 results.add(currentResult);
-                currentResult = null;
+                currentResult = new FlowResult();
                 // 结束后reset一下，重新开始检测
                 mStateMachine.reset(0);
 
@@ -469,6 +481,7 @@ public class LogFlowManager {
         public LogInfo logInfo;
         public String desc;
         public String linkDesc;
+        public FlowResult flowResult;
         public boolean isStartLine;
 
         @Override
