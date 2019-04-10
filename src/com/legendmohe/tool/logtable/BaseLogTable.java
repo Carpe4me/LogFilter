@@ -55,6 +55,7 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
     String m_strFilterRemove;
     String m_strFilterFind;
     boolean m_bFilterLogFlow;
+    String m_strFilterFileName;
     float m_fFontSize;
     boolean[] m_arbShow;
     boolean m_bAltPressed;
@@ -85,6 +86,7 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
         m_strTagBookmark = "";
         m_strFilterRemove = "";
         m_strFilterFind = "";
+        m_strFilterFileName = "";
         m_bFilterLogFlow = false;
         m_arbShow = new boolean[LogFilterTableModel.COLUMN_MAX];
         mHistoryEnable = true;
@@ -515,6 +517,10 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
         m_bFilterLogFlow = filterLogFlow;
     }
 
+    public void SetFilterFileName(String fileName) {
+        m_strFilterFileName = fileName;
+    }
+
     public void setFontSize(int nFontSize) {
         m_fFontSize = nFontSize;
         setRowHeight(nFontSize + 6);
@@ -589,6 +595,10 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
 
     public boolean isFilterLogFlow() {
         return m_bFilterLogFlow;
+    }
+
+    public String GetFilterFileName() {
+        return m_strFilterFileName;
     }
 
     public void SetFilterFromTime(String fromTime) {

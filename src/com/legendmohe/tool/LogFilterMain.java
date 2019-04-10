@@ -179,6 +179,8 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
     JTextField m_tfBookmarkTag;
     @TextFieldSaveState
     JTextField m_tfFontSize;
+    @TextFieldSaveState
+    JTextField m_tfShowFileName;
 
     private JTextField m_tfFromTimeTag;
     private JTextField m_tfToTimeTag;
@@ -210,6 +212,8 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
     JCheckBox m_chkEnableBookmarkTag;
     @CheckBoxSaveState
     JCheckBox m_chkEnableLogFlowTag;
+    @CheckBoxSaveState
+    JCheckBox m_chkEnableFileNameFilter;
 
     private JCheckBox m_chkEnableTimeTag;
 
@@ -920,13 +924,10 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         jpOptionDevice.setBorder(BorderFactory
                 .createTitledBorder("Device select"));
         jpOptionDevice.setLayout(new BorderLayout());
-//         jpOptionDevice.setPreferredSize(new Dimension(200, 100));
 
         JPanel jpCmd = new JPanel();
         m_comboDeviceCmd = new JComboBox<String>();
         m_comboDeviceCmd.addItem(Constant.COMBO_ANDROID);
-        // m_comboDeviceCmd.addItem(COMBO_IOS);
-        // m_comboDeviceCmd.addItem(CUSTOM_COMMAND);
         m_comboDeviceCmd.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
                 if (e.getStateChange() != ItemEvent.SELECTED)
@@ -1054,6 +1055,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
                         && checkToTimeFilter(logInfo)
                         && checkBookmarkFilter(logInfo)
                         && checkLogFlowFilter(logInfo)
+                        && checkFileNameFilter(logInfo)
                 ) {
                     m_arLogInfoFiltered.add(logInfo);
                     if (logInfo.isMarked())
@@ -1080,6 +1082,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         m_tfBookmarkTag.getDocument().addDocumentListener(mFilterListener);
         m_tfShowPid.getDocument().addDocumentListener(mFilterListener);
         m_tfShowTid.getDocument().addDocumentListener(mFilterListener);
+        m_tfShowFileName.getDocument().addDocumentListener(mFilterListener);
         m_tfFromTimeTag.getDocument().addDocumentListener(mFilterListener);
         m_tfToTimeTag.getDocument().addDocumentListener(mFilterListener);
 
@@ -1091,6 +1094,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         m_chkEnableRemoveTag.addItemListener(m_itemListener);
         m_chkEnableBookmarkTag.addItemListener(m_itemListener);
         m_chkEnableLogFlowTag.addItemListener(m_itemListener);
+        m_chkEnableFileNameFilter.addItemListener(m_itemListener);
         m_chkEnableHighlight.addItemListener(m_itemListener);
         m_chkEnableTimeTag.addItemListener(m_itemListener);
 
@@ -1134,6 +1138,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         Utils.makeUndoable(m_tfShowTid);
         Utils.makeUndoable(m_tfBookmarkTag);
         Utils.makeUndoable(m_tfFontSize);
+        Utils.makeUndoable(m_tfShowFileName);
         Utils.makeUndoable(m_tfGoto);
         Utils.makeUndoable(m_tfToTimeTag);
         Utils.makeUndoable(m_tfFromTimeTag);
@@ -1150,6 +1155,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         bindHistoryInput(m_tfShowTid);
         bindHistoryInput(m_tfBookmarkTag);
         bindHistoryInput(m_tfFontSize);
+        bindHistoryInput(m_tfShowFileName);
         bindHistoryInput(m_tfGoto);
         bindHistoryInput(m_tfToTimeTag);
         bindHistoryInput(m_tfFromTimeTag);
@@ -1224,6 +1230,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         m_chkEnableShowTid = new JCheckBox();
         m_chkEnableBookmarkTag = new JCheckBox();
         m_chkEnableLogFlowTag = new JCheckBox();
+        m_chkEnableFileNameFilter = new JCheckBox();
         m_chkEnableTimeTag = new JCheckBox();
         m_chkEnableIncludeWord.setSelected(true);
         m_chkEnableExcludeWord.setSelected(true);
@@ -1233,6 +1240,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         m_chkEnableShowTid.setSelected(true);
         m_chkEnableBookmarkTag.setSelected(false);
         m_chkEnableLogFlowTag.setSelected(false);
+        m_chkEnableFileNameFilter.setSelected(false);
         m_chkEnableTimeTag.setSelected(true);
 
         m_tfIncludeWord = new JTextField();
@@ -1241,6 +1249,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         m_tfRemoveTag = new JTextField();
         m_tfShowPid = new JTextField();
         m_tfShowTid = new JTextField();
+        m_tfShowFileName = new JTextField();
         m_tfBookmarkTag = new JTextField();
         m_tfFromTimeTag = new JTextField();
         m_tfToTimeTag = new JTextField();
@@ -1281,7 +1290,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         jpTagFilter.setLayout(new BoxLayout(jpTagFilter, BoxLayout.Y_AXIS));
         jpTagFilter.setBorder(BorderFactory.createTitledBorder("Tag filter"));
 
-        JPanel jpPidTid = new JPanel(new GridLayout(1, 2));
+        JPanel jpPidTid = new JPanel(new GridLayout(1, 3));
 
         JPanel jpPid = new JPanel(new BorderLayout());
         JLabel pid = new JLabel();
@@ -1350,11 +1359,19 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         jpTimeMainTag.add(jpTimeTag, BorderLayout.CENTER);
         jpTimeMainTag.add(m_chkEnableTimeTag, BorderLayout.EAST);
 
+        JPanel jpFile = new JPanel(new BorderLayout());
+        JLabel jLFile = new JLabel();
+        jLFile.setText("File : ");
+        jpFile.add(jLFile, BorderLayout.WEST);
+        jpFile.add(m_tfShowFileName, BorderLayout.CENTER);
+        jpFile.add(m_chkEnableFileNameFilter, BorderLayout.EAST);
+
         jpTagFilter.add(jpPidTid);
         jpTagFilter.add(jpShow);
         jpTagFilter.add(jpRemoveTag);
         jpTagFilter.add(jpBmTag);
         jpTagFilter.add(jpTimeMainTag);
+        jpTagFilter.add(jpFile);
 
         jpMain.add(jpTagFilter, BorderLayout.CENTER);
 
@@ -1671,6 +1688,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
                 m_tfShowTag.setText("");
                 m_tfRemoveTag.setText("");
                 m_tfShowPid.setText("");
+                m_tfShowFileName.setText("");
                 m_tfShowTid.setText("");
                 m_tfBookmarkTag.setText("");
             }
@@ -2045,6 +2063,10 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         if (checkBox.equals(m_chkEnableLogFlowTag)) {
             getLogTable().SetFilterLogFlow(checkBox.isSelected());
         }
+        if (checkBox.equals(m_chkEnableFileNameFilter)) {
+            getLogTable().SetFilterFileName(checkBox.isSelected() ? m_tfShowFileName
+                    .getText() : "");
+        }
         if (checkBox.equals(m_chkEnableHighlight)) {
             getLogTable().SetHighlight(checkBox.isSelected() ? m_tfHighlight
                     .getText() : "");
@@ -2303,6 +2325,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
                                         && checkToTimeFilter(logInfo)
                                         && checkBookmarkFilter(logInfo)
                                         && checkLogFlowFilter(logInfo)
+                                        && checkFileNameFilter(logInfo)
                                 ) {
                                     if (m_ipIndicator.m_chBookmark.isSelected()
                                             || m_ipIndicator.m_chError.isSelected()) {
@@ -2575,6 +2598,16 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         return logInfo.getFlowResults() != null && logInfo.getFlowResults().size() > 0;
     }
 
+    boolean checkFileNameFilter(LogInfo logInfo) {
+        if (logInfo.getFileName() == null || logInfo.getFileName().length() <= 0) {
+            return true;
+        }
+        if (getLogTable().GetFilterFileName() == null || getLogTable().GetFilterFileName().length() <= 0) {
+            return true;
+        }
+        return logInfo.getFileName().startsWith(getLogTable().GetFilterFileName());
+    }
+
     boolean checkToTimeFilter(LogInfo logInfo) {
         if (logInfo.getTimestamp() == -1)
             return true;
@@ -2605,6 +2638,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
                 && (getLogTable().GetFilterShowTag().length() == 0 || !m_chkEnableShowTag.isSelected())
                 && (getLogTable().GetFilterRemoveTag().length() == 0 || !m_chkEnableRemoveTag.isSelected())
                 && (getLogTable().GetFilterBookmarkTag().length() == 0 || !m_chkEnableBookmarkTag.isSelected())
+                && (getLogTable().GetFilterFileName().length() == 0 || !m_chkEnableFileNameFilter.isSelected())
                 && (!getLogTable().isFilterLogFlow() || !m_chkEnableLogFlowTag.isSelected())
                 && ((getLogTable().GetFilterFromTime() == -1l && getLogTable().GetFilterToTime() == -1l) || !m_chkEnableTimeTag.isSelected())
                 && (getLogTable().GetFilterFind().length() == 0 || !m_chkEnableIncludeWord.isSelected())
@@ -2751,6 +2785,12 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
                             0, arg0.getDocument().getLength()));
                     mLogParsingState = Constant.PARSING_STATUS_CHANGE_PENDING;
                     runFilter();
+                } else if (arg0.getDocument().equals(m_tfShowFileName.getDocument())
+                        && m_chkEnableFileNameFilter.isSelected()) {
+                    getLogTable().SetFilterFileName(arg0.getDocument().getText(
+                            0, arg0.getDocument().getLength()));
+                    mLogParsingState = Constant.PARSING_STATUS_CHANGE_PENDING;
+                    runFilter();
                 } else if (arg0.getDocument().equals(m_tfHighlight.getDocument())
                         && m_chkEnableHighlight.isSelected()) {
                     getLogTable().SetHighlight(arg0.getDocument().getText(0,
@@ -2826,6 +2866,12 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
                             0, arg0.getDocument().getLength()));
                     mLogParsingState = Constant.PARSING_STATUS_CHANGE_PENDING;
                     runFilter();
+                } else if (arg0.getDocument().equals(m_tfShowFileName.getDocument())
+                        && m_chkEnableFileNameFilter.isSelected()) {
+                    getLogTable().SetFilterFileName(arg0.getDocument().getText(
+                            0, arg0.getDocument().getLength()));
+                    mLogParsingState = Constant.PARSING_STATUS_CHANGE_PENDING;
+                    runFilter();
                 } else if (arg0.getDocument().equals(m_tfHighlight.getDocument())
                         && m_chkEnableHighlight.isSelected()) {
                     getLogTable().SetHighlight(arg0.getDocument().getText(0,
@@ -2892,6 +2938,12 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
                 } else if (arg0.getDocument().equals(m_tfRemoveTag.getDocument())
                         && m_chkEnableRemoveTag.isSelected()) {
                     getLogTable().SetFilterRemoveTag(arg0.getDocument().getText(
+                            0, arg0.getDocument().getLength()));
+                    mLogParsingState = Constant.PARSING_STATUS_CHANGE_PENDING;
+                    runFilter();
+                } else if (arg0.getDocument().equals(m_tfShowFileName.getDocument())
+                        && m_chkEnableFileNameFilter.isSelected()) {
+                    getLogTable().SetFilterFileName(arg0.getDocument().getText(
                             0, arg0.getDocument().getLength()));
                     mLogParsingState = Constant.PARSING_STATUS_CHANGE_PENDING;
                     runFilter();
@@ -3055,6 +3107,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
                     || check.equals(m_chkEnableRemoveTag)
                     || check.equals(m_chkEnableBookmarkTag)
                     || check.equals(m_chkEnableLogFlowTag)
+                    || check.equals(m_chkEnableFileNameFilter)
                     || check.equals(m_chkEnableTimeTag)
                     || check.equals(m_chkEnableHighlight)) {
                 useFilter(check);
