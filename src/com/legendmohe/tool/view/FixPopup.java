@@ -18,8 +18,10 @@ import java.awt.event.MouseEvent;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.Popup;
@@ -52,6 +54,7 @@ public class FixPopup extends JPanel {
     private Component mInternalPopupComponent;
 
     private Object mContext;
+    private final JPanel mBottomPanel;
 
     public FixPopup(String message, int maxWidth, int minWidth, Object context) {
         mContext = context;
@@ -67,6 +70,9 @@ public class FixPopup extends JPanel {
         JTextArea textArea = createMultiLineLabel(message);
         setupTextArea(textArea, maxWidth, minWidth);
         add(textArea);
+
+        mBottomPanel = createBottomPanel();
+        add(mBottomPanel);
 
         MouseAdapter draggableMouseAdapter = new MouseAdapter() {
             private int mMouseY;
@@ -120,6 +126,17 @@ public class FixPopup extends JPanel {
                 component.addMouseListener(normalMouseAdapter);
             }
         }
+    }
+
+    private JPanel createBottomPanel() {
+        JPanel resultPanel = new JPanel();
+        resultPanel.setLayout(new BoxLayout(resultPanel, BoxLayout.X_AXIS));
+        resultPanel.setVisible(false);
+        resultPanel.setBorder(null);
+        resultPanel.setBackground(null);
+        resultPanel.setOpaque(false);
+        resultPanel.setBorder(new EmptyBorder(0, TOOLBAR_PANEL_PADDING, TOOLBAR_PANEL_PADDING, TOOLBAR_PANEL_PADDING));
+        return resultPanel;
     }
 
     private JTextArea createMultiLineLabel(String message) {
@@ -243,6 +260,14 @@ public class FixPopup extends JPanel {
             mInternalPopup = null;
             mInternalPopupComponent = null;
         }
+    }
+
+    public void addBottomComponent(JComponent component) {
+        if (!mBottomPanel.isVisible()) {
+            mBottomPanel.setVisible(true);
+        }
+        mBottomPanel.add(component);
+        mBottomPanel.add(Box.createHorizontalGlue());
     }
 
     public void setListener(Listener listener) {

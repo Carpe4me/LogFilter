@@ -10,19 +10,20 @@ import com.legendmohe.tool.logtable.model.LogFilterTableModel;
 import com.legendmohe.tool.view.FixPopup;
 import com.legendmohe.tool.view.LogFlowDialog;
 
+import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import javax.swing.AbstractAction;
+import javax.swing.JButton;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.ListSelectionModel;
@@ -33,6 +34,8 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableColumnModelEvent;
 import javax.swing.event.TableColumnModelListener;
 import javax.swing.table.TableColumn;
+
+import javafx.util.Pair;
 
 public class LogTable extends BaseLogTable {
     private static final long serialVersionUID = 1L;
@@ -263,29 +266,7 @@ public class LogTable extends BaseLogTable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 LogInfo logInfo = ((LogFilterTableModel) getModel()).getRow(getSelectedRow());
-                if (logInfo.hasFlowResults()) {
-                    // 从某行result line拿到所属result的所有line
-                    Map<String, List<LogFlowManager.FlowResult>> target = new HashMap<>();
-                    for (LogFlowManager.FlowResultLine resultLine : logInfo.getFlowResults()) {
-                        target.putIfAbsent(resultLine.flowResult.name, new ArrayList<>());
-                        target.get(resultLine.flowResult.name).add(resultLine.flowResult);
-                    }
-
-                    LogFlowDialog dialog = new LogFlowDialog(target);
-                    dialog.setListener(new LogFlowDialog.Listener() {
-                        @Override
-                        public void onOkButtonClicked(LogFlowDialog dialog) {
-                            dialog.hide();
-                        }
-
-                        @Override
-                        public void onItemSelected(LogFlowDialog dialog, LogFlowDialog.ResultItem result) {
-                            // jump to result line
-                            changeSelection(result.logInfo);
-                        }
-                    });
-                    dialog.show();
-                }
+                showCurrentFlowResultWithSelection(logInfo);
             }
         });
 
@@ -360,7 +341,9 @@ public class LogTable extends BaseLogTable {
 
     private void showPopup(Object value, int row, int col) {
         Point location = MouseInfo.getPointerInfo().getLocation();
-        String content = getPopupContent(value, row, col);
+        Pair<String, Boolean> popupContent = getPopupContent(value, row, col);
+        String content = popupContent.getKey();
+        boolean hasFlowResult = popupContent.getValue();
         FixPopup popup = new FixPopup(content, FIX_POPUP_MAX_WIDTH, FIX_POPUP_MIN_WIDTH, row);
         popup.setListener(new FixPopup.Listener() {
             @Override
@@ -368,27 +351,63 @@ public class LogTable extends BaseLogTable {
                 handlePopupGoButtonClicked(popup);
             }
         });
+        if (hasFlowResult) {
+            JButton button = new JButton("< show in dialog");
+            button.setBorder(null);
+            button.setBorderPainted(false);
+            button.setContentAreaFilled(false);
+            button.setOpaque(false);
+            button.setForeground(Color.GRAY);
+            button.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    LogInfo logInfo = ((LogFilterTableModel) getModel()).getRow(row);
+                    showCurrentFlowResultWithSelection(logInfo);
+                }
+            });
+            popup.addBottomComponent(button);
+        }
         popup.showPopup(this, location.x, location.y + 1);
         mMsgTipsPopups.add(popup);
     }
 
-    private String getPopupContent(Object value, int row, int col) {
+    private void showCurrentFlowResultWithSelection(LogInfo logInfo) {
+        if (logInfo.hasFlowResults()) {
+            LogFlowDialog dialog = new LogFlowDialog(logInfo);
+            dialog.setListener(new LogFlowDialog.Listener() {
+                @Override
+                public void onOkButtonClicked(LogFlowDialog dialog) {
+                    dialog.hide();
+                }
+
+                @Override
+                public void onItemSelected(LogFlowDialog dialog, LogFlowDialog.ResultItem result) {
+                    // jump to result line
+                    changeSelection(result.logInfo);
+                }
+            });
+            dialog.show();
+        }
+    }
+
+    private Pair<String, Boolean> getPopupContent(Object value, int row, int col) {
         StringBuilder content = new StringBuilder(String.valueOf(value).trim());
+        boolean hasFlowResult = false;
         // log flow显示
         if (isShowLogFlowResult()) {
             LogInfo logInfo = ((LogFilterTableModel) getModel()).getRow(row);
             if (logInfo.getFlowResults() != null && logInfo.getFlowResults().size() > 0) {
-                content.append("\n\n").append("[info]");
+                content.append("\n");
                 for (LogFlowManager.FlowResultLine resultLine : logInfo.getFlowResults()) {
                     if (resultLine.flowResult.errorCause != null) {
-                        content.append("\n").append(resultLine.flowResult.desc).append(" <-").append(resultLine.flowResult.errorCause);
+                        content.append("\n").append("[error] ").append(resultLine.flowResult.desc).append(" <-").append(resultLine.flowResult.errorCause);
                     } else {
-                        content.append("\n").append(resultLine.linkDesc);
+                        content.append("\n").append("[info] ").append(resultLine.linkDesc);
                     }
                 }
+                hasFlowResult = true;
             }
         }
-        return content.toString();
+        return new Pair<>(content.toString(), hasFlowResult);
     }
 
     private void handlePopupGoButtonClicked(FixPopup popup) {

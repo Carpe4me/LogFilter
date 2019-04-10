@@ -16,6 +16,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -48,6 +49,17 @@ public class LogFlowDialog {
 
     public LogFlowDialog(Map<String, List<LogFlowManager.FlowResult>> flowResultList) {
         mFlowResults = flowResultList;
+        createAndDisplayOptionPane();
+    }
+
+    public LogFlowDialog(LogInfo logInfo) {
+        // 从某行result line拿到所属result的所有line
+        Map<String, List<LogFlowManager.FlowResult>> resultMap = new HashMap<>();
+        for (LogFlowManager.FlowResultLine resultLine : logInfo.getFlowResults()) {
+            resultMap.putIfAbsent(resultLine.flowResult.name, new ArrayList<>());
+            resultMap.get(resultLine.flowResult.name).add(resultLine.flowResult);
+        }
+        mFlowResults = resultMap;
         createAndDisplayOptionPane();
     }
 
