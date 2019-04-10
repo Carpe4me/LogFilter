@@ -427,8 +427,12 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
 
         mRecentMenu = new RecentFileMenu("RecentFile", 10) {
             public void onSelectFile(String filePath) {
-                File recentFile = new File(filePath);
-                LogFilterMain.this.parseLogFile(new File[]{recentFile});
+                String[] files = filePath.split("\\|");
+                File[] recentFiles = new File[files.length];
+                for (int i = 0; i < files.length; i++) {
+                    recentFiles[i] = new File(files[i]);
+                }
+                LogFilterMain.this.parseLogFile(recentFiles);
             }
         };
 
@@ -1801,14 +1805,13 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         }
 
         StringBuilder title = new StringBuilder();
+        StringBuilder filePathBuilder = new StringBuilder();
         for (File file : files) {
-            mRecentMenu.addEntry(file.getAbsolutePath());
+            filePathBuilder.append(file.getAbsolutePath()).append("|");
             title.append(file.getName()).append(" | ");
         }
-        if (title.length() > 0) {
-            title.deleteCharAt(title.length() - 1);
-        }
-        setTitle(title.toString());
+        mRecentMenu.addEntry(filePathBuilder.deleteCharAt(filePathBuilder.length() - 1).toString());
+        setTitle(title.deleteCharAt(title.length() - 1).toString());
         // parsing
         new Thread(new Runnable() {
             public void run() {
