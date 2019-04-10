@@ -83,7 +83,9 @@
     },
     {
       "from": [
-        "InRoom"
+        "InRoom",
+        "PrepareForJoin",
+        "JoiningLive"
       ],
       "to": "END",
       "msg": "leave",
