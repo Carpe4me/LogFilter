@@ -164,10 +164,6 @@ public class LogFlowDialog {
             resultTable.getColumnModel().getColumn(i).setCellRenderer(renderer);
         }
 
-        resultTable.setCellSelectionEnabled(true);
-        ListSelectionModel select = resultTable.getSelectionModel();
-        select.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
         resultTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
@@ -187,9 +183,15 @@ public class LogFlowDialog {
             }
         });
 
+        resultTable.setCellSelectionEnabled(true);
+        ListSelectionModel select = resultTable.getSelectionModel();
+        select.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         resultTable.getTableHeader().addMouseListener(new ColumnHeaderListener());
         resultTable.setRowHeight(20);
         resultTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        resultTable.getTableHeader().setReorderingAllowed(false);
+        resultTable.setOpaque(false);
+        resultTable.setAutoscrolls(false);
 
         // pack all columns
         EventQueue.invokeLater(new Runnable() {
