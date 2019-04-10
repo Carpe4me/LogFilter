@@ -192,7 +192,7 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
         }
 
         // log flow显示逻辑
-        if (LogFilterTableModel.COLUMN_TIME == column && mResolver.isShowLogFlowResult()) {
+        if (mResolver.getMinShownColumn() == column && mResolver.isShowLogFlowResult()) {
             if (logInfo.getFlowResults() != null && logInfo.getFlowResults().size() > 0) {
                 for (LogFlowManager.FlowResultLine flowResult : logInfo.getFlowResults()) {
                     // 如果有大于一个错，就高亮出来
@@ -202,7 +202,7 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
                     }
                     c.setBackground(new Color(Constant.COLOR_LOG_FLOW_NORMAL));
                 }
-                c.setForeground(Color.WHITE);
+                c.setForeground(new Color(Constant.COLOR_LOG_FLOW_TEXT));
             }
         }
     }
