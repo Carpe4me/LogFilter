@@ -8,6 +8,7 @@ import com.legendmohe.tool.diff.DiffService;
 import com.legendmohe.tool.logflow.LogFlowManager;
 import com.legendmohe.tool.logtable.model.LogFilterTableModel;
 import com.legendmohe.tool.view.FixPopup;
+import com.legendmohe.tool.view.LogFlowDialog;
 
 import java.awt.EventQueue;
 import java.awt.MouseInfo;
@@ -16,13 +17,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.AbstractAction;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
-import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
@@ -41,7 +43,7 @@ public class LogTable extends BaseLogTable {
         initListener();
     }
 
-    protected void initListener() {
+    private void initListener() {
         addMouseListener(new MouseAdapter() {
 
             public void mouseReleased(MouseEvent e) {
@@ -85,8 +87,8 @@ public class LogTable extends BaseLogTable {
                     }
 
                     T.d("m_bAltPressed = " + m_bAltPressed);
+                    LogInfo logInfo = ((LogFilterTableModel) getModel()).getRow(row);
                     if (m_bAltPressed) {
-                        LogInfo logInfo = ((LogFilterTableModel) getModel()).getRow(row);
                         if (column == LogFilterTableModel.COLUMN_TAG) {
                             appendFilterRemoveTag((String) logInfo.getData(column));
                             mBaseLogTableListener.postEvent(new EventBus.Event(EventBus.TYPE.EVENT_CHANGE_FILTER_REMOVE_TAG));
@@ -96,10 +98,8 @@ public class LogTable extends BaseLogTable {
                             );
                         }
                     } else {
-                        if (e.isPopupTrigger() && e.getComponent() instanceof JTable) {
-                            JPopupMenu popup = createRightClickPopUp();
-                            popup.show(e.getComponent(), e.getX(), e.getY());
-                        }
+                        JPopupMenu popup = createRightClickPopUp(logInfo);
+                        popup.show(e.getComponent(), e.getX(), e.getY());
                     }
                 }
             }
@@ -150,7 +150,7 @@ public class LogTable extends BaseLogTable {
         }
     };
 
-    private JPopupMenu createRightClickPopUp() {
+    private JPopupMenu createRightClickPopUp(LogInfo logInfo) {
 
         JPopupMenu menuPopup = new JPopupMenu();
         JMenuItem copycolumnToClipboard = new JMenuItem(new AbstractAction("copy column to clipboard") {
@@ -259,11 +259,44 @@ public class LogTable extends BaseLogTable {
             }
         });
 
+        JMenuItem logFlowMenuItem = new JMenuItem(new AbstractAction("show logflow in dialog") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                LogInfo logInfo = ((LogFilterTableModel) getModel()).getRow(getSelectedRow());
+                if (logInfo.hasFlowResults()) {
+                    // 从某行result line拿到所属result的所有line
+                    Map<String, List<LogFlowManager.FlowResult>> target = new HashMap<>();
+                    for (LogFlowManager.FlowResultLine resultLine : logInfo.getFlowResults()) {
+                        target.putIfAbsent(resultLine.flowResult.name, new ArrayList<>());
+                        target.get(resultLine.flowResult.name).add(resultLine.flowResult);
+                    }
+
+                    LogFlowDialog dialog = new LogFlowDialog(target);
+                    dialog.setListener(new LogFlowDialog.Listener() {
+                        @Override
+                        public void onOkButtonClicked(LogFlowDialog dialog) {
+                            dialog.hide();
+                        }
+
+                        @Override
+                        public void onItemSelected(LogFlowDialog dialog, LogFlowDialog.ResultItem result) {
+                            // jump to result line
+                            changeSelection(result.logInfo);
+                        }
+                    });
+                    dialog.show();
+                }
+            }
+        });
+
         menuPopup.add(markMenuItem);
         menuPopup.add(showInSubTable);
         menuPopup.add(showRow);
         menuPopup.add(copycolumnToClipboard);
         menuPopup.add(copyRowToClipboard);
+        if (logInfo.hasFlowResults()) {
+            menuPopup.add(logFlowMenuItem);
+        }
         if (mDiffService != null && mDiffService.isDiffConnected()) {
             if (getSelectedRowCount() == 1) {
                 menuPopup.add(findInDiffMenuItem);
@@ -346,10 +379,11 @@ public class LogTable extends BaseLogTable {
             LogInfo logInfo = ((LogFilterTableModel) getModel()).getRow(row);
             if (logInfo.getFlowResults() != null && logInfo.getFlowResults().size() > 0) {
                 content.append("\n\n").append("[info]");
-                for (LogFlowManager.FlowResultLine flowResult : logInfo.getFlowResults()) {
-                    content.append("\n").append(flowResult.linkDesc);
-                    if (flowResult.flowResult.errorCause != null) {
-                        content.append(" <-").append(flowResult.flowResult.errorCause);
+                for (LogFlowManager.FlowResultLine resultLine : logInfo.getFlowResults()) {
+                    if (resultLine.flowResult.errorCause != null) {
+                        content.append("\n").append(resultLine.flowResult.desc).append(" <-").append(resultLine.flowResult.errorCause);
+                    } else {
+                        content.append("\n").append(resultLine.linkDesc);
                     }
                 }
             }

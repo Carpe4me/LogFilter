@@ -217,6 +217,10 @@ public class LogInfo {
         mFlowResults = flowResult;
     }
 
+    public boolean hasFlowResults() {
+        return mFlowResults != null && mFlowResults.size() > 0;
+    }
+
     public TYPE getType() {
         return mType;
     }
