@@ -208,6 +208,8 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
     JCheckBox m_chkEnableHighlight;
     @CheckBoxSaveState
     JCheckBox m_chkEnableBookmarkTag;
+    @CheckBoxSaveState
+    JCheckBox m_chkEnableLogFlowTag;
 
     private JCheckBox m_chkEnableTimeTag;
 
@@ -1046,7 +1048,9 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
                         && checkRemoveFilter(logInfo)
                         && checkFromTimeFilter(logInfo)
                         && checkToTimeFilter(logInfo)
-                        && checkBookmarkFilter(logInfo)) {
+                        && checkBookmarkFilter(logInfo)
+                        && checkLogFlowFilter(logInfo)
+                ) {
                     m_arLogInfoFiltered.add(logInfo);
                     if (logInfo.isMarked())
                         m_hmMarkedInfoFiltered.put(logInfo.getLine() - 1,
@@ -1082,6 +1086,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         m_chkEnableShowTag.addItemListener(m_itemListener);
         m_chkEnableRemoveTag.addItemListener(m_itemListener);
         m_chkEnableBookmarkTag.addItemListener(m_itemListener);
+        m_chkEnableLogFlowTag.addItemListener(m_itemListener);
         m_chkEnableHighlight.addItemListener(m_itemListener);
         m_chkEnableTimeTag.addItemListener(m_itemListener);
 
@@ -1214,6 +1219,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         m_chkEnableShowPid = new JCheckBox();
         m_chkEnableShowTid = new JCheckBox();
         m_chkEnableBookmarkTag = new JCheckBox();
+        m_chkEnableLogFlowTag = new JCheckBox();
         m_chkEnableTimeTag = new JCheckBox();
         m_chkEnableIncludeWord.setSelected(true);
         m_chkEnableExcludeWord.setSelected(true);
@@ -1222,6 +1228,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         m_chkEnableShowPid.setSelected(true);
         m_chkEnableShowTid.setSelected(true);
         m_chkEnableBookmarkTag.setSelected(false);
+        m_chkEnableLogFlowTag.setSelected(false);
         m_chkEnableTimeTag.setSelected(true);
 
         m_tfIncludeWord = new JTextField();
@@ -1236,8 +1243,9 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
 
         JPanel jpMain = new JPanel(new BorderLayout());
 
-        JPanel jpWordFilter = new JPanel(new BorderLayout());
+        JPanel jpWordFilter = new JPanel();
         jpWordFilter.setBorder(BorderFactory.createTitledBorder("Word filter"));
+        jpWordFilter.setLayout(new BoxLayout(jpWordFilter, BoxLayout.Y_AXIS));
 
         JPanel jpInclide = new JPanel(new BorderLayout());
         JLabel find = new JLabel();
@@ -1253,8 +1261,15 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         jpExclude.add(m_tfExcludeWord, BorderLayout.CENTER);
         jpExclude.add(m_chkEnableExcludeWord, BorderLayout.EAST);
 
-        jpWordFilter.add(jpInclide, BorderLayout.NORTH);
+        JPanel jpLFTag = new JPanel(new FlowLayout());
+        JLabel lfTag = new JLabel();
+        lfTag.setText("Filter LogFlow: ");
+        jpLFTag.add(lfTag);
+        jpLFTag.add(m_chkEnableLogFlowTag);
+
+        jpWordFilter.add(jpInclide);
         jpWordFilter.add(jpExclude);
+        jpWordFilter.add(jpLFTag);
 
         jpMain.add(jpWordFilter, BorderLayout.NORTH);
 
@@ -1999,44 +2014,33 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         if (checkBox.equals(m_chkEnableIncludeWord)) {
             getLogTable().setFilterFind(checkBox.isSelected() ? m_tfIncludeWord
                     .getText() : "");
-//            getSubTable().SetHighlight(checkBox.isSelected() ? m_tfIncludeWord
-//                    .getText() : "");
         }
         if (checkBox.equals(m_chkEnableExcludeWord)) {
             getLogTable().SetFilterRemove(checkBox.isSelected() ? m_tfExcludeWord
                     .getText() : "");
-//            getSubTable().SetHighlight(checkBox.isSelected() ? m_tfExcludeWord
-//                    .getText() : "");
         }
         if (checkBox.equals(m_chkEnableShowPid)) {
             getLogTable().SetFilterShowPid(checkBox.isSelected() ? m_tfShowPid
                     .getText() : "");
-//            getSubTable().SetHighlight(checkBox.isSelected() ? m_tfShowPid
-//                    .getText() : "");
         }
         if (checkBox.equals(m_chkEnableShowTid)) {
             getLogTable().SetFilterShowTid(checkBox.isSelected() ? m_tfShowTid
                     .getText() : "");
-//            getSubTable().SetHighlight(checkBox.isSelected() ? m_tfShowTid
-//                    .getText() : "");
         }
         if (checkBox.equals(m_chkEnableShowTag)) {
             getLogTable().SetFilterShowTag(checkBox.isSelected() ? m_tfShowTag
                     .getText() : "");
-//            getSubTable().SetHighlight(checkBox.isSelected() ? m_tfShowTag
-//                    .getText() : "");
         }
         if (checkBox.equals(m_chkEnableRemoveTag)) {
             getLogTable().SetFilterRemoveTag(checkBox.isSelected() ? m_tfRemoveTag
                     .getText() : "");
-//            getSubTable().SetHighlight(checkBox.isSelected() ? m_tfRemoveTag
-//                    .getText() : "");
         }
         if (checkBox.equals(m_chkEnableBookmarkTag)) {
             getLogTable().SetFilterBookmarkTag(checkBox.isSelected() ? m_tfBookmarkTag
                     .getText() : "");
-//            getSubTable().SetHighlight(checkBox.isSelected() ? m_tfBookmarkTag
-//                    .getText() : "");
+        }
+        if (checkBox.equals(m_chkEnableLogFlowTag)) {
+            getLogTable().SetFilterLogFlow(checkBox.isSelected());
         }
         if (checkBox.equals(m_chkEnableHighlight)) {
             getLogTable().SetHighlight(checkBox.isSelected() ? m_tfHighlight
@@ -2294,7 +2298,9 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
                                         && checkRemoveFilter(logInfo)
                                         && checkFromTimeFilter(logInfo)
                                         && checkToTimeFilter(logInfo)
-                                        && checkBookmarkFilter(logInfo)) {
+                                        && checkBookmarkFilter(logInfo)
+                                        && checkLogFlowFilter(logInfo)
+                                ) {
                                     if (m_ipIndicator.m_chBookmark.isSelected()
                                             || m_ipIndicator.m_chError.isSelected()) {
                                         bAddFilteredArray = false;
@@ -2559,6 +2565,13 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         return false;
     }
 
+    boolean checkLogFlowFilter(LogInfo logInfo) {
+        if (!getLogTable().isFilterLogFlow()) {
+            return true;
+        }
+        return logInfo.getFlowResults() != null && logInfo.getFlowResults().size() > 0;
+    }
+
     boolean checkToTimeFilter(LogInfo logInfo) {
         if (logInfo.getTimestamp() == -1)
             return true;
@@ -2589,6 +2602,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
                 && (getLogTable().GetFilterShowTag().length() == 0 || !m_chkEnableShowTag.isSelected())
                 && (getLogTable().GetFilterRemoveTag().length() == 0 || !m_chkEnableRemoveTag.isSelected())
                 && (getLogTable().GetFilterBookmarkTag().length() == 0 || !m_chkEnableBookmarkTag.isSelected())
+                && (!getLogTable().isFilterLogFlow() || !m_chkEnableLogFlowTag.isSelected())
                 && ((getLogTable().GetFilterFromTime() == -1l && getLogTable().GetFilterToTime() == -1l) || !m_chkEnableTimeTag.isSelected())
                 && (getLogTable().GetFilterFind().length() == 0 || !m_chkEnableIncludeWord.isSelected())
                 && (getLogTable().GetFilterRemove().length() == 0 || !m_chkEnableExcludeWord.isSelected())
@@ -3037,6 +3051,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
                     || check.equals(m_chkEnableShowTag)
                     || check.equals(m_chkEnableRemoveTag)
                     || check.equals(m_chkEnableBookmarkTag)
+                    || check.equals(m_chkEnableLogFlowTag)
                     || check.equals(m_chkEnableTimeTag)
                     || check.equals(m_chkEnableHighlight)) {
                 useFilter(check);
