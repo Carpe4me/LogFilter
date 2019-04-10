@@ -2,6 +2,12 @@
   "name": "LinkD链接状态",
   "desc": "linkd链接状态，需要service log",
   "msg": {
+    "connected": {
+      "tag": "yysdk-net-linkd",
+      "match_type": "startsWith",
+      "pattern": "updateConnectStat:2",
+      "desc": "linkd connected"
+    },
     "disconnect": {
       "tag": "yysdk-net-linkd",
       "match_type": "startsWith",
@@ -13,6 +19,10 @@
     {
       "type": "start",
       "name": "START"
+    },
+    {
+      "type": "end",
+      "name": "CONNECTED"
     },
     {
       "type": "error",
@@ -27,6 +37,14 @@
       "to": "DISCONNECTED",
       "msg": "disconnect",
       "desc": "linkd断开"
+    },
+    {
+      "from": [
+        "START"
+      ],
+      "to": "CONNECTED",
+      "msg": "connected",
+      "desc": "linkd连上"
     }
   ]
 }
