@@ -218,7 +218,8 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
 
         mIsDataChanged = false;
 
-        strText = strText.replace(" ", "\u00A0");
+        // html里面的空格会被压缩成一个
+        strText = strText.replaceAll(" ", "\u00A0");
         if (Constant.COLOR_HIGHLIGHT != null && Constant.COLOR_HIGHLIGHT.length > 0) {
             strText = highLightCell(strText, mResolver.GetHighlight(), Constant.COLOR_HIGHLIGHT, true);
         } else {
@@ -247,7 +248,14 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
         if (strFind == null || strFind.length() <= 0 || strText == null || strText.length() <= 0)
             return strText;
         // target cache
-        String[] targets = sFindTargetCache.computeIfAbsent(strFind, f -> f.split("\\|"));
+        String[] targets = sFindTargetCache.computeIfAbsent(strFind, f -> {
+            String[] split = f.split("\\|");
+            for (int i = 0; i < split.length; i++) {
+                // strText里的空格已经转成\u00a0了
+                split[i] = split[i].replaceAll(" ", "\u00A0");
+            }
+            return split;
+        });
         int idx = 0;
         for (String target : targets) {
             // pattern cache

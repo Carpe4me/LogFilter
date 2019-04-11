@@ -113,6 +113,7 @@ import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
+import javax.swing.OverlayLayout;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
@@ -313,6 +314,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
     private LogFilterTableModel m_tSubLogTableModel;
     private JScrollPane m_subLogScrollVPane;
     ArrayList<LogInfo> m_arSubLogInfoAll;
+    private JPanel mSearchPanel;
 
     @FieldSaveState
     private Set<String> mFilterTagHistory = new HashSet<>();
@@ -1722,10 +1724,11 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
 
         optionMenu.add(optionWest, BorderLayout.CENTER);
 
-        JPanel searchPanel = new JPanel(new GridLayout(1, 2));
-        searchPanel.add(getHighlightPanel());
-        searchPanel.add(getSearchPanel());
-        optionMenu.add(searchPanel, BorderLayout.SOUTH);
+        mSearchPanel = new JPanel(new GridLayout(1, 2));
+        mSearchPanel.add(getHighlightPanel());
+        mSearchPanel.add(getSearchPanel());
+        mSearchPanel.setVisible(false);
+        optionMenu.add(mSearchPanel, BorderLayout.SOUTH);
         return optionMenu;
     }
 
@@ -1771,7 +1774,11 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         m_tmLogTableModel.setData(m_arLogInfoAll);
         m_tbLogTable = new LogTable(m_tmLogTableModel, this);
         m_logScrollVPane = new JScrollPane(m_tbLogTable);
-        mainLogPanel.add(m_logScrollVPane, BorderLayout.CENTER);
+
+        JPanel tablePanel = new JPanel();
+        tablePanel.setLayout(new OverlayLayout(tablePanel));
+        tablePanel.add(m_logScrollVPane);
+        mainLogPanel.add(tablePanel, BorderLayout.CENTER);
 
         mainLogPanel.add(getIndicatorPanel(), BorderLayout.WEST);
 
@@ -1957,12 +1964,22 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         }
     }
 
-    public void setSearchFocus() {
-        m_tfSearch.requestFocus();
+    public void showPanelAndSetSearchFocus() {
+        if (!mSearchPanel.isVisible() || m_tfHighlight.hasFocus()) {
+            mSearchPanel.setVisible(true);
+            m_tfSearch.requestFocus();
+        } else {
+            mSearchPanel.setVisible(false);
+        }
     }
 
-    private void setHighLightFocus() {
-        m_tfHighlight.requestFocus();
+    private void showPanelAndSetHighLightFocus() {
+        if (!mSearchPanel.isVisible() || m_tfSearch.hasFocus()) {
+            mSearchPanel.setVisible(true);
+            m_tfHighlight.requestFocus();
+        } else {
+            mSearchPanel.setVisible(false);
+        }
     }
 
     private void setWordIncludeFocus() {
@@ -3155,12 +3172,12 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
                     return false;
                 case KeyEvent.VK_F:
                     if (e.getID() == KeyEvent.KEY_PRESSED && ctrlPressed) {
-                        setSearchFocus();
+                        showPanelAndSetSearchFocus();
                     }
                     break;
                 case KeyEvent.VK_H:
                     if (e.getID() == KeyEvent.KEY_PRESSED && ctrlPressed) {
-                        setHighLightFocus();
+                        showPanelAndSetHighLightFocus();
                     }
                     break;
                 case KeyEvent.VK_W:
