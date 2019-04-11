@@ -7,6 +7,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,6 +18,7 @@ import java.util.regex.Pattern;
 public class BigoDevLogParser extends AbstractLogParser {
 
     private static final DateFormat TIMESTAMP_FORMAT = new SimpleDateFormat("MM-dd HH:mm:ss.SSS");
+    private static final DateTimeFormatter TIMESTAMP_DATE_TIME_FORMAT_LOCAL = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     /*
     Match 1
@@ -51,7 +53,7 @@ public class BigoDevLogParser extends AbstractLogParser {
                 logInfo.setTextColor(getFontColor(logInfo));
                 logInfo.setDate(
                         LocalDateTime.ofInstant(Instant.ofEpochMilli(logInfo.getTimestamp()),
-                                TimeZone.getDefault().toZoneId()).toString()); // 本地时间
+                                TimeZone.getDefault().toZoneId()).format(TIMESTAMP_DATE_TIME_FORMAT_LOCAL)); // 本地时间
             } else {
                 logInfo.setMessage(strText);
             }
