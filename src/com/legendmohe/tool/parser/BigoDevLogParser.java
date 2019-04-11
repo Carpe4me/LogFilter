@@ -46,7 +46,7 @@ public class BigoDevLogParser extends AbstractLogParser {
                 logInfo.setLogLV(level);
                 logInfo.setTag(tag);
                 logInfo.setMessage(msg);
-                logInfo.setTextColor(getColor(logInfo));
+                logInfo.setTextColor(getFontColor(logInfo));
             } else {
                 logInfo.setMessage(strText);
             }

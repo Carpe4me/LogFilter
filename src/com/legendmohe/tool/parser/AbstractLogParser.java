@@ -11,7 +11,7 @@ import java.awt.Color;
 abstract class AbstractLogParser implements ILogParser {
 
     @Override
-    public Color getColor(LogInfo logInfo) {
+    public Color getFontColor(LogInfo logInfo) {
         if (logInfo.getLogLV() == null) return Color.BLACK;
 
         if (logInfo.getLogLV().equals("FATAL") || logInfo.getLogLV().equals("F"))

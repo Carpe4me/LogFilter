@@ -12,5 +12,5 @@ public interface ILogParser {
 
     LogInfo parseLog(String strText);
 
-    Color getColor(LogInfo logInfo);
+    Color getFontColor(LogInfo logInfo);
 }

@@ -119,7 +119,7 @@ public class LogCatParser extends AbstractLogParser {
             }
             logInfo.setMessage(logInfo.getMessage().replaceFirst("\\): ", ""));
         }
-        logInfo.setTextColor(getColor(logInfo));
+        logInfo.setTextColor(getFontColor(logInfo));
         return logInfo;
     }
 
@@ -158,7 +158,7 @@ public class LogCatParser extends AbstractLogParser {
             }
             logInfo.setMessage(logInfo.getMessage().replaceFirst("\\): ", ""));
         }
-        logInfo.setTextColor(getColor(logInfo));
+        logInfo.setTextColor(getFontColor(logInfo));
         return logInfo;
     }
 
@@ -184,7 +184,7 @@ public class LogCatParser extends AbstractLogParser {
             }
             logInfo.setMessage(logInfo.getMessage().replaceFirst("  ", ""));
         }
-        logInfo.setTextColor(getColor(logInfo));
+        logInfo.setTextColor(getFontColor(logInfo));
         return logInfo;
     }
 }

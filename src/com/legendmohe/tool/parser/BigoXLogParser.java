@@ -46,7 +46,7 @@ public class BigoXLogParser extends AbstractLogParser {
                 logInfo.setThread(thread);
                 logInfo.setTag(tag);
                 logInfo.setMessage(msg);
-                logInfo.setTextColor(getColor(logInfo));
+                logInfo.setTextColor(getFontColor(logInfo));
             } else {
                 logInfo.setMessage(strText);
             }
