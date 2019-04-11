@@ -62,6 +62,7 @@ public class BigoXLogParser extends AbstractLogParser {
         return logInfo;
     }
 
+    private Pattern mDatePattern = Pattern.compile("(\\.(\\d))");
     /*
     处理不规范的日期格式
      */
@@ -77,7 +78,14 @@ public class BigoXLogParser extends AbstractLogParser {
                     time = time.replace(" -", " -0");
                 }
             }
-            time = time.replaceFirst("\\.(\\d)", "$10");
+            Matcher matcher = mDatePattern.matcher(time);
+            if (matcher.find()) {
+                int deltaTime = Integer.valueOf(matcher.group(2));
+                time = matcher.replaceFirst("00");
+                if (deltaTime > 0) {
+                    return TIMESTAMP_FORMAT_WITH_TIMEZONE.parse(time).getTime() - (long) ((deltaTime / 10.0f) * 3600 * 1000);
+                }
+            }
         }
         return TIMESTAMP_FORMAT_WITH_TIMEZONE.parse(time).getTime();
     }
