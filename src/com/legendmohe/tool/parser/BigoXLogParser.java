@@ -6,6 +6,9 @@ import com.legendmohe.tool.T;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -39,7 +42,6 @@ public class BigoXLogParser extends AbstractLogParser {
                 String tag = matcher.group(4);
                 String msg = matcher.group(5);
 
-                logInfo.setDate(date);
                 logInfo.setTime(date);
                 logInfo.setTimestamp(getTimestampFromTime(logInfo.getTime()));
                 logInfo.setLogLV(level);
@@ -47,6 +49,9 @@ public class BigoXLogParser extends AbstractLogParser {
                 logInfo.setTag(tag);
                 logInfo.setMessage(msg);
                 logInfo.setTextColor(getFontColor(logInfo));
+                logInfo.setDate(
+                        LocalDateTime.ofInstant(Instant.ofEpochMilli(logInfo.getTimestamp()),
+                                TimeZone.getDefault().toZoneId()).toString()); // 本地时间
             } else {
                 logInfo.setMessage(strText);
             }

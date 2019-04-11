@@ -5,6 +5,9 @@ import com.legendmohe.tool.T;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,13 +43,15 @@ public class BigoDevLogParser extends AbstractLogParser {
                 String msg = matcher.group(6);
 
                 logInfo.setLine(Integer.valueOf(line));
-                logInfo.setDate(date);
                 logInfo.setTime(date);
                 logInfo.setTimestamp(TIMESTAMP_FORMAT.parse(logInfo.getTime()).getTime());
                 logInfo.setLogLV(level);
                 logInfo.setTag(tag);
                 logInfo.setMessage(msg);
                 logInfo.setTextColor(getFontColor(logInfo));
+                logInfo.setDate(
+                        LocalDateTime.ofInstant(Instant.ofEpochMilli(logInfo.getTimestamp()),
+                                TimeZone.getDefault().toZoneId()).toString()); // 本地时间
             } else {
                 logInfo.setMessage(strText);
             }
