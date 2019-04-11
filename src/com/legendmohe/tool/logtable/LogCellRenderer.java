@@ -8,7 +8,10 @@ import com.legendmohe.tool.logtable.model.LogFilterTableModel;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.util.StringTokenizer;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
@@ -234,41 +237,45 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
         return strText.replace("\t", "    ");
     }
 
+    private static Map<String, Pattern> sPatternCache = new HashMap<>();
+    private static Map<String, String[]> sFindTargetCache = new HashMap<>();
+
+    /*
+    高亮背景
+     */
     private String highLightCell(String strText, String strFind, String[] arColor, boolean bUseSpan) {
-        if (strFind == null || strFind.length() <= 0)
+        if (strFind == null || strFind.length() <= 0 || strText == null || strText.length() <= 0)
             return strText;
-
-        strFind = strFind.replace(" ", "\u00A0");
-        StringTokenizer stk = new StringTokenizer(strFind, "|");
-        String newText;
-        String strToken;
-        int nIndex = 0;
-
-        while (stk.hasMoreElements()) {
-            if (nIndex >= arColor.length)
-                nIndex = 0;
-            strToken = stk.nextToken();
-
-            int idx = strText.toLowerCase().indexOf(strToken.toLowerCase());
-            if (idx != -1) {
-                String prefix = strText.substring(0, idx);
-                String suffix = strText.substring(idx + strToken.length());
-                String target = strText.substring(idx, idx + strToken.length());
-
+        // target cache
+        String[] targets = sFindTargetCache.computeIfAbsent(strFind, f -> f.split("\\|"));
+        int idx = 0;
+        for (String target : targets) {
+            // pattern cache
+            Pattern pattern = sPatternCache.computeIfAbsent(target, s -> Pattern.compile("(" + s + ")", Pattern.CASE_INSENSITIVE));
+            Matcher matcher = pattern.matcher(strText);
+            if (matcher.find()) {
                 if (bUseSpan)
-                    newText = "<span style=\"background-color:#" + arColor[nIndex] + "\"><b>";
+                    strText = matcherReplaceAll(matcher, "<span style=\"background-color:#" + arColor[idx] + "\"><b>$1</b></span>");
                 else
-                    newText = "<font color=#" + arColor[nIndex] + "><b>";
-                newText += target;
-                if (bUseSpan)
-                    newText += "</b></span>";
-                else
-                    newText += "</b></font>";
-                strText = prefix + newText + suffix;
+                    strText = matcherReplaceAll(matcher, "<font color=#" + arColor[idx] + "><b>$1</b></font>");
                 mIsDataChanged = true;
-                nIndex++;
+            }
+            idx++;
+            if (idx > arColor.length - 1) {
+                idx = 0;
             }
         }
         return strText;
+    }
+
+    private String matcherReplaceAll(Matcher matcher, String replacement) {
+        StringBuffer sb = new StringBuffer();
+        boolean result;
+        do {
+            matcher.appendReplacement(sb, replacement);
+            result = matcher.find();
+        } while (result);
+        matcher.appendTail(sb);
+        return sb.toString();
     }
 }
