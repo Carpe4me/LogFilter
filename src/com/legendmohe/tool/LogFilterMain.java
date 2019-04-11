@@ -1279,6 +1279,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         lfTag.setText("Filter LogFlow: ");
         jpLFTag.add(lfTag);
         jpLFTag.add(m_chkEnableLogFlowTag);
+        m_chkEnableLogFlowTag.setSelected(mShowFlowInLogTable);
 
         jpWordFilter.add(jpInclide);
         jpWordFilter.add(jpExclude);
@@ -3478,6 +3479,15 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
             m_tSublogTable.setShowLogFlowResult(mShowFlowInLogTable);
             // refresh
             appendAllFlowLogAndSetLogState();
+
+            // 关掉的时候disable logflow filter
+            if (!mShowFlowInLogTable) {
+                m_chkEnableLogFlowTag.setSelected(false);
+                m_chkEnableLogFlowTag.setEnabled(false);
+            } else {
+                m_chkEnableLogFlowTag.setEnabled(true);
+            }
+
             ((AbstractTableModel) m_tbLogTable.getModel()).fireTableDataChanged();
             ((AbstractTableModel) m_tSublogTable.getModel()).fireTableDataChanged();
         }
