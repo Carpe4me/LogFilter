@@ -251,7 +251,9 @@ public class FixPopup extends JPanel {
 
             Point location = new Point(x, y);
             SwingUtilities.convertPointFromScreen(location, parent);
-            return parent.getComponentAt(location.x, location.y);
+            Component componentAt = parent.getComponentAt(location.x, location.y);
+            // patch
+            return componentAt.getName().equalsIgnoreCase("panel0") ? componentAt : null;
         }
 
         return null;
