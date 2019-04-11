@@ -30,21 +30,7 @@
     }
   ],
   "link": [
-    {
-      "from": [
-        "START"
-      ],
-      "to": "DISCONNECTED",
-      "msg": "disconnect",
-      "desc": "linkd断开"
-    },
-    {
-      "from": [
-        "START"
-      ],
-      "to": "CONNECTED",
-      "msg": "connected",
-      "desc": "linkd连上"
-    }
+    "START--disconnect-->DISCONNECTED:linkd断开",
+    "START--connected-->CONNECTED:linkd连上"
   ]
 }

@@ -139,33 +139,37 @@ public class LogFlowManager {
             // link
             JSONArray linkObject = configJson.getJSONArray("link");
             for (Object linkObj : linkObject) {
-                JSONObject linkItem = ((JSONObject) linkObj);
+                if (linkObj instanceof JSONObject) {
+                    JSONObject linkItem = ((JSONObject) linkObj);
 
-                JSONArray msgList = new JSONArray();
-                if (!(linkItem.get("msg") instanceof JSONArray)) {
-                    msgList.put(linkItem.getString("msg"));
-                } else {
-                    msgList = linkItem.getJSONArray("msg");
-                }
-                JSONArray fromArray = linkItem.getJSONArray("from");
-                String to = linkItem.getString("to");
-                boolean dropIfError = linkItem.optBoolean("dropIfError", true);
-                boolean addToResultIfError = linkItem.optBoolean("addToResultIfError", true);
-                String desc = linkItem.optString("desc", "unknown");
-
-                for (int i = 0; i < fromArray.length(); i++) {
-                    String from = fromArray.getString(i);
-                    for (Object msgObj : msgList) {
-                        String msg = (String) msgObj;
-                        LogStateLink stateLink = new LogStateLink();
-                        stateLink.from = from;
-                        stateLink.to = to;
-                        stateLink.msg = msg;
-                        stateLink.desc = desc;
-                        stateLink.dropIfError = dropIfError;
-                        stateLink.addToResultIfError = addToResultIfError;
-                        holder.mStateLinks.add(stateLink);
+                    JSONArray msgList = new JSONArray();
+                    if (!(linkItem.get("msg") instanceof JSONArray)) {
+                        msgList.put(linkItem.getString("msg"));
+                    } else {
+                        msgList = linkItem.getJSONArray("msg");
                     }
+                    JSONArray fromArray = linkItem.getJSONArray("from");
+                    String to = linkItem.getString("to");
+                    boolean dropIfError = linkItem.optBoolean("dropIfError", true);
+                    boolean addToResultIfError = linkItem.optBoolean("addToResultIfError", true);
+                    String desc = linkItem.optString("desc", "unknown");
+
+                    for (int i = 0; i < fromArray.length(); i++) {
+                        String from = fromArray.getString(i);
+                        for (Object msgObj : msgList) {
+                            String msg = (String) msgObj;
+                            LogStateLink stateLink = new LogStateLink();
+                            stateLink.from = from;
+                            stateLink.to = to;
+                            stateLink.msg = msg;
+                            stateLink.desc = desc;
+                            stateLink.dropIfError = dropIfError;
+                            stateLink.addToResultIfError = addToResultIfError;
+                            holder.mStateLinks.add(stateLink);
+                        }
+                    }
+                } else if (linkObj instanceof String) {
+                    parseLinkDefString((String) linkObj, holder);
                 }
             }
 
@@ -176,6 +180,53 @@ public class LogFlowManager {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /*
+    字符串形式的状态转移解析
+    eg. "START--disconnect-->DISCONNECTED:linkd断开(dropIfError=true;addToResultIfError=true)"
+     */
+    private void parseLinkDefString(String src, LogStateMachineHolder holder) {
+        String[] tempSplitResult = src.split("--");
+        String fromStateArray = tempSplitResult[0].trim();
+        String[] fromStates = fromStateArray.split("\\|");
+        String msgArray = tempSplitResult[1].trim();
+        String[] msgs = msgArray.split("\\|");
+        String toStateAndParams = tempSplitResult[2].trim();
+
+        tempSplitResult = toStateAndParams.split(":");
+        String toState = tempSplitResult[0].trim();
+        if (toState.startsWith(">")) {
+            toState = toState.substring(1, toState.length()).trim();
+        }
+        String descAndParams = tempSplitResult[1].trim();
+
+        tempSplitResult = descAndParams.split("\\(");
+        String desc = tempSplitResult[0].trim();
+        Map<String, String> paramMap = new HashMap<>();
+        if (tempSplitResult.length > 1) {
+            String paramArray = tempSplitResult[1].trim();
+            String[] params = paramArray.substring(0, paramArray.length() - 1).split(";");
+            for (String paramKeyValue : params) {
+                String[] keyValue = paramKeyValue.split("=");
+                String key = keyValue[0].trim();
+                String value = keyValue[1].trim();
+                paramMap.put(key, value);
+            }
+        }
+
+        for (String fromState : fromStates) {
+            for (String msg : msgs) {
+                LogStateLink stateLink = new LogStateLink();
+                stateLink.from = fromState;
+                stateLink.to = toState;
+                stateLink.msg = msg;
+                stateLink.desc = desc;
+                stateLink.dropIfError = Boolean.valueOf(paramMap.getOrDefault("dropIfError", "true"));
+                stateLink.addToResultIfError = Boolean.valueOf(paramMap.getOrDefault("addToResultIfError", "true"));
+                holder.mStateLinks.add(stateLink);
+            }
+        }
     }
 
     ///////////////////////////////////flow stack///////////////////////////////////
