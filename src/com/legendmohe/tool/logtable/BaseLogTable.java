@@ -380,7 +380,7 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
                     T.d("vColIndex == -1");
                     return;
                 }
-                packColumn(vColIndex, 5);
+                packColumn(vColIndex, 10);
             }
         }
     }
