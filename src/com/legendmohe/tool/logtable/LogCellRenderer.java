@@ -220,18 +220,14 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
 
         // html里面的空格会被压缩成一个
         strText = strText.replaceAll(" ", "\u00A0");
-        if (Constant.COLOR_HIGHLIGHT != null && Constant.COLOR_HIGHLIGHT.length > 0) {
-            strText = highLightCell(strText, mResolver.GetHighlight(), Constant.COLOR_HIGHLIGHT, true);
-        } else {
-            strText = highLightCell(strText, mResolver.GetHighlight(), new String[]{"00FF00"}, true);
-        }
+        strText = highLightCell(strText, mResolver.GetHighlight(), "00FF00", true);
 
         if (columnIndex == LogFilterTableModel.COLUMN_MESSAGE || columnIndex == LogFilterTableModel.COLUMN_TAG) {
             String strFind = columnIndex == LogFilterTableModel.COLUMN_MESSAGE ? mResolver.GetFilterFind() : mResolver.GetFilterShowTag();
-            strText = highLightCell(strText, strFind, new String[]{"FF0000"}, false);
+            strText = highLightCell(strText, strFind, "FF0000", false);
         }
 
-        strText = highLightCell(strText, mResolver.GetSearchHighlight(), new String[]{"FFFF00"}, true);
+        strText = highLightCell(strText, mResolver.GetSearchHighlight(), "FFFF00", true);
         if (mIsDataChanged)
             strText = "<html><nobr>" + strText + "</nobr></html>";
 
@@ -239,51 +235,47 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
     }
 
     private static Map<String, Pattern> sPatternCache = new HashMap<>();
-    private static Map<String, String[]> sFindTargetCache = new HashMap<>();
 
     /*
     高亮背景
      */
-    private String highLightCell(String strText, String strFind, String[] arColor, boolean bUseSpan) {
+    private String highLightCell(String strText, String strFind, String color, boolean bUseSpan) {
         if (strFind == null || strFind.length() <= 0 || strText == null || strText.length() <= 0)
             return strText;
-        // target cache
-        String[] targets = sFindTargetCache.computeIfAbsent(strFind, f -> {
-            String[] split = f.split("\\|");
-            for (int i = 0; i < split.length; i++) {
-                // strText里的空格已经转成\u00a0了
-                split[i] = split[i].replaceAll(" ", "\u00A0");
-            }
-            return split;
-        });
-        int idx = 0;
-        for (String target : targets) {
-            // pattern cache
-            Pattern pattern = sPatternCache.computeIfAbsent(target, s -> Pattern.compile("(" + s + ")", Pattern.CASE_INSENSITIVE));
-            Matcher matcher = pattern.matcher(strText);
-            if (matcher.find()) {
-                if (bUseSpan)
-                    strText = matcherReplaceAll(matcher, "<span style=\"background-color:#" + arColor[idx] + "\"><b>$1</b></span>");
-                else
-                    strText = matcherReplaceAll(matcher, "<font color=#" + arColor[idx] + "><b>$1</b></font>");
-                mIsDataChanged = true;
-            }
-            idx++;
-            if (idx > arColor.length - 1) {
-                idx = 0;
-            }
+        // pattern cache
+        Pattern pattern = sPatternCache.computeIfAbsent(strFind, s -> Pattern.compile("(" + s + ")", Pattern.CASE_INSENSITIVE));
+        Matcher matcher = pattern.matcher(strText);
+
+        StringBuilder tmpReplaceHolder = new StringBuilder();
+        if (matcher.find()) {
+            boolean result;
+            int lastEnd = 0;
+            do {
+                int start = matcher.start();
+                int end = matcher.end();
+
+                if (bUseSpan) {
+                    tmpReplaceHolder
+                            .append(strText, lastEnd, start)
+                            .append("<span style=\"background-color:#").append(color).append("\"><b>")
+                            .append(strText, start, end)
+                            .append("</b></span>");
+                } else {
+                    tmpReplaceHolder
+                            .append(strText, lastEnd, start)
+                            .append("<font color=#").append(color).append("><b>")
+                            .append(strText, start, end)
+                            .append("</b></font>");
+                }
+                lastEnd = end;
+                result = matcher.find();
+            } while (result);
+
+            // 结尾部分
+            tmpReplaceHolder.append(strText, lastEnd, strText.length());
+            strText = tmpReplaceHolder.toString();
+            mIsDataChanged = true;
         }
         return strText;
-    }
-
-    private String matcherReplaceAll(Matcher matcher, String replacement) {
-        StringBuffer sb = new StringBuffer();
-        boolean result;
-        do {
-            matcher.appendReplacement(sb, replacement);
-            result = matcher.find();
-        } while (result);
-        matcher.appendTail(sb);
-        return sb.toString();
     }
 }
