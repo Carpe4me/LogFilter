@@ -93,7 +93,7 @@ public class LogFlowManager {
             holder.name = configJson.getString("name");
             holder.desc = configJson.getString("desc");
 
-            // msg
+            // parse msg
             JSONObject msgObject = configJson.getJSONObject("msg");
             for (String msgName : msgObject.keySet()) {
                 JSONObject msgItem = msgObject.getJSONObject(msgName);
@@ -112,7 +112,7 @@ public class LogFlowManager {
                 holder.mMassageMap.put(msgName, logMassage);
             }
 
-            // state
+            // parse state
             JSONArray stateObject = configJson.getJSONArray("state");
             for (Object stateObj : stateObject) {
                 JSONObject stateItem = ((JSONObject) stateObj);
@@ -136,38 +136,11 @@ public class LogFlowManager {
                 }
             }
 
-            // link
+            // parse link
             JSONArray linkObject = configJson.getJSONArray("link");
             for (Object linkObj : linkObject) {
                 if (linkObj instanceof JSONObject) {
-                    JSONObject linkItem = ((JSONObject) linkObj);
-
-                    JSONArray msgList = new JSONArray();
-                    if (!(linkItem.get("msg") instanceof JSONArray)) {
-                        msgList.put(linkItem.getString("msg"));
-                    } else {
-                        msgList = linkItem.getJSONArray("msg");
-                    }
-                    JSONArray fromArray = linkItem.getJSONArray("from");
-                    String to = linkItem.getString("to");
-                    boolean dropIfError = linkItem.optBoolean("dropIfError", true);
-                    boolean addToResultIfError = linkItem.optBoolean("addToResultIfError", true);
-                    String desc = linkItem.optString("desc", "unknown");
-
-                    for (int i = 0; i < fromArray.length(); i++) {
-                        String from = fromArray.getString(i);
-                        for (Object msgObj : msgList) {
-                            String msg = (String) msgObj;
-                            LogStateLink stateLink = new LogStateLink();
-                            stateLink.from = from;
-                            stateLink.to = to;
-                            stateLink.msg = msg;
-                            stateLink.desc = desc;
-                            stateLink.dropIfError = dropIfError;
-                            stateLink.addToResultIfError = addToResultIfError;
-                            holder.mStateLinks.add(stateLink);
-                        }
-                    }
+                    parseLinkDefJSONObject((JSONObject) linkObj, holder);
                 } else if (linkObj instanceof String) {
                     parseLinkDefString((String) linkObj, holder);
                 }
@@ -180,6 +153,40 @@ public class LogFlowManager {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /*
+    json形式的状态转移解析
+     */
+    private void parseLinkDefJSONObject(JSONObject linkObj, LogStateMachineHolder holder) {
+        JSONObject linkItem = linkObj;
+
+        JSONArray msgList = new JSONArray();
+        if (!(linkItem.get("msg") instanceof JSONArray)) {
+            msgList.put(linkItem.getString("msg"));
+        } else {
+            msgList = linkItem.getJSONArray("msg");
+        }
+        JSONArray fromArray = linkItem.getJSONArray("from");
+        String to = linkItem.getString("to");
+        boolean dropIfError = linkItem.optBoolean("dropIfError", true);
+        boolean addToResultIfError = linkItem.optBoolean("addToResultIfError", true);
+        String desc = linkItem.optString("desc", "unknown");
+
+        for (int i = 0; i < fromArray.length(); i++) {
+            String from = fromArray.getString(i);
+            for (Object msgObj : msgList) {
+                String msg = (String) msgObj;
+                LogStateLink stateLink = new LogStateLink();
+                stateLink.from = from;
+                stateLink.to = to;
+                stateLink.msg = msg;
+                stateLink.desc = desc;
+                stateLink.dropIfError = dropIfError;
+                stateLink.addToResultIfError = addToResultIfError;
+                holder.mStateLinks.add(stateLink);
+            }
+        }
     }
 
     /*
