@@ -26,10 +26,16 @@
       "pattern": "leaveRoom ",
       "desc": "leave room"
     },
-    "error": {
+    "video_end": {
       "tag": "RoomProXLog",
       "match_type": "startsWith",
-      "pattern": "leaveRoomForError",
+      "pattern": "leaveRoomForError:0",
+      "desc": "room video end"
+    },
+    "error": {
+      "tag": "RoomProXLog",
+      "match_type": "regex",
+      "pattern": "leaveRoomForError:[^0]",
       "desc": "leave room with error"
     }
   },
@@ -97,17 +103,19 @@
         "PrepareForJoin",
         "JoiningLive"
       ],
-      "to": "ERROR",
-      "msg": "error",
-      "desc": "因错误退出房间"
+      "to": "END",
+      "msg": "video_end",
+      "desc": "直播结束(ROOM_ERR_VIDEO_END)"
     },
     {
       "from": [
-        "InRoom"
+        "InRoom",
+        "PrepareForJoin",
+        "JoiningLive"
       ],
       "to": "ERROR",
-      "msg": "enter",
-      "desc": "重复打开房间"
+      "msg": "error",
+      "desc": "因错误退出房间"
     }
   ]
 }

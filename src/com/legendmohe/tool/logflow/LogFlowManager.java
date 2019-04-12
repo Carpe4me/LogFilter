@@ -405,6 +405,8 @@ public class LogFlowManager {
     }
 
     public static class LogMassage {
+        private static Map<String, Pattern> sPatternCache = new HashMap<>();
+
         public String tag;
         public String matchType;
         public String pattern;
@@ -415,31 +417,24 @@ public class LogFlowManager {
 
         void init() {
             if (matchType.equalsIgnoreCase("regex")) {
-                Pattern r = Pattern.compile(pattern);
-
-                mMatcher = new Matcher<String>() {
-                    @Override
-                    public boolean match(String o1) {
-                        return r.matcher(o1).find();
-                    }
-                };
+                Pattern finalP = getCachePattern(this.pattern);
+                mMatcher = o1 -> finalP.matcher(o1).find();
             } else if (matchType.equalsIgnoreCase("contains")) {
-                mMatcher = new Matcher<String>() {
-                    @Override
-                    public boolean match(String o1) {
-                        return o1.contains(pattern);
-                    }
-                };
+                mMatcher = o1 -> o1.contains(pattern);
             } else if (matchType.equalsIgnoreCase("startsWith")) {
-                mMatcher = new Matcher<String>() {
-                    @Override
-                    public boolean match(String o1) {
-                        return o1.startsWith(pattern);
-                    }
-                };
+                mMatcher = o1 -> o1.startsWith(pattern);
             } else {
                 throw new IllegalArgumentException("unknown match type:" + matchType);
             }
+        }
+
+        private Pattern getCachePattern(String pattern) {
+            Pattern p = sPatternCache.get(pattern);
+            if (p == null) {
+                sPatternCache.put(pattern, Pattern.compile(pattern));
+            }
+            p = sPatternCache.get(pattern);
+            return p;
         }
 
         boolean match(LogInfo logInfo) {

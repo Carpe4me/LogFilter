@@ -21,6 +21,12 @@
       "pattern": "[issue] mVideo.",
       "desc": "start video"
     },
+    "set_live_type": {
+      "tag": "MediaSdkManagerRoomProXLog",
+      "match_type": "startsWith",
+      "pattern": "setLiveType:",
+      "desc": "设置直播类型"
+    },
     "media_connected": {
       "tag": "MediaSdkManagerRoomProXLog",
       "match_type": "startsWith",
@@ -51,10 +57,16 @@
       "pattern": "leaveRoom ",
       "desc": "leave room"
     },
-    "error": {
+    "video_end": {
       "tag": "RoomProXLog",
       "match_type": "startsWith",
-      "pattern": "leaveRoomForError",
+      "pattern": "leaveRoomForError:0",
+      "desc": "room video end"
+    },
+    "error": {
+      "tag": "RoomProXLog",
+      "match_type": "regex",
+      "pattern": "leaveRoomForError:[^0]",
       "desc": "leave room with error"
     }
   },
@@ -67,6 +79,7 @@
       "name": [
         "MediaStarted",
         "VideoStarted",
+        "LiveTypeSet",
         "MediaConnected",
         "VideoConnected",
         "MediaDone",
@@ -101,7 +114,15 @@
     },
     {
       "from": [
-        "VideoStarted",
+        "VideoStarted"
+      ],
+      "to": "LiveTypeSet",
+      "msg": "set_live_type",
+      "desc": "已设置直播类型"
+    },
+    {
+      "from": [
+        "LiveTypeSet",
         "MediaConnected",
         "MediaDone"
       ],
@@ -141,13 +162,25 @@
     },
     {
       "from": [
-        "START",
         "MediaDone",
         "VideoDone"
       ],
       "to": "END",
       "msg": "leave",
       "desc": "退出房间"
+    },
+    {
+      "from": [
+        "MediaStarted",
+        "VideoStarted",
+        "MediaConnected",
+        "VideoConnected",
+        "MediaDone",
+        "VideoDone"
+      ],
+      "to": "END",
+      "msg": "video_end",
+      "desc": "直播结束(ROOM_ERR_VIDEO_END)"
     },
     {
       "from": [
