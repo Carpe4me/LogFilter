@@ -745,48 +745,64 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
     public void gotoNextSearchResult() {
         if (m_strSearchHighlight == null || m_strSearchHighlight.length() == 0)
             return;
+        String[] targets = m_strSearchHighlight.split("\\|");
+        if (targets.length == 0) {
+            return;
+        }
 
-        int nSeletectRow = getSelectedRow();
-        Rectangle parent = getVisibleRect();
+        int selectedRow = getSelectedRow();
 
         LogInfo logInfo;
-        for (int nIndex = nSeletectRow + 1; nIndex < getRowCount(); nIndex++) {
+        for (int nIndex = selectedRow + 1; nIndex < getRowCount(); nIndex++) {
             logInfo = ((LogFilterTableModel) getModel()).getRow(nIndex);
-            if (logInfo.containString(m_strSearchHighlight)) {
-                changeSelection(nIndex, 0, false, false);
-                return;
+            for (String target : targets) {
+                if (logInfo.containString(target)) {
+                    changeSelection(nIndex, 0, false, false);
+                    return;
+                }
             }
         }
 
-        for (int nIndex = 0; nIndex < nSeletectRow; nIndex++) {
+        for (int nIndex = 0; nIndex < selectedRow; nIndex++) {
             logInfo = ((LogFilterTableModel) getModel()).getRow(nIndex);
-            if (logInfo.containString(m_strSearchHighlight)) {
-                changeSelection(nIndex, 0, false, false);
-                return;
+            for (String target : targets) {
+                if (logInfo.containString(target)) {
+                    changeSelection(nIndex, 0, false, false);
+                    return;
+                }
             }
         }
     }
 
     public void gotoPreSearchResult() {
-        if (m_strSearchHighlight == null || m_strSearchHighlight.length() == 0)
+        if (m_strSearchHighlight == null || m_strSearchHighlight.length() == 0) {
             return;
-        int nSeletectRow = getSelectedRow();
-        Rectangle parent = getVisibleRect();
+        }
+        String[] targets = m_strSearchHighlight.split("\\|");
+        if (targets.length == 0) {
+            return;
+        }
+
+        int selectedRow = getSelectedRow();
 
         LogInfo logInfo;
-        for (int nIndex = nSeletectRow - 1; nIndex >= 0; nIndex--) {
+        for (int nIndex = selectedRow - 1; nIndex >= 0; nIndex--) {
             logInfo = ((LogFilterTableModel) getModel()).getRow(nIndex);
-            if (logInfo.containString(m_strSearchHighlight)) {
-                changeSelection(nIndex, 0, false, false);
-                return;
+            for (String target : targets) {
+                if (logInfo.containString(target)) {
+                    changeSelection(nIndex, 0, false, false);
+                    return;
+                }
             }
         }
 
-        for (int nIndex = getRowCount() - 1; nIndex > nSeletectRow; nIndex--) {
+        for (int nIndex = getRowCount() - 1; nIndex > selectedRow; nIndex--) {
             logInfo = ((LogFilterTableModel) getModel()).getRow(nIndex);
-            if (logInfo.containString(m_strSearchHighlight)) {
-                changeSelection(nIndex, 0, false, false);
-                return;
+            for (String target : targets) {
+                if (logInfo.containString(target)) {
+                    changeSelection(nIndex, 0, false, false);
+                    return;
+                }
             }
         }
     }
