@@ -2,6 +2,7 @@ package com.legendmohe.tool.logtable;
 
 import com.legendmohe.tool.ILogRenderResolver;
 import com.legendmohe.tool.LogInfo;
+import com.legendmohe.tool.Utils;
 import com.legendmohe.tool.config.Constant;
 import com.legendmohe.tool.logflow.LogFlowManager;
 import com.legendmohe.tool.logtable.model.LogFilterTableModel;
@@ -90,7 +91,7 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
         }
         LogInfo logInfo = ((LogFilterTableModel) mTable.getModel()).getRow(row);
         if (value != null) {
-            value = renderCellContent(column, value.toString());
+            value = buildCellContent(column, String.valueOf(logInfo.getContentByColumn(column)));
         }
         Component c = super.getTableCellRendererComponent(table,
                 value,
@@ -214,20 +215,34 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
         c.setFont(getFont().deriveFont(mResolver.getFontSize()));
     }
 
-    private String renderCellContent(int columnIndex, String strText) {
-
+    private String buildCellContent(int columnIndex, String strText) {
+        if (Utils.isEmpty(strText)) {
+            return strText;
+        }
         mIsDataChanged = false;
 
         // html里面的空格会被压缩成一个
         strText = strText.replaceAll(" ", "\u00A0");
-        strText = highLightCell(strText, mResolver.GetHighlight(), "00FF00", true);
-
+        // render highlight
+        String strHighLight = mResolver.GetHighlight();
+        if (!Utils.isEmpty(strHighLight)) {
+            strHighLight = strHighLight.replaceAll(" ", "\u00A0");
+            strText = highLightCell(strText, strHighLight, "00FF00", true);
+        }
+        // render filter
         if (columnIndex == LogFilterTableModel.COLUMN_MESSAGE || columnIndex == LogFilterTableModel.COLUMN_TAG) {
             String strFind = columnIndex == LogFilterTableModel.COLUMN_MESSAGE ? mResolver.GetFilterFind() : mResolver.GetFilterShowTag();
-            strText = highLightCell(strText, strFind, "FF0000", false);
+            if (!Utils.isEmpty(strFind)) {
+                strFind = strFind.replaceAll(" ", "\u00A0");
+                strText = highLightCell(strText, strFind, "FF0000", false);
+            }
         }
-
-        strText = highLightCell(strText, mResolver.GetSearchHighlight(), "FFFF00", true);
+        // render search
+        String strSearch = mResolver.GetSearchHighlight();
+        if (!Utils.isEmpty(strSearch)) {
+            strSearch = strSearch.replaceAll(" ", "\u00A0");
+            strText = highLightCell(strText, strSearch, "FFFF00", true);
+        }
         if (mIsDataChanged)
             strText = "<html><nobr>" + strText + "</nobr></html>";
 

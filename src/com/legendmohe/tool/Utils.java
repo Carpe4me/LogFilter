@@ -169,6 +169,10 @@ public class Utils {
         return fileData.toString();
     }
 
+    public static boolean isEmpty(String src) {
+        return src == null || src.length() <= 0;
+    }
+
     ///////////////////////////////////system///////////////////////////////////
 
     private static String OS;

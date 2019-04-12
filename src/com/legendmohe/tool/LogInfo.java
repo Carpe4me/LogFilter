@@ -4,7 +4,10 @@ import com.legendmohe.tool.logflow.LogFlowManager;
 import com.legendmohe.tool.logtable.model.LogFilterTableModel;
 
 import java.awt.Color;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 public class LogInfo {
     public static final int LOG_LV_VERBOSE = 1;
@@ -32,6 +35,8 @@ public class LogInfo {
     private TYPE mType = TYPE.SYSTEM;
     private List<LogFlowManager.FlowResultLine> mFlowResults;
 
+    private static Map<String, Pattern> sPatternCache = new HashMap<>();
+
     public void display() {
         T.d("=============================================");
         T.d("m_bMarked      = " + isMarked());
@@ -48,10 +53,24 @@ public class LogInfo {
         T.d("=============================================");
     }
 
-    public Object getData(int nColumn) {
-        switch (nColumn) {
+    /*
+        public static final int COLUMN_LINE = 0;
+        public static final int COLUMN_FILE = 1;
+        public static final int COLUMN_DATE = 2;
+        public static final int COLUMN_TIME = 3;
+        public static final int COLUMN_LOGLV = 4;
+        public static final int COLUMN_PID = 5;
+        public static final int COLUMN_THREAD = 6;
+        public static final int COLUMN_TAG = 7;
+        public static final int COLUMN_BOOKMARK = 8;
+        public static final int COLUMN_MESSAGE = 9;
+     */
+    public Object getContentByColumn(int col) {
+        switch (col) {
             case LogFilterTableModel.COLUMN_LINE:
                 return getLine();
+            case LogFilterTableModel.COLUMN_FILE:
+                return getFileName();
             case LogFilterTableModel.COLUMN_DATE:
                 return getDate();
             case LogFilterTableModel.COLUMN_TIME:
@@ -68,38 +87,42 @@ public class LogInfo {
                 return getBookmark();
             case LogFilterTableModel.COLUMN_MESSAGE:
                 return getMessage();
-            case LogFilterTableModel.COLUMN_FILE:
-                return getFileName();
         }
         return null;
     }
 
-    public boolean containString(String src) {
-        if (getMessage().toLowerCase().contains(src.toLowerCase())) {
+    public boolean findText(String src) {
+        Pattern pattern = sPatternCache.get(src);
+        if (pattern == null) {
+            pattern = Pattern.compile(src, Pattern.CASE_INSENSITIVE);
+            sPatternCache.put(src, pattern);
+        }
+
+        if (!Utils.isEmpty(getMessage()) && pattern.matcher(getMessage()).find()) {
             return true;
         }
-        if (getTag().toLowerCase().contains(src.toLowerCase())) {
+        if (!Utils.isEmpty(getTag()) && pattern.matcher(getTag()).find()) {
             return true;
         }
-        if (getBookmark().toLowerCase().contains(src.toLowerCase())) {
+        if (!Utils.isEmpty(getBookmark()) && pattern.matcher(getBookmark()).find()) {
             return true;
         }
-        if (getDate().toLowerCase().contains(src.toLowerCase())) {
+        if (!Utils.isEmpty(getDate()) && pattern.matcher(getDate()).find()) {
             return true;
         }
-        if (getTime().toLowerCase().contains(src.toLowerCase())) {
+        if (!Utils.isEmpty(getTime()) && pattern.matcher(getTime()).find()) {
             return true;
         }
-        if (getLogLV().toLowerCase().contains(src.toLowerCase())) {
+        if (!Utils.isEmpty(getLogLV()) && pattern.matcher(getLogLV()).find()) {
             return true;
         }
-        if (getPid().toLowerCase().contains(src.toLowerCase())) {
+        if (!Utils.isEmpty(getPid()) && pattern.matcher(getPid()).find()) {
             return true;
         }
-        if (getThread().toLowerCase().contains(src.toLowerCase())) {
+        if (!Utils.isEmpty(getThread()) && pattern.matcher(getThread()).find()) {
             return true;
         }
-        if (getFileName().toLowerCase().contains(src.toLowerCase())) {
+        if (!Utils.isEmpty(getFileName()) && pattern.matcher(getFileName()).find()) {
             return true;
         }
         return false;

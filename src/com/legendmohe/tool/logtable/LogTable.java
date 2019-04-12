@@ -67,7 +67,7 @@ public class LogTable extends BaseLogTable {
                     } else if (m_bAltPressed) {
                         LogInfo logInfo = ((LogFilterTableModel) getModel()).getRow(row);
                         if (column == LogFilterTableModel.COLUMN_TAG) {
-                            appendFilterShowTag((String) logInfo.getData(column));
+                            appendFilterShowTag((String) logInfo.getContentByColumn(column));
                             mBaseLogTableListener.postEvent(new EventBus.Event(EventBus.TYPE.EVENT_CHANGE_FILTER_SHOW_TAG));
                         } else if (column == LogFilterTableModel.COLUMN_TIME) {
                             mBaseLogTableListener.postEvent(
@@ -93,7 +93,7 @@ public class LogTable extends BaseLogTable {
                     LogInfo logInfo = ((LogFilterTableModel) getModel()).getRow(row);
                     if (m_bAltPressed) {
                         if (column == LogFilterTableModel.COLUMN_TAG) {
-                            appendFilterRemoveTag((String) logInfo.getData(column));
+                            appendFilterRemoveTag((String) logInfo.getContentByColumn(column));
                             mBaseLogTableListener.postEvent(new EventBus.Event(EventBus.TYPE.EVENT_CHANGE_FILTER_REMOVE_TAG));
                         } else if (column == LogFilterTableModel.COLUMN_TIME) {
                             mBaseLogTableListener.postEvent(
@@ -204,7 +204,7 @@ public class LogTable extends BaseLogTable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 LogInfo logInfo = ((LogFilterTableModel) getModel()).getRow(getSelectedRow());
-                String target = logInfo.getData(getSelectedColumn()).toString();
+                String target = logInfo.getContentByColumn(getSelectedColumn()).toString();
                 if (target.trim().length() != 0) {
                     if (mDiffService != null) {
                         mDiffService.writeDiffCommand(
@@ -220,7 +220,7 @@ public class LogTable extends BaseLogTable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 LogInfo logInfo = ((LogFilterTableModel) getModel()).getRow(getSelectedRow());
-                String target = logInfo.getData(getSelectedColumn()).toString();
+                String target = logInfo.getContentByColumn(getSelectedColumn()).toString();
                 if (target.trim().length() != 0) {
                     if (mDiffService != null) {
                         mDiffService.writeDiffCommand(

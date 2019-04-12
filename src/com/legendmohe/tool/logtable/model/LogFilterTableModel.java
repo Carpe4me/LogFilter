@@ -50,7 +50,7 @@ public class LogFilterTableModel extends AbstractTableModel {
     }
 
     public Object getValueAt(int rowIndex, int columnIndex) {
-        return m_arData.get(rowIndex).getData(columnIndex);
+        return m_arData.get(rowIndex).getContentByColumn(columnIndex);
     }
 
     public LogInfo getRow(int row) {

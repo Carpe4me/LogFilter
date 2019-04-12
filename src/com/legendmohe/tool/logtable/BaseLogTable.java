@@ -756,7 +756,7 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
         for (int nIndex = selectedRow + 1; nIndex < getRowCount(); nIndex++) {
             logInfo = ((LogFilterTableModel) getModel()).getRow(nIndex);
             for (String target : targets) {
-                if (logInfo.containString(target)) {
+                if (logInfo.findText(target)) {
                     changeSelection(nIndex, 0, false, false);
                     return;
                 }
@@ -766,7 +766,7 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
         for (int nIndex = 0; nIndex < selectedRow; nIndex++) {
             logInfo = ((LogFilterTableModel) getModel()).getRow(nIndex);
             for (String target : targets) {
-                if (logInfo.containString(target)) {
+                if (logInfo.findText(target)) {
                     changeSelection(nIndex, 0, false, false);
                     return;
                 }
@@ -789,7 +789,7 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
         for (int nIndex = selectedRow - 1; nIndex >= 0; nIndex--) {
             logInfo = ((LogFilterTableModel) getModel()).getRow(nIndex);
             for (String target : targets) {
-                if (logInfo.containString(target)) {
+                if (logInfo.findText(target)) {
                     changeSelection(nIndex, 0, false, false);
                     return;
                 }
@@ -799,7 +799,7 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
         for (int nIndex = getRowCount() - 1; nIndex > selectedRow; nIndex--) {
             logInfo = ((LogFilterTableModel) getModel()).getRow(nIndex);
             for (String target : targets) {
-                if (logInfo.containString(target)) {
+                if (logInfo.findText(target)) {
                     changeSelection(nIndex, 0, false, false);
                     return;
                 }

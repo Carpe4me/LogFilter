@@ -162,7 +162,6 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
 
     // Word Filter, tag filter
     JTextField m_tfSearch;
-    @TextFieldSaveState
     JTextField m_tfHighlight;
     @TextFieldSaveState
     JTextField m_tfIncludeWord;
@@ -1453,7 +1452,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
                 Set<String> tagSet = new HashSet<>();
                 for (LogInfo logInfo : m_arLogInfoAll) {
                     if (logInfo != null && logInfo.getTag() != null && logInfo.getTag().length() > 0) {
-                        tagSet.add(logInfo.getData(column).toString());
+                        tagSet.add(logInfo.getContentByColumn(column).toString());
                     }
                 }
                 return tagSet;
