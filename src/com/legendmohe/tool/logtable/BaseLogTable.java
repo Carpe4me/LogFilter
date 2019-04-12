@@ -865,7 +865,7 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
 
     ///////////////////////////////////cell hover///////////////////////////////////
 
-    private static final int CELL_HOVER_DELAY = 1500;
+    private static final int CELL_HOVER_DELAY = 1200;
 
     private void initHoverListener() {
         MouseAdapter mouseAdapter = new MouseAdapter() {

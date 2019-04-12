@@ -1,0 +1,63 @@
+{
+  "name": "用户登录状态",
+  "desc": "用户登录状态，需要service log",
+  "msg": {
+    "logout": {
+      "tag": "yysdk-net-linkd",
+      "match_type": "startsWith",
+      "pattern": "logout uid=",
+      "desc": "user logout"
+    },
+    "login_pwd": {
+      "tag": "xlog-login",
+      "match_type": "startsWith",
+      "pattern": "YYClient doLogin,authType:PASSWD",
+      "desc": "user login with password"
+    },
+    "login_third_party": {
+      "tag": "xlog-login",
+      "match_type": "startsWith",
+      "pattern": "YYClient doLogin,authType:OAUTH",
+      "desc": "user login with third-party"
+    },
+    "login_pwd_success": {
+      "tag": "xlog-login",
+      "match_type": "startsWith",
+      "pattern": "YYClient doLogin with password connect linkd resultCode =0",
+      "desc": "user login pwd success"
+    },
+    "login_third_party_success": {
+      "tag": "xlog-login",
+      "match_type": "startsWith",
+      "pattern": "YYClient loginbyOtherAccount connect linkd success",
+      "desc": "user login pwd success"
+    }
+  },
+  "state": [
+    {
+      "type": "start",
+      "name": "START"
+    },
+    {
+      "name": [
+        "LOGINING_PWD",
+        "LOGINING_THIRD_PARTY"
+      ]
+    },
+    {
+      "type": "end",
+      "name": "LOGIN"
+    },
+    {
+      "type": "end",
+      "name": "LOGOUT"
+    }
+  ],
+  "link": [
+    "START--logout-->LOGOUT:用户退出APP",
+    "START--login_pwd-->LOGINING_PWD:用户密码登录APP",
+    "START--login_third_party-->LOGINING_THIRD_PARTY:用户第三方登录APP",
+    "LOGINING_PWD--login_pwd_success-->LOGIN:用户登录APP成功",
+    "LOGINING_THIRD_PARTY--login_third_party_success-->LOGIN:用户登录APP成功"
+  ]
+}
