@@ -141,12 +141,12 @@ public class LogFlowDialog {
                 ResultItem result = (ResultItem) resultTable.getModel().getValueAt(row, column);
                 Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
                 if (component instanceof JLabel) {
-                    renderCellContent((JLabel) component, column, result);
+                    renderCellContent((JLabel) component, row, column, result);
                 }
                 return component;
             }
 
-            private void renderCellContent(JLabel contentLabel, int column, ResultItem result) {
+            private void renderCellContent(JLabel contentLabel, int row, int column, ResultItem result) {
                 if (column == 0) {
                     if (result.resultLine.isStartLine) {
                         contentLabel.setText(result.flowResult.name);
