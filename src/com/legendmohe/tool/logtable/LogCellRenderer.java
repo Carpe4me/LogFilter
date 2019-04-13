@@ -271,15 +271,15 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
 
                 if (bUseSpan) {
                     tmpReplaceHolder
-                            .append(strText, lastEnd, start)
+                            .append(Utils.escapeHTML(strText.substring(lastEnd, start)))
                             .append("<span style=\"background-color:#").append(color).append("\"><b>")
-                            .append(strText, start, end)
+                            .append(Utils.escapeHTML(strText.substring(start, end)))
                             .append("</b></span>");
                 } else {
                     tmpReplaceHolder
-                            .append(strText, lastEnd, start)
+                            .append(Utils.escapeHTML(strText.substring(lastEnd, start)))
                             .append("<font color=#").append(color).append("><b>")
-                            .append(strText, start, end)
+                            .append(Utils.escapeHTML(strText.substring(start, end)))
                             .append("</b></font>");
                 }
                 lastEnd = end;
@@ -287,7 +287,7 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
             } while (result);
 
             // 结尾部分
-            tmpReplaceHolder.append(strText, lastEnd, strText.length());
+            tmpReplaceHolder.append(Utils.escapeHTML(strText.substring(lastEnd)));
             strText = tmpReplaceHolder.toString();
             mIsDataChanged = true;
         }
