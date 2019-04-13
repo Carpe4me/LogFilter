@@ -338,6 +338,7 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
             if (mSelectedRowsCache.equals(selectedRows)) {
                 return;
             }
+            int oldFlowSize = mFlowHighLightLines.size();
             mFlowHighLightLines.clear();
             mSelectedRowsCache = new ArrayList<>(selectedRows);
             if (selectedRows.size() > 0) {
@@ -352,11 +353,9 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
                         }
                     }
                 }
-                EventQueue.invokeLater(() -> {
-                    if (mFlowHighLightLines.size() > 0) {
-                        mTable.repaint();
-                    }
-                });
+                if (mFlowHighLightLines.size() > 0 || oldFlowSize != 0) {
+                    EventQueue.invokeLater(() -> mTable.repaint());
+                }
             }
         }
     };
