@@ -71,7 +71,7 @@ public class Constant {
     public static int COLOR_BOOKMARK = 0x00DDDDDD;
     public static int COLOR_BOOKMARK2 = 0x00DDDDFF;
     public static int COLOR_LOG_FLOW_NORMAL = 0x0000ccff;
-    public static int COLOR_LOG_FLOW_ERROR = 0x00ffb3b3;
+    public static int COLOR_LOG_FLOW_ERROR = 0x00FF0000;
     public static int COLOR_LOG_FLOW_TEXT = 0x00484848;
     public static int COLOR_DEBUG = 0x000000AA;
     public static int COLOR_ERROR = 0x00FF0000;

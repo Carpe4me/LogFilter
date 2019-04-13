@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.border.Border;
 import javax.swing.table.AbstractTableModel;
@@ -102,6 +103,7 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
 
         renderFont(c);
         renderBackground(isSelected, logInfo, row, column, c);
+        renderLogFlow(logInfo, column, c);
         renderBorder(row, column, c);
         return c;
     }
@@ -194,20 +196,26 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
         } else {
             c.setBackground(Color.WHITE);
         }
+    }
 
+    private void renderLogFlow(LogInfo logInfo, int column, Component c) {
         // log flow显示逻辑
+        JLabel label = (JLabel) c;
         if (mResolver.getMinShownColumn() == column && mResolver.isShowLogFlowResult()) {
             if (logInfo.getFlowResults() != null && logInfo.getFlowResults().size() > 0) {
                 for (LogFlowManager.FlowResultLine flowResult : logInfo.getFlowResults()) {
                     // 如果有大于一个错，就高亮出来
                     if (flowResult.flowResult.errorCause != null) {
-                        c.setBackground(new Color(Constant.COLOR_LOG_FLOW_ERROR));
+                        label.setIcon(Utils.createImageIcon(new Color(Constant.COLOR_LOG_FLOW_ERROR), 12, 12));
                         break;
                     }
-                    c.setBackground(new Color(Constant.COLOR_LOG_FLOW_NORMAL));
+                    label.setIcon(Utils.createImageIcon(new Color(Constant.COLOR_LOG_FLOW_NORMAL), 12, 12));
                 }
-                c.setForeground(new Color(Constant.COLOR_LOG_FLOW_TEXT));
+            } else {
+                label.setIcon(null);
             }
+        } else {
+            label.setIcon(null);
         }
     }
 

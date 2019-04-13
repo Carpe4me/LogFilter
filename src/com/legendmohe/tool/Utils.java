@@ -1,14 +1,17 @@
 package com.legendmohe.tool;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Desktop;
+import java.awt.Graphics2D;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
@@ -25,6 +28,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.AbstractAction;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.event.UndoableEditEvent;
@@ -264,5 +268,15 @@ public class Utils {
                 compList.addAll(getAllComponents((Container) comp));
         }
         return compList;
+    }
+
+    //////////////////////////////////////////////////////////////////////
+
+    public static ImageIcon createImageIcon(Color color, int width, int height) {
+        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        Graphics2D graphics = image.createGraphics();
+        graphics.setPaint(color);
+        graphics.fillRect(0, 0, width, height);
+        return new ImageIcon(image);
     }
 }
