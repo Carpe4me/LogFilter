@@ -240,6 +240,15 @@ public class LogInfo {
         mFlowResults = flowResult;
     }
 
+    public boolean hasErrorFlowResult() {
+        for (LogFlowManager.FlowResultLine line : mFlowResults) {
+            if (line.flowResult.errorCause != null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean hasFlowResults() {
         return mFlowResults != null && mFlowResults.size() > 0;
     }

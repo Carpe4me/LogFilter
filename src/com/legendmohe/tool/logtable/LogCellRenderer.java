@@ -9,8 +9,13 @@ import com.legendmohe.tool.logtable.model.LogFilterTableModel;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.EventQueue;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,6 +24,8 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.border.Border;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 
@@ -46,15 +53,24 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
     private final Border SELECTED_BORDER_TOP_BOTTOM_RIGHT;
     private final Border SELECTED_BORDER_NONE;
 
+    private final Border HIGH_LIGHT_NORMAL_BORDER_BOTTOM;
+    private final Border HIGH_LIGHT_ERROR_BORDER_BOTTOM;
+    private final int HIGH_LIGHT_BORDER_WIDTH = 2;
+
     private final int BORDER_WIDTH = 1;
     private final Color BORDER_COLOR = new Color(100, 100, 100);
 
     boolean mIsDataChanged;
     private JTable mTable;
     private ILogRenderResolver mResolver;
+    private int mColumnIdx;
 
-    public LogCellRenderer(JTable table, ILogRenderResolver resolver) {
+    public LogCellRenderer(int iIndex, JTable table, ILogRenderResolver resolver) {
         super();
+        mColumnIdx = iIndex;
+        HIGH_LIGHT_NORMAL_BORDER_BOTTOM = BorderFactory.createCompoundBorder(null, BorderFactory.createMatteBorder(0, 0, HIGH_LIGHT_BORDER_WIDTH, 0, new Color(Constant.COLOR_LOG_FLOW_NORMAL)));
+        HIGH_LIGHT_ERROR_BORDER_BOTTOM = BorderFactory.createCompoundBorder(null, BorderFactory.createMatteBorder(0, 0, HIGH_LIGHT_BORDER_WIDTH, 0, new Color(Constant.COLOR_LOG_FLOW_ERROR)));
+
         SELECTED_BORDER_TOP = BorderFactory.createCompoundBorder(null, BorderFactory.createMatteBorder(BORDER_WIDTH, 0, 0, 0, BORDER_COLOR));
         SELECTED_BORDER_BOTTOM = BorderFactory.createCompoundBorder(null, BorderFactory.createMatteBorder(0, 0, BORDER_WIDTH, 0, BORDER_COLOR));
         SELECTED_BORDER_LEFT = BorderFactory.createCompoundBorder(null, BorderFactory.createMatteBorder(0, BORDER_WIDTH, 0, 0, BORDER_COLOR));
@@ -78,6 +94,7 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
 
         this.mTable = table;
         this.mResolver = resolver;
+        this.mTable.getSelectionModel().addListSelectionListener(mListSelectionListener);
     }
 
     @Override
@@ -103,8 +120,8 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
 
         renderFont(c);
         renderBackground(isSelected, logInfo, row, column, c);
-        renderLogFlow(logInfo, column, c);
         renderBorder(row, column, c);
+        renderLogFlow(isSelected, logInfo, column, c);
         return c;
     }
 
@@ -198,27 +215,6 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
         }
     }
 
-    private void renderLogFlow(LogInfo logInfo, int column, Component c) {
-        // log flow显示逻辑
-        JLabel label = (JLabel) c;
-        if (mResolver.getMinShownColumn() == column && mResolver.isShowLogFlowResult()) {
-            if (logInfo.getFlowResults() != null && logInfo.getFlowResults().size() > 0) {
-                for (LogFlowManager.FlowResultLine flowResult : logInfo.getFlowResults()) {
-                    // 如果有大于一个错，就高亮出来
-                    if (flowResult.flowResult.errorCause != null) {
-                        label.setIcon(Utils.createImageIcon(new Color(Constant.COLOR_LOG_FLOW_ERROR), 12, 12));
-                        break;
-                    }
-                    label.setIcon(Utils.createImageIcon(new Color(Constant.COLOR_LOG_FLOW_NORMAL), 12, 12));
-                }
-            } else {
-                label.setIcon(null);
-            }
-        } else {
-            label.setIcon(null);
-        }
-    }
-
     private void renderFont(Component c) {
         c.setFont(getFont().deriveFont(mResolver.getFontSize()));
     }
@@ -301,4 +297,67 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
         }
         return strText;
     }
+
+    ///////////////////////////////////log flow///////////////////////////////////
+
+    private void renderLogFlow(boolean isSelected, LogInfo logInfo, int column, Component c) {
+        // log flow显示逻辑
+        JLabel label = (JLabel) c;
+        if (mResolver.isShowLogFlowResult()) {
+            List<LogFlowManager.FlowResultLine> flowResults = logInfo.getFlowResults();
+            if (flowResults != null && flowResults.size() > 0) {
+                if (mResolver.getMinShownColumn() == column) {
+                    if (logInfo.hasErrorFlowResult()) {
+                        label.setIcon(Utils.createImageIcon(new Color(Constant.COLOR_LOG_FLOW_ERROR), 14, 14));
+                    } else {
+                        label.setIcon(Utils.createImageIcon(new Color(Constant.COLOR_LOG_FLOW_NORMAL), 14, 14));
+                    }
+                }
+                // 需要高亮的
+                if (mFlowHighLightLines.contains(logInfo.getLine())) {
+                    if (logInfo.hasErrorFlowResult()) {
+                        label.setBackground(new Color(Constant.COLOR_LOG_FLOW_ERROR_LINE));
+                    } else {
+                        label.setBackground(new Color(Constant.COLOR_LOG_FLOW_NORMAL_LINE));
+                    }
+                }
+                return;
+            }
+        }
+        label.setIcon(null);
+    }
+
+    private Set<Integer> mFlowHighLightLines = new HashSet<>();
+
+    private List<Integer> mSelectedRowsCache = new ArrayList<>();
+
+    private final ListSelectionListener mListSelectionListener = new ListSelectionListener() {
+        @Override
+        public void valueChanged(ListSelectionEvent e) {
+            List<Integer> selectedRows = Utils.toIntegerList(mTable.getSelectedRows());
+            if (mSelectedRowsCache.equals(selectedRows)) {
+                return;
+            }
+            mFlowHighLightLines.clear();
+            mSelectedRowsCache = new ArrayList<>(selectedRows);
+            if (selectedRows.size() > 0) {
+                for (int selectedRow : selectedRows) {
+                    LogInfo logInfo = ((LogFilterTableModel) mTable.getModel()).getRow(selectedRow);
+                    List<LogFlowManager.FlowResultLine> flowResults = logInfo.getFlowResults();
+                    if (flowResults != null && flowResults.size() > 0) {
+                        for (LogFlowManager.FlowResultLine flowResult : flowResults) {
+                            for (LogFlowManager.FlowResultLine resultLine : flowResult.flowResult.resultLines) {
+                                mFlowHighLightLines.add(resultLine.logInfo.getLine());
+                            }
+                        }
+                    }
+                }
+                EventQueue.invokeLater(() -> {
+                    if (mFlowHighLightLines.size() > 0) {
+                        mTable.repaint();
+                    }
+                });
+            }
+        }
+    };
 }

@@ -188,6 +188,8 @@ public class Utils {
         return out.toString();
     }
 
+    ///////////////////////////////////string///////////////////////////////////
+
     public static boolean isEmpty(String src) {
         return src == null || src.length() <= 0;
     }
@@ -270,7 +272,19 @@ public class Utils {
         return compList;
     }
 
-    //////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////base///////////////////////////////////
+
+    public static List<Integer> toIntegerList(int[] src) {
+        List<Integer> intList = new ArrayList<>();
+        if (src != null) {
+            for (int i : src) {
+                intList.add(i);
+            }
+        }
+        return intList;
+    }
+
+    ////////////////////////////////icon//////////////////////////////////////
 
     public static ImageIcon createImageIcon(Color color, int width, int height) {
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
