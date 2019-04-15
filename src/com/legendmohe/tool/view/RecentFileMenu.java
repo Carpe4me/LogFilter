@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.LineNumberReader;
+import java.util.Arrays;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -156,6 +157,10 @@ public abstract class RecentFileMenu extends JMenu {
                 x.printStackTrace();
             }
         }
+    }
+
+    public String[] getRecentEntries() {
+        return Arrays.copyOf(recentEntries, recentEntries.length);
     }
 
     /**

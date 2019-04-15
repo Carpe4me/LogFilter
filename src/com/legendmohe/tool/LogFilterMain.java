@@ -320,6 +320,9 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
     @FieldSaveState
     private Set<String> mFilterTagHistory = new HashSet<>();
 
+    // 当前处理的文件集合
+    private File[] mLastParseredFiles;
+
     private Map<Component, List<String>> mRecentlyInputHistory = new HashMap<>();
 
     ///////////////////////////////////main///////////////////////////////////
@@ -381,7 +384,6 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         startFilterParse();
 
         setVisible(true);
-        addDesc();
 
         // register state saver
         mUIStateSaver = new UIStateSaver(this, Constant.INI_FILE_STATE);
@@ -390,9 +392,11 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         loadUI();
         loadColor();
         loadCmd();
-        loadParser();
         initDiffService();
         initLogFlow();
+
+        loadParser();
+        addDesc();
 
         setTitle(Constant.WINDOW_TITLE + " " + Constant.VERSION);
         addWindowStateListener(new WindowStateListener() {
@@ -1923,6 +1927,8 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
                     addLogInfo(info);
                 }
                 runFilter();
+
+                mLastParseredFiles = files;
                 setStatus("Parse complete");
             }
         }).start();
@@ -3652,6 +3658,14 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         m_iLogParser = sTypeToParserMap.get(parserType);
         m_parserType = parserType;
         m_tfParserType.setText(sTypeToParserNameMap.get(parserType));
+
+        if (parserType != Constant.PARSER_TYPE_LOGCAT
+                && m_arLogInfoAll.size() > 0
+                && mLastParseredFiles != null
+                && mLastParseredFiles.length > 0
+        ) {
+            parseLogFile(mLastParseredFiles);
+        }
     }
 
     ///////////////////////////////////interface///////////////////////////////////
