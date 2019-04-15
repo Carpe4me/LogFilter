@@ -15,24 +15,122 @@ import com.legendmohe.tool.parser.BigoDevLogParser;
 import com.legendmohe.tool.parser.BigoXLogParser;
 import com.legendmohe.tool.parser.ILogParser;
 import com.legendmohe.tool.parser.LogCatParser;
-import com.legendmohe.tool.view.*;
+import com.legendmohe.tool.view.DumpsysViewDialog;
+import com.legendmohe.tool.view.ListDialog;
+import com.legendmohe.tool.view.LogFlowDialog;
+import com.legendmohe.tool.view.PackageViewDialog;
+import com.legendmohe.tool.view.RecentFileMenu;
+import com.legendmohe.tool.view.RowsContentDialog;
 
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.EventQueue;
+import java.awt.FileDialog;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetEvent;
+import java.awt.dnd.DropTargetListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowStateListener;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Random;
+import java.util.Set;
+import java.util.StringTokenizer;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTextField;
+import javax.swing.JToggleButton;
+import javax.swing.KeyStroke;
+import javax.swing.ListSelectionModel;
+import javax.swing.OverlayLayout;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
-import javax.swing.event.*;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 import javax.swing.table.AbstractTableModel;
-import java.awt.*;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.dnd.*;
-import java.awt.event.*;
-import java.io.*;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.BaseLogTableListener, IDiffCmdHandler {
     private static final long serialVersionUID = 1L;
@@ -618,7 +716,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         getSubTable().setFontSize(Integer.parseInt(m_tfFontSize
                 .getText()));
 
-        updateTable(-1, false);
+        updateLogTable(-1, false);
     }
 
     void loadCmd() {
@@ -974,7 +1072,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
                         && checkBookmarkFilter(logInfo)
                         && checkLogFlowFilter(logInfo)
                         && checkFileNameFilter(logInfo)
-                        ) {
+                ) {
                     m_arLogInfoFiltered.add(logInfo);
                     if (logInfo.isMarked())
                         m_hmMarkedInfoFiltered.put(logInfo.getLine() - 1,
@@ -1267,11 +1365,11 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
 
         JPanel jpToTimeTag = new JPanel(new BorderLayout());
         JLabel jlToTimeTag = new JLabel();
-        jlToTimeTag.setText("to");
+        jlToTimeTag.setText("to time");
         jpToTimeTag.add(jlToTimeTag, BorderLayout.WEST);
         jpToTimeTag.add(m_tfToTimeTag, BorderLayout.CENTER);
 
-        JPanel jpTimeTag = new JPanel(new GridLayout(1, 2));
+        JPanel jpTimeTag = new JPanel(new GridLayout(2, 1));
         jpTimeTag.add(jpFromTimeTag);
         jpTimeTag.add(jpToTimeTag);
         JPanel jpTimeMainTag = new JPanel(new BorderLayout());
@@ -1620,7 +1718,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
             @Override
             public void actionPerformed(ActionEvent e) {
                 int endLine = m_tmLogTableModel.getRowCount();
-                updateTable(endLine - 1, true);
+                updateLogTable(endLine - 1, true);
             }
         });
         jpActionPanel.add(followBtn);
@@ -1830,7 +1928,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         }).start();
     }
 
-    void pauseProcess() {
+    void pauseLogcatParserProcess() {
         if (m_tbtnPause.isSelected()) {
             m_bPauseADB = true;
             m_tbtnPause.setText("Resume");
@@ -1946,7 +2044,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
                                 }
                             }
                             if (files.size() > 0) {
-                                stopProcess();
+                                stopLogcatParserProcess();
                                 parseLogFile(files.toArray(new File[0]));
                             }
                         } catch (Exception e) {
@@ -2056,7 +2154,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         super.setTitle(strTitle);
     }
 
-    void stopProcess() {
+    void stopLogcatParserProcess() {
         setProcessBtn(false);
         if (m_Process != null)
             m_Process.destroy();
@@ -2072,7 +2170,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
 
     ///////////////////////////////////parser///////////////////////////////////
 
-    void startFileParse() {
+    void startLogcatParse() {
         m_thWatchFile = new Thread(new Runnable() {
             public void run() {
                 FileInputStream fstream = null;
@@ -2152,9 +2250,9 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
                             nEndLine = m_tmLogTableModel.getRowCount();
                             if (nPreRowCount != nEndLine) {
                                 if (bEndLine)
-                                    updateTable(nEndLine - 1, true);
+                                    updateLogTable(nEndLine - 1, true);
                                 else
-                                    updateTable(nSelectedIndex, false);
+                                    updateLogTable(nSelectedIndex, false);
                             }
                         }
                     }
@@ -2223,9 +2321,9 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
                                             break;
                                         }
                                     }
-                                    updateTable(i - 1, true);
+                                    updateLogTable(i - 1, true);
                                 } else {
-                                    updateTable(m_arLogInfoFiltered.size() - 1, true);
+                                    updateLogTable(m_arLogInfoFiltered.size() - 1, true);
                                 }
                                 mLogParsingState = Constant.PARSING_STATUS_READY;
                                 continue;
@@ -2260,7 +2358,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
                                         && checkBookmarkFilter(logInfo)
                                         && checkLogFlowFilter(logInfo)
                                         && checkFileNameFilter(logInfo)
-                                        ) {
+                                ) {
                                     if (m_ipIndicator.m_chBookmark.isSelected()
                                             || m_ipIndicator.m_chError.isSelected()) {
                                         bAddFilteredArray = false;
@@ -2317,9 +2415,9 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
                                             break;
                                         }
                                     }
-                                    updateTable(i - 1, true);
+                                    updateLogTable(i - 1, true);
                                 } else {
-                                    updateTable(m_arLogInfoFiltered.size() - 1, true);
+                                    updateLogTable(m_arLogInfoFiltered.size() - 1, true);
                                 }
                                 setStatus("Complete");
                             }
@@ -2337,7 +2435,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         m_thFilterParse.start();
     }
 
-    void startProcess() {
+    void startLogcatParserProcess() {
         clearData();
         getLogTable().clearSelection();
         getSubTable().clearSelection();
@@ -2358,7 +2456,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
                     Writer fileOut = new BufferedWriter(new OutputStreamWriter(
                             new FileOutputStream(m_strLogFileName), "UTF-8"));
 
-                    startFileParse();
+                    startLogcatParse();
 
                     while ((s = stdOut.readLine()) != null) {
                         if (s != null && !"".equals(s.trim())) {
@@ -2375,7 +2473,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
                 } catch (Exception e) {
                     T.e("e = " + e);
                 }
-                stopProcess();
+                stopLogcatParserProcess();
             }
         });
         m_thProcess.start();
@@ -2577,7 +2675,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
                 && ((getLogTable().GetFilterFromTime() == -1l && getLogTable().GetFilterToTime() == -1l) || !m_chkEnableTimeTag.isSelected())
                 && (getLogTable().GetFilterFind().length() == 0 || !m_chkEnableIncludeWord.isSelected())
                 && (getLogTable().GetFilterRemove().length() == 0 || !m_chkEnableExcludeWord.isSelected())
-                ) {
+        ) {
             mFilterEnabled = false;
         } else
             mFilterEnabled = true;
@@ -2597,19 +2695,19 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
                         .getText()));
                 getSubTable().setFontSize(Integer.parseInt(m_tfFontSize
                         .getText()));
-                updateTable(-1, false);
+                updateLogTable(-1, false);
             } else if (e.getSource().equals(m_btnRun)) {
-                startProcess();
+                startLogcatParserProcess();
             } else if (e.getSource().equals(m_btnStop)) {
-                stopProcess();
+                stopLogcatParserProcess();
             } else if (e.getSource().equals(m_btnClear)) {
                 boolean bBackup = m_bPauseADB;
                 m_bPauseADB = true;
                 clearData();
-                updateTable(-1, false);
+                updateLogTable(-1, false);
                 m_bPauseADB = bBackup;
             } else if (e.getSource().equals(m_tbtnPause)) {
-                pauseProcess();
+                pauseLogcatParserProcess();
             }
         }
     };
@@ -2649,7 +2747,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         }
     }
 
-    void updateTable(int nRow, boolean bMove) {
+    void updateLogTable(int nRow, boolean bMove) {
         // System.out.println("updateTable nRow:" + nRow + " | " + bMove);
         m_tmLogTableModel.fireTableDataChanged();
         m_logScrollVPane.validate();
