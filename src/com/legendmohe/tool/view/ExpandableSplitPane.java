@@ -66,13 +66,13 @@ public class ExpandableSplitPane extends JSplitPane {
         } else if (whichSide == getRightComponent()) {
             // if left commponent hidden
             if (isLeftComponentHidden()) {
-                // show right and hide left
+                // show left and hide right
                 if (isHidden) {
                     clickDividerButton(mRightButton);
                     clickDividerButton(mRightButton);
                 }
             } else if (isRightComponentHidden()) {
-                // show left
+                // show right
                 if (!isHidden) {
                     clickDividerButton(mRightButton);
                 }
