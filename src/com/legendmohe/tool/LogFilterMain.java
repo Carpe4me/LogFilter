@@ -16,6 +16,7 @@ import com.legendmohe.tool.parser.BigoXLogParser;
 import com.legendmohe.tool.parser.ILogParser;
 import com.legendmohe.tool.parser.LogCatParser;
 import com.legendmohe.tool.view.DumpsysViewDialog;
+import com.legendmohe.tool.view.ExpandableSplitPane;
 import com.legendmohe.tool.view.ListDialog;
 import com.legendmohe.tool.view.LogFlowDialog;
 import com.legendmohe.tool.view.PackageViewDialog;
@@ -309,7 +310,10 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
     private final UIStateSaver mUIStateSaver;
     private JSplitPane mSplitPane;
     @FieldSaveState
-    private int mSplitPaneDividerLocation = -1;
+    private int mLogSplitPaneDividerLocation = -1;
+    private ExpandableSplitPane mMainSplitPane;
+    @FieldSaveState
+    private int mMainSplitPaneDividerLocation = -1;
 
     private SubLogTable m_tSublogTable;
     private LogFilterTableModel m_tSubLogTableModel;
@@ -373,8 +377,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         Container pane = getContentPane();
         pane.setLayout(new BorderLayout());
 
-        JSplitPane mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, getOptionPanel(), getLogPanel());
-        pane.add(mainSplitPane, BorderLayout.CENTER);
+        pane.add(getMainSplitPane(), BorderLayout.CENTER);
         pane.add(getStatusPanel(), BorderLayout.SOUTH);
 
         setDnDListener();
@@ -681,7 +684,13 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
     private void restoreSplitPane() {
         mSplitPane.setResizeWeight(1.0);
         mSplitPane.setOneTouchExpandable(true);
-        mSplitPane.setDividerLocation(mSplitPaneDividerLocation);
+        mSplitPane.setDividerLocation(mLogSplitPaneDividerLocation);
+
+        mMainSplitPane.setResizeWeight(1.0);
+        mMainSplitPane.setOneTouchExpandable(true);
+        if (mMainSplitPaneDividerLocation > 0) {
+            mMainSplitPane.setDividerLocation(mMainSplitPaneDividerLocation);
+        }
     }
 
     private String makeFilename() {
@@ -703,7 +712,8 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         saveColor();
         m_nWinWidth = getSize().width;
         m_nWinHeight = getSize().height;
-        mSplitPaneDividerLocation = mSplitPane.getDividerLocation();
+        mLogSplitPaneDividerLocation = mSplitPane.getDividerLocation();
+        mMainSplitPaneDividerLocation = mMainSplitPane.getDividerLocation();
         mUIStateSaver.save();
         System.exit(0);
     }
@@ -1727,6 +1737,19 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         });
         jpActionPanel.add(followBtn);
 
+        JButton hideLeftBtn = new JButton("Toggle Left Panel");
+        hideLeftBtn.setMargin(new Insets(0, 0, 0, 0));
+        hideLeftBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mMainSplitPane.setOneSideHidden(
+                        mMainSplitPane.getLeftComponent(),
+                        !mMainSplitPane.isSideHidden(mMainSplitPane.getLeftComponent())
+                );
+            }
+        });
+        jpActionPanel.add(hideLeftBtn);
+
         optionWest.add(mSyncScrollCheckBox);
         optionWest.add(mSyncSelectedCheckBox);
         optionWest.add(jlFont);
@@ -1750,8 +1773,23 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         return optionMenu;
     }
 
+    Component getMainSplitPane() {
+        mMainSplitPane = new ExpandableSplitPane(
+                JSplitPane.HORIZONTAL_SPLIT,
+                getOptionPanel(),
+                getLogPanel()
+        );
+        mMainSplitPane.setHiddenListener(new ExpandableSplitPane.HiddenListener() {
+            @Override
+            public void onStateChanged(ExpandableSplitPane pane, Component whichSide, boolean hidden) {
+                T.d("onStateChanged() called whichSide = [" + whichSide.hashCode() + "], hidden = [" + hidden + "]");
+            }
+        });
+        return mMainSplitPane;
+    }
+
     Component getOptionPanel() {
-        return getOptionFilter();
+        return new JScrollPane(getOptionFilter());
     }
 
     Component getStatusPanel() {
