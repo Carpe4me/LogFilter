@@ -11,7 +11,7 @@ import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 
 /**
- * Created by hexinyu on 2019/4/16.
+ * Created by legendmohe on 2019/4/16.
  */
 public class ExpandableSplitPane extends JSplitPane {
 
@@ -177,11 +177,11 @@ public class ExpandableSplitPane extends JSplitPane {
     }
 
     private boolean isLeftComponentHidden() {
-        return getDividerLocation() <= getMinimumDividerLocation();
+        return getDividerLocation() < getMinimumDividerLocation();
     }
 
     private boolean isRightComponentHidden() {
-        return getDividerLocation() >= getMaximumDividerLocation();
+        return getDividerLocation() > getMaximumDividerLocation();
     }
 
     ///////////////////////////////////listener///////////////////////////////////
