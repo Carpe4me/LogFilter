@@ -1,13 +1,12 @@
 {
-  "enable": true,
-  "name": "join media",
-  "desc": "进入房间媒体相关过程",
+  "name": "主播join media流程",
+  "desc": "主播进入房间媒体相关过程",
   "msg": {
-    "enter": {
+    "init_owner_stat": {
       "tag": "RoomProXLog",
       "match_type": "startsWith",
-      "pattern": "markSdkJoinChannelExecBegin",
-      "desc": "start join channel"
+      "pattern": "init owner stat",
+      "desc": "init owner stat"
     },
     "start_media": {
       "tag": "MediaSdkManagerRoomProXLog",
@@ -39,18 +38,6 @@
       "pattern": "OnVideoStatusListener OP_NETWORK_CONNECTED",
       "desc": "video server connected"
     },
-    "media_recv_first_frame": {
-      "tag": "MediaSdkManagerRoomProXLog",
-      "match_type": "startsWith",
-      "pattern": "OnMediaSDKStatusListener MEDIA_FIRST_FRAME_PLAYED",
-      "desc": "media server connected"
-    },
-    "video_recv_first_iframe": {
-      "tag": "MediaSdkManagerRoomProXLog",
-      "match_type": "startsWith",
-      "pattern": "OnVideoStatusListener OP_FIRST_IFRAME_ARRIVE",
-      "desc": "video server connected"
-    },
     "leave": {
       "tag": "RoomProXLog",
       "match_type": "startsWith",
@@ -77,13 +64,12 @@
     },
     {
       "name": [
+        "Preparing",
         "MediaStarted",
         "VideoStarted",
         "LiveTypeSet",
         "MediaConnected",
-        "VideoConnected",
-        "MediaDone",
-        "VideoDone"
+        "VideoConnected"
       ]
     },
     {
@@ -99,6 +85,14 @@
     {
       "from": [
         "START"
+      ],
+      "to": "Preparing",
+      "msg": "init_owner_stat",
+      "desc": "主播初始化media"
+    },
+    {
+      "from": [
+        "Preparing"
       ],
       "to": "MediaStarted",
       "msg": "start_media",
@@ -123,8 +117,7 @@
     {
       "from": [
         "LiveTypeSet",
-        "MediaConnected",
-        "MediaDone"
+        "MediaConnected"
       ],
       "to": "VideoConnected",
       "msg": "video_connected",
@@ -132,19 +125,8 @@
     },
     {
       "from": [
-        "VideoConnected",
-        "MediaConnected",
-        "MediaDone"
-      ],
-      "to": "VideoDone",
-      "msg": "video_recv_first_iframe",
-      "desc": "vs收到iframe"
-    },
-    {
-      "from": [
         "VideoStarted",
-        "VideoConnected",
-        "VideoDone"
+        "VideoConnected"
       ],
       "to": "MediaConnected",
       "msg": "media_connected",
@@ -152,18 +134,8 @@
     },
     {
       "from": [
-        "MediaConnected",
         "VideoConnected",
-        "VideoDone"
-      ],
-      "to": "MediaDone",
-      "msg": "media_recv_first_frame",
-      "desc": "ms收到iframe"
-    },
-    {
-      "from": [
-        "MediaDone",
-        "VideoDone"
+        "MediaConnected"
       ],
       "to": "END",
       "msg": "leave",
@@ -174,9 +146,7 @@
         "MediaStarted",
         "VideoStarted",
         "MediaConnected",
-        "VideoConnected",
-        "MediaDone",
-        "VideoDone"
+        "VideoConnected"
       ],
       "to": "END",
       "msg": "video_end",
@@ -185,22 +155,18 @@
     {
       "from": [
         "MediaStarted",
-        "VideoStarted",
-        "MediaConnected",
-        "VideoConnected"
+        "VideoStarted"
       ],
       "to": "ERROR",
       "msg": "leave",
-      "desc": "没出视频退出房间"
+      "desc": "没出连接上ms或者vs就退出房间"
     },
     {
       "from": [
         "MediaStarted",
         "VideoStarted",
         "MediaConnected",
-        "VideoConnected",
-        "MediaDone",
-        "VideoDone"
+        "VideoConnected"
       ],
       "to": "ERROR",
       "msg": "error",

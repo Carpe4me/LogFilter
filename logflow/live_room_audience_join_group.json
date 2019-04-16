@@ -1,12 +1,18 @@
 {
-  "name": "join group流程",
-  "desc": "进入房间join group",
+  "name": "观众join group流程",
+  "desc": "观众进入房间join group",
   "msg": {
     "enter": {
       "tag": "RoomProXLog",
       "match_type": "startsWith",
       "pattern": "enterRoom",
       "desc": "enter room"
+    },
+    "init_owner_stat": {
+      "tag": "RoomProXLog",
+      "match_type": "startsWith",
+      "pattern": "init owner stat",
+      "desc": "init owner stat"
     },
     "join_living": {
       "tag": "RoomProXLog",
@@ -59,7 +65,10 @@
     },
     {
       "type": "error",
-      "name": "ERROR"
+      "name": [
+        "ERROR",
+        "IsOwner"
+      ]
     }
   ],
   "link": [
@@ -81,7 +90,18 @@
     },
     {
       "from": [
-        "JoiningLive"
+        "PrepareForJoin"
+      ],
+      "to": "IsOwner",
+      "msg": "init_owner_stat",
+      "addToResultIfError": false,
+      "removeResultIfError": true,
+      "desc": "当前是主播流程"
+    },
+    {
+      "from": [
+        "JoiningLive",
+        "PrepareForJoin"
       ],
       "to": "InRoom",
       "msg": "join_living_success",

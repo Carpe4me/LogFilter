@@ -1,0 +1,188 @@
+{
+  "name": "主播join group流程",
+  "desc": "主播进入房间join group",
+  "msg": {
+    "create_activity": {
+      "tag": "RoomProXLog",
+      "match_type": "startsWith",
+      "pattern": "LiveCameraOwnerActivity: Create",
+      "desc": "create owner activity"
+    },
+    "check_can_live": {
+      "tag": "RoomProXLog",
+      "match_type": "startsWith",
+      "pattern": "checkCanLive:",
+      "desc": "check can start living"
+    },
+    "check_can_live_success": {
+      "tag": "RoomProXLog",
+      "match_type": "startsWith",
+      "pattern": "checkCanLive succeed.",
+      "desc": "check can start living success"
+    },
+    "enter_room": {
+      "tag": "RoomProXLog",
+      "match_type": "startsWith",
+      "pattern": "enterRoom",
+      "desc": "enter room"
+    },
+    "init_owner_stat": {
+      "tag": "RoomProXLog",
+      "match_type": "startsWith",
+      "pattern": "init owner stat",
+      "desc": "init owner stat"
+    },
+    "join_living_success": {
+      "tag": "RoomProXLog",
+      "match_type": "startsWith",
+      "pattern": "[RoomLogin] handleJoinMediaGroupCallRes:",
+      "desc": "join living success"
+    },
+    "leave": {
+      "tag": "RoomProXLog",
+      "match_type": "startsWith",
+      "pattern": "leaveRoom entrance=owner",
+      "desc": "owner leave room"
+    },
+    "leave_activity": {
+      "tag": "RoomProXLog",
+      "match_type": "startsWith",
+      "pattern": "leaveRoom ",
+      "desc": "leave room"
+    },
+    "video_end": {
+      "tag": "RoomProXLog",
+      "match_type": "startsWith",
+      "pattern": "leaveRoomForError:0",
+      "desc": "room video end"
+    },
+    "error": {
+      "tag": "RoomProXLog",
+      "match_type": "regex",
+      "pattern": "leaveRoomForError:[^0]",
+      "desc": "leave room with error"
+    }
+  },
+  "state": [
+    {
+      "type": "start",
+      "name": "START"
+    },
+    {
+      "name": [
+        "PreparingRoom",
+        "CheckingCanLive",
+        "WaitingEnterRoom",
+        "PrepareForJoin",
+        "JoiningLive",
+        "InRoom"
+      ]
+    },
+    {
+      "type": "end",
+      "name": "END"
+    },
+    {
+      "type": "error",
+      "name": [
+        "ERROR",
+        "CheckLiveFail"
+      ]
+    }
+  ],
+  "link": [
+    {
+      "from": [
+        "START"
+      ],
+      "to": "PreparingRoom",
+      "msg": "create_activity",
+      "desc": "创建房间"
+    },
+    {
+      "from": [
+        "PreparingRoom"
+      ],
+      "to": "CheckingCanLive",
+      "msg": "check_can_live",
+      "desc": "检查是否允许开播"
+    },
+    {
+      "from": [
+        "CheckingCanLive"
+      ],
+      "to": "WaitingEnterRoom",
+      "msg": "check_can_live_success",
+      "desc": "检查开播成功，进入房间中"
+    },
+    {
+      "from": [
+        "WaitingEnterRoom"
+      ],
+      "to": "PrepareForJoin",
+      "msg": "enter_room",
+      "desc": "进入房间"
+    },
+    {
+      "from": [
+        "PrepareForJoin"
+      ],
+      "to": "JoiningLive",
+      "msg": "init_owner_stat",
+      "desc": "主播加入房间"
+    },
+    {
+      "from": [
+        "JoiningLive"
+      ],
+      "to": "InRoom",
+      "msg": "join_living_success",
+      "desc": "join group 成功"
+    },
+    {
+      "from": [
+        "CheckingCanLive"
+      ],
+      "to": "CheckLiveFail",
+      "msg": [
+        "leave",
+        "leave_activity"
+      ],
+      "desc": "检查开播失败"
+    },
+    {
+      "from": [
+        "PreparingRoom",
+        "PrepareForJoin",
+        "JoiningLive",
+        "InRoom"
+      ],
+      "to": "END",
+      "msg": [
+        "leave",
+        "leave_activity"
+      ],
+      "desc": "关闭房间"
+    },
+    {
+      "from": [
+        "PrepareForJoin",
+        "JoiningLive",
+        "InRoom"
+      ],
+      "to": "END",
+      "msg": "video_end",
+      "desc": "直播结束(ROOM_ERR_VIDEO_END)"
+    },
+    {
+      "from": [
+        "PrepareForJoin",
+        "JoiningLive",
+        "InRoom"
+      ],
+      "to": "ERROR",
+      "msg": "error",
+      "desc": "因错误退出房间"
+    }
+  ]
+}

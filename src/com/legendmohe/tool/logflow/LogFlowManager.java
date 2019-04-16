@@ -171,6 +171,7 @@ public class LogFlowManager {
         String to = linkItem.getString("to");
         boolean dropIfError = linkItem.optBoolean("dropIfError", true);
         boolean addToResultIfError = linkItem.optBoolean("addToResultIfError", true);
+        boolean removeResultIfError = linkItem.optBoolean("removeResultIfError", false);
         String desc = linkItem.optString("desc", "unknown");
 
         for (int i = 0; i < fromArray.length(); i++) {
@@ -184,6 +185,7 @@ public class LogFlowManager {
                 stateLink.desc = desc;
                 stateLink.dropIfError = dropIfError;
                 stateLink.addToResultIfError = addToResultIfError;
+                stateLink.removeResultIfError = removeResultIfError;
                 holder.mStateLinks.add(stateLink);
             }
         }
@@ -231,6 +233,7 @@ public class LogFlowManager {
                 stateLink.desc = desc;
                 stateLink.dropIfError = Boolean.valueOf(paramMap.getOrDefault("dropIfError", "true"));
                 stateLink.addToResultIfError = Boolean.valueOf(paramMap.getOrDefault("addToResultIfError", "true"));
+                stateLink.removeResultIfError = Boolean.valueOf(paramMap.getOrDefault("removeResultIfError", "false"));
                 holder.mStateLinks.add(stateLink);
             }
         }
@@ -311,7 +314,7 @@ public class LogFlowManager {
                     toDescMap.put(link.to, msgDescMap);
                 }
                 msgDescMap.put(link.msg,
-                        new LineDesc(link.desc, link.dropIfError, link.addToResultIfError)
+                        new LineDesc(link.desc, link.dropIfError, link.addToResultIfError, link.removeResultIfError)
                 );
 
                 StateMachine.State fromState = internalStateMap.get(link.from);
@@ -327,6 +330,9 @@ public class LogFlowManager {
             List<Object> events = mStateMachine.listAcceptableEvent();
             for (Object event : events) {
                 LogMassage logMsg = (LogMassage) event;
+                if (logMsg == null) {
+                    String logLV = logInfo.getLogLV();
+                }
                 if (logMsg.match(logInfo)) {
                     mStateMachine.postEvent(logMsg, logInfo);
                     // 取出最后一个
@@ -388,7 +394,10 @@ public class LogFlowManager {
                     // remove last
                     currentResult.resultLines.remove(currentResult.resultLines.size() - 1);
                 }
-                results.add(currentResult);
+                // 当错误发生时，removeResultIfError为true的话，不会把currentResult添加到results中
+                if (!(isError && linkDesc.removeResultIfError)) {
+                    results.add(currentResult);
+                }
                 currentResult = new FlowResult();
                 // 结束后reset一下，重新开始检测
                 mStateMachine.reset(0);
@@ -489,17 +498,20 @@ public class LogFlowManager {
         public String desc;
         public boolean dropIfError;
         public boolean addToResultIfError;
+        public boolean removeResultIfError;
     }
 
     private static class LineDesc {
         String desc;
         private boolean dropIfError;
         boolean addToResultIfError;
+        boolean removeResultIfError;
 
-        LineDesc(String desc, boolean dropIfError, boolean addToResultIfError) {
+        LineDesc(String desc, boolean dropIfError, boolean addToResultIfError, boolean removeResultIfError) {
             this.desc = desc;
             this.dropIfError = dropIfError;
             this.addToResultIfError = addToResultIfError;
+            this.removeResultIfError = removeResultIfError;
         }
     }
 

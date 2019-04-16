@@ -1,0 +1,278 @@
+{
+  "name": "观众join media流程",
+  "desc": "观众进入房间媒体相关过程",
+  "msg": {
+    "enter_room": {
+      "tag": "RoomProXLog",
+      "match_type": "startsWith",
+      "pattern": "enterRoom",
+      "desc": "audience enter room"
+    },
+    "init_owner_stat": {
+      "tag": "RoomProXLog",
+      "match_type": "startsWith",
+      "pattern": "init owner stat",
+      "desc": "init owner stat"
+    },
+    "enter_switch": {
+      "tag": "RoomProXLog",
+      "match_type": "startsWith",
+      "pattern": "markSdkJoinChannelExecBegin",
+      "desc": "start join channel"
+    },
+    "enter_click": {
+      "tag": "RoomProXLog",
+      "match_type": "startsWith",
+      "pattern": "prepareAndBindMediaSdk isHost:false",
+      "desc": "start join channel"
+    },
+    "start_media": {
+      "tag": "MediaSdkManagerRoomProXLog",
+      "match_type": "startsWith",
+      "pattern": "[issue] mMedia.",
+      "desc": "start media"
+    },
+    "start_video": {
+      "tag": "MediaSdkManagerRoomProXLog",
+      "match_type": "startsWith",
+      "pattern": "[issue] mVideo.",
+      "desc": "start video"
+    },
+    "set_live_type": {
+      "tag": "MediaSdkManagerRoomProXLog",
+      "match_type": "startsWith",
+      "pattern": "setLiveType:",
+      "desc": "设置直播类型"
+    },
+    "media_connected": {
+      "tag": "MediaSdkManagerRoomProXLog",
+      "match_type": "startsWith",
+      "pattern": "OnMediaSDKStatusListener MEDIA_SERVER_CONNECTED",
+      "desc": "media server connected"
+    },
+    "video_connected": {
+      "tag": "MediaSdkManagerRoomProXLog",
+      "match_type": "startsWith",
+      "pattern": "OnVideoStatusListener OP_NETWORK_CONNECTED",
+      "desc": "video server connected"
+    },
+    "media_recv_first_frame": {
+      "tag": "MediaSdkManagerRoomProXLog",
+      "match_type": "startsWith",
+      "pattern": "OnMediaSDKStatusListener MEDIA_FIRST_FRAME_PLAYED",
+      "desc": "media server connected"
+    },
+    "video_recv_first_iframe": {
+      "tag": "MediaSdkManagerRoomProXLog",
+      "match_type": "startsWith",
+      "pattern": "OnVideoStatusListener OP_FIRST_IFRAME_ARRIVE",
+      "desc": "video server connected"
+    },
+    "leave": {
+      "tag": "RoomProXLog",
+      "match_type": "startsWith",
+      "pattern": "leaveRoom ",
+      "desc": "leave room"
+    },
+    "video_end": {
+      "tag": "RoomProXLog",
+      "match_type": "startsWith",
+      "pattern": "leaveRoomForError:0",
+      "desc": "room video end"
+    },
+    "error": {
+      "tag": "RoomProXLog",
+      "match_type": "regex",
+      "pattern": "leaveRoomForError:[^0]",
+      "desc": "leave room with error"
+    }
+  },
+  "state": [
+    {
+      "type": "start",
+      "name": "START"
+    },
+    {
+      "name": [
+        "Preparing",
+        "PreparingSDK",
+        "MediaStarted",
+        "VideoStarted",
+        "LiveTypeSet",
+        "MediaConnected",
+        "VideoConnected",
+        "MediaDone",
+        "VideoDone"
+      ]
+    },
+    {
+      "type": "end",
+      "name": "END"
+    },
+    {
+      "type": "error",
+      "name": [
+        "ERROR",
+        "IsOwner"
+      ]
+    }
+  ],
+  "link": [
+    {
+      "from": [
+        "START"
+      ],
+      "to": "PreparingSDK",
+      "msg": "enter_room",
+      "desc": "观众进入房间"
+    },
+    {
+      "from": [
+        "PreparingSDK"
+      ],
+      "to": "IsOwner",
+      "msg": "init_owner_stat",
+      "addToResultIfError": false,
+      "removeResultIfError": true,
+      "desc": "当前是主播"
+    },
+    {
+      "from": [
+        "PreparingSDK"
+      ],
+      "to": "Preparing",
+      "msg": [
+        "enter_switch",
+        "enter_click"
+      ],
+      "desc": "观众滑动进入房间"
+    },
+    {
+      "from": [
+        "PreparingSDK"
+      ],
+      "to": "Preparing",
+      "msg": "enter_click",
+      "desc": "观众点击进入房间"
+    },
+    {
+      "from": [
+        "Preparing"
+      ],
+      "to": "MediaStarted",
+      "msg": "start_media",
+      "desc": "启动media"
+    },
+    {
+      "from": [
+        "MediaStarted"
+      ],
+      "to": "VideoStarted",
+      "msg": "start_video",
+      "desc": "启动video"
+    },
+    {
+      "from": [
+        "VideoStarted"
+      ],
+      "to": "LiveTypeSet",
+      "msg": "set_live_type",
+      "desc": "已设置直播类型"
+    },
+    {
+      "from": [
+        "LiveTypeSet",
+        "MediaConnected",
+        "MediaDone"
+      ],
+      "to": "VideoConnected",
+      "msg": "video_connected",
+      "desc": "vs连接成功"
+    },
+    {
+      "from": [
+        "VideoConnected",
+        "MediaConnected",
+        "MediaDone"
+      ],
+      "to": "VideoDone",
+      "msg": "video_recv_first_iframe",
+      "desc": "vs收到iframe"
+    },
+    {
+      "from": [
+        "VideoStarted",
+        "VideoConnected",
+        "VideoDone"
+      ],
+      "to": "MediaConnected",
+      "msg": "media_connected",
+      "desc": "ms连接成功"
+    },
+    {
+      "from": [
+        "MediaConnected",
+        "VideoConnected",
+        "VideoDone"
+      ],
+      "to": "MediaDone",
+      "msg": "media_recv_first_frame",
+      "desc": "ms收到iframe"
+    },
+    {
+      "from": [
+        "MediaDone",
+        "VideoDone"
+      ],
+      "to": "END",
+      "msg": "leave",
+      "desc": "退出房间"
+    },
+    {
+      "from": [
+        "MediaStarted",
+        "VideoStarted",
+        "MediaConnected",
+        "VideoConnected",
+        "MediaDone",
+        "VideoDone"
+      ],
+      "to": "END",
+      "msg": "video_end",
+      "desc": "直播结束(ROOM_ERR_VIDEO_END)"
+    },
+    {
+      "from": [
+        "MediaStarted",
+        "VideoStarted"
+      ],
+      "to": "ERROR",
+      "msg": "leave",
+      "desc": "没出连接上ms或者vs就退出房间"
+    },
+    {
+      "from": [
+        "MediaStarted",
+        "VideoStarted",
+        "MediaConnected",
+        "VideoConnected"
+      ],
+      "to": "ERROR",
+      "msg": "leave",
+      "desc": "没出视频退出房间"
+    },
+    {
+      "from": [
+        "MediaStarted",
+        "VideoStarted",
+        "MediaConnected",
+        "VideoConnected",
+        "MediaDone",
+        "VideoDone"
+      ],
+      "to": "ERROR",
+      "msg": "error",
+      "desc": "因错误退出房间"
+    }
+  ]
+}
