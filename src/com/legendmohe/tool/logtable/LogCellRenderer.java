@@ -11,6 +11,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.EventQueue;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -60,7 +61,6 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
     private final int BORDER_WIDTH = 1;
     private final Color BORDER_COLOR = new Color(100, 100, 100);
 
-    boolean mIsDataChanged;
     private JTable mTable;
     private ILogRenderResolver mResolver;
     private int mColumnIdx;
@@ -219,11 +219,21 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
         c.setFont(getFont().deriveFont(mResolver.getFontSize()));
     }
 
+    ///////////////////////////////////high light///////////////////////////////////
+
+    /*
+    主要逻辑为：
+    1. 收集匹配区间
+    2. 根据优先级对逐个字符进行染色
+    3. 根据染色结果，分区间进行处理
+     */
     private String buildCellContent(int columnIndex, String strText) {
         if (Utils.isEmpty(strText)) {
             return strText;
         }
-        mIsDataChanged = false;
+        // 1. 收集匹配区间
+        List<List<HighLightItem>> resultList = new ArrayList<>();
+        int resultCount = 0;
 
         // html里面的空格会被压缩成一个
         strText = strText.replaceAll(" ", "\u00A0");
@@ -231,73 +241,159 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
         String strHighLight = mResolver.GetHighlight();
         if (!Utils.isEmpty(strHighLight)) {
             strHighLight = strHighLight.replaceAll(" ", "\u00A0");
-            strText = highLightCell(strText, strHighLight, "00FF00", true);
+            List<HighLightItem> highLightItems = collectHighLightResultItems(1, strText, strHighLight);
+            // collect result
+            resultList.add(highLightItems);
+            resultCount += highLightItems.size();
         }
         // render filter
         if (columnIndex == LogFilterTableModel.COLUMN_MESSAGE || columnIndex == LogFilterTableModel.COLUMN_TAG) {
             String strFind = columnIndex == LogFilterTableModel.COLUMN_MESSAGE ? mResolver.GetFilterFind() : mResolver.GetFilterShowTag();
             if (!Utils.isEmpty(strFind)) {
                 strFind = strFind.replaceAll(" ", "\u00A0");
-                strText = highLightCell(strText, strFind, "FF0000", false);
+                List<HighLightItem> highLightItems = collectHighLightResultItems(2, strText, strFind);
+                // collect result
+                resultList.add(highLightItems);
+                resultCount += highLightItems.size();
             }
         }
         // render search
         String strSearch = mResolver.GetSearchHighlight();
         if (!Utils.isEmpty(strSearch)) {
             strSearch = strSearch.replaceAll(" ", "\u00A0");
-            strText = highLightCell(strText, strSearch, "FFFF00", true);
+            List<HighLightItem> highLightItems = collectHighLightResultItems(3, strText, strSearch);
+            resultList.add(highLightItems);
+            resultCount += highLightItems.size();
         }
-        if (mIsDataChanged)
+        if (resultCount > 0) {
+            strText = transformHighItemToString(strText, resultList);
             strText = "<html><nobr>" + strText + "</nobr></html>";
+        }
 
         return strText.replace("\t", "    ");
+    }
+
+    private String transformHighItemToString(String src, List<List<HighLightItem>> resultList) {
+        if (resultList.size() <= 0) {
+            return src;
+        }
+        // 2. 根据优先级对逐个字符进行染色
+        int[] flags = new int[src.length()];
+        for (List<HighLightItem> highLightItems : resultList) {
+            for (HighLightItem highLightItem : highLightItems) {
+                for (int i = highLightItem.start; i < highLightItem.end; i++) {
+                    flags[i] = highLightItem.type;
+                }
+            }
+        }
+        // 3. 根据染色结果，分区间进行处理
+        StringBuilder sb = new StringBuilder();
+        int lastType = 0;
+        int lastStart = 0;
+        int lastEnd = 0;
+        boolean inHighLight = false;
+        for (int i = 0; i < flags.length; i++) {
+            int curType = flags[i];
+            if (lastType != curType) {
+                if (inHighLight) {
+                    HighLightConfig config = sHighConfig.get(lastType);
+                    appendHighLight(sb, lastEnd, src, lastStart, i, config.color, config.useSpan);
+                    lastEnd = i;
+                    inHighLight = false;
+                }
+                if (curType != 0) {
+                    lastStart = i;
+                    inHighLight = true;
+                }
+            }
+            lastType = curType;
+        }
+        // 一直高亮到结尾
+        if (inHighLight) {
+            HighLightConfig config = sHighConfig.get(lastType);
+            appendHighLight(sb, lastEnd, src, lastStart, flags.length, config.color, config.useSpan);
+        } else { // 否则，把还没高亮的补上
+            sb.append(Utils.escapeHTML(src.substring(lastEnd)));
+        }
+        return sb.toString();
+    }
+
+    private int appendHighLight(StringBuilder rb, int lastEnd, String src, int start, int end, String color, boolean useSpan) {
+        if (useSpan) {
+            rb
+                    .append(Utils.escapeHTML(src.substring(lastEnd, start)))
+                    .append("<span style=\"background-color:#").append(color).append("\"><b>")
+                    .append(Utils.escapeHTML(src.substring(start, end)))
+                    .append("</b></span>");
+        } else {
+            rb
+                    .append(Utils.escapeHTML(src.substring(lastEnd, start)))
+                    .append("<font color=#").append(color).append("><b>")
+                    .append(Utils.escapeHTML(src.substring(start, end)))
+                    .append("</b></font>");
+        }
+        return end;
     }
 
     private static Map<String, Pattern> sPatternCache = new HashMap<>();
 
     /*
-    高亮背景
+     * 收集高亮结果
      */
-    private String highLightCell(String strText, String strFind, String color, boolean bUseSpan) {
+    private List<HighLightItem> collectHighLightResultItems(int type, String strText, String strFind) {
         if (strFind == null || strFind.length() <= 0 || strText == null || strText.length() <= 0)
-            return strText;
+            return Collections.emptyList();
         // pattern cache
         Pattern pattern = sPatternCache.computeIfAbsent(strFind, s -> Pattern.compile("(" + s + ")", Pattern.CASE_INSENSITIVE));
         Matcher matcher = pattern.matcher(strText);
 
-        StringBuilder tmpReplaceHolder = new StringBuilder();
+        List<HighLightItem> resultItems = new ArrayList<>();
         if (matcher.find()) {
             boolean result;
-            int lastEnd = 0;
             do {
                 int start = matcher.start();
                 int end = matcher.end();
-
-                if (bUseSpan) {
-                    tmpReplaceHolder
-                            .append(Utils.escapeHTML(strText.substring(lastEnd, start)))
-                            .append("<span style=\"background-color:#").append(color).append("\"><b>")
-                            .append(Utils.escapeHTML(strText.substring(start, end)))
-                            .append("</b></span>");
-                } else {
-                    tmpReplaceHolder
-                            .append(Utils.escapeHTML(strText.substring(lastEnd, start)))
-                            .append("<font color=#").append(color).append("><b>")
-                            .append(Utils.escapeHTML(strText.substring(start, end)))
-                            .append("</b></font>");
-                }
-                lastEnd = end;
+                resultItems.add(new HighLightItem(type, start, end));
                 result = matcher.find();
             } while (result);
-
-            // 结尾部分
-            tmpReplaceHolder.append(Utils.escapeHTML(strText.substring(lastEnd)));
-            strText = tmpReplaceHolder.toString();
-            mIsDataChanged = true;
         }
-        return strText;
+        return resultItems;
     }
 
+    // 条目的高亮匹配结果
+    private static class HighLightItem {
+        int type;
+        int start;
+        int end;
+
+        private HighLightItem(int type, int start, int end) {
+            this.type = type;
+            this.start = start;
+            this.end = end;
+        }
+    }
+
+    // 不同高亮类型的配置
+    private static Map<Integer, HighLightConfig> sHighConfig = new HashMap<>();
+
+    static {
+        sHighConfig.put(1, new HighLightConfig(1, "00FF00", true));
+        sHighConfig.put(2, new HighLightConfig(1, "FF0000", false));
+        sHighConfig.put(3, new HighLightConfig(1, "FFFF00", true));
+    }
+
+    // 高亮配置
+    private static class HighLightConfig {
+        int type;
+        String color;
+        boolean useSpan;
+
+        private HighLightConfig(int type, String color, boolean useSpan) {
+            this.type = type;
+            this.color = color;
+            this.useSpan = useSpan;
+        }
+    }
     ///////////////////////////////////log flow///////////////////////////////////
 
     private void renderLogFlow(boolean isSelected, LogInfo logInfo, int column, Component c) {
