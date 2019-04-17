@@ -16,6 +16,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,7 +68,15 @@ public class LogFlowDialog {
         setupButtons();
 
         JTabbedPane tabbedPane = new JTabbedPane();
-        for (String resultName : mFlowResults.keySet()) {
+        List<String> sortedName = new ArrayList<>(mFlowResults.keySet());
+        sortedName.sort(new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                // 应该不会有性能问题
+                return LogFlowManager.getInstance().getResultIndex(o1) - LogFlowManager.getInstance().getResultIndex(o2);
+            }
+        });
+        for (String resultName : sortedName) {
             List<LogFlowManager.FlowResult> resultList = mFlowResults.get(resultName);
             JComponent table = setupLogTable(resultList);
             tabbedPane.addTab(resultName, table);

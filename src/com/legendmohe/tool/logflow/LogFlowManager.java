@@ -78,6 +78,15 @@ public class LogFlowManager {
         return results;
     }
 
+    public synchronized int getResultIndex(String resultName) {
+        for (LogStateMachineHolder holder : mPatternChecker.holders) {
+            if (holder.name.equalsIgnoreCase(resultName)) {
+                return holder.index;
+            }
+        }
+        return -1;
+    }
+
     ///////////////////////////////////private///////////////////////////////////
 
     private LogStateMachineHolder loadConfigFile(File configFile) {
@@ -90,6 +99,7 @@ public class LogFlowManager {
             if (!enable) {
                 return null;
             }
+            holder.index = configJson.optInt("index", Integer.MAX_VALUE);
             holder.name = configJson.getString("name");
             holder.desc = configJson.getString("desc");
 
@@ -268,6 +278,7 @@ public class LogFlowManager {
     }
 
     public static class LogStateMachineHolder {
+        public int index;
         public String name;
         public String desc;
 
@@ -330,9 +341,6 @@ public class LogFlowManager {
             List<Object> events = mStateMachine.listAcceptableEvent();
             for (Object event : events) {
                 LogMassage logMsg = (LogMassage) event;
-                if (logMsg == null) {
-                    String logLV = logInfo.getLogLV();
-                }
                 if (logMsg.match(logInfo)) {
                     mStateMachine.postEvent(logMsg, logInfo);
                     // 取出最后一个

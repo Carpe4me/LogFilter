@@ -1,4 +1,5 @@
 {
+  "index": 0,
   "name": "LinkD链接状态",
   "desc": "linkd链接状态，需要service log",
   "msg": {

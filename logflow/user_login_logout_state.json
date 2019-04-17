@@ -1,4 +1,5 @@
 {
+  "index": 1,
   "name": "用户登录状态",
   "desc": "用户登录状态，需要service log",
   "msg": {
