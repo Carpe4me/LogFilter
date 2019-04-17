@@ -125,6 +125,7 @@
     },
     {
       "from": [
+        "LiveTypeSet",
         "VideoStarted",
         "VideoConnected"
       ],
@@ -143,6 +144,7 @@
     },
     {
       "from": [
+        "LiveTypeSet",
         "MediaStarted",
         "VideoStarted",
         "MediaConnected",
@@ -154,6 +156,7 @@
     },
     {
       "from": [
+        "LiveTypeSet",
         "MediaStarted",
         "VideoStarted"
       ],
@@ -163,6 +166,7 @@
     },
     {
       "from": [
+        "LiveTypeSet",
         "MediaStarted",
         "VideoStarted",
         "MediaConnected",

@@ -395,9 +395,10 @@ public class LogTable extends BaseLogTable {
         // log flow显示
         if (isShowLogFlowResult()) {
             LogInfo logInfo = ((LogFilterTableModel) getModel()).getRow(row);
-            if (logInfo.getFlowResults() != null && logInfo.getFlowResults().size() > 0) {
+            List<LogFlowManager.FlowResultLine> flowResults = logInfo.getFlowResults();
+            if (flowResults != null && flowResults.size() > 0) {
                 content.append("\n");
-                for (LogFlowManager.FlowResultLine resultLine : logInfo.getFlowResults()) {
+                for (LogFlowManager.FlowResultLine resultLine : flowResults) {
                     if (resultLine.flowResult.errorCause != null) {
                         content.append("\n").append("[error] ").append(resultLine.flowResult.desc).append(" <-").append(resultLine.flowResult.errorCause);
                     } else {

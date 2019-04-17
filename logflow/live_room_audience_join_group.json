@@ -32,6 +32,12 @@
       "pattern": "leaveRoom ",
       "desc": "leave room"
     },
+    "owner_not_in_room": {
+      "tag": "RoomProXLog",
+      "match_type": "contains",
+      "pattern": "isOwnerInRoom:false",
+      "desc": "owner leave room already"
+    },
     "video_end": {
       "tag": "RoomProXLog",
       "match_type": "startsWith",
@@ -124,8 +130,11 @@
         "JoiningLive"
       ],
       "to": "END",
-      "msg": "video_end",
-      "desc": "直播结束(ROOM_ERR_VIDEO_END)"
+      "msg": [
+        "video_end",
+        "owner_not_in_room"
+      ],
+      "desc": "直播结束(ROOM_ERR_VIDEO_END 或者 isOwnerInRoom=false)"
     },
     {
       "from": [

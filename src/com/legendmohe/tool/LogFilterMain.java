@@ -2671,7 +2671,8 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         if (!getLogTable().isFilterLogFlow()) {
             return true;
         }
-        return logInfo.getFlowResults() != null && logInfo.getFlowResults().size() > 0;
+        List<LogFlowManager.FlowResultLine> flowResults = logInfo.getFlowResults();
+        return flowResults != null && flowResults.size() > 0;
     }
 
     boolean checkFileNameFilter(LogInfo logInfo) {

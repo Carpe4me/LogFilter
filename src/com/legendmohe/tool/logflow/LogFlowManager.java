@@ -397,6 +397,11 @@ public class LogFlowManager {
                 // 当错误发生时，removeResultIfError为true的话，不会把currentResult添加到results中
                 if (!(isError && linkDesc.removeResultIfError)) {
                     results.add(currentResult);
+                } else {
+                    // 标记removeResultIfError为true的情况下，条目不标红
+                    for (FlowResultLine resultLine : currentResult.resultLines) {
+                        resultLine.isValid = false;
+                    }
                 }
                 currentResult = new FlowResult();
                 // 结束后reset一下，重新开始检测
@@ -548,6 +553,7 @@ public class LogFlowManager {
         public String linkDesc;
         public FlowResult flowResult;
         public boolean isStartLine;
+        public boolean isValid = true;
 
         @Override
         public String toString() {

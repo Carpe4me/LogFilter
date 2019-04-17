@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class LogInfo {
     public static final int LOG_LV_VERBOSE = 1;
@@ -233,7 +234,7 @@ public class LogInfo {
     }
 
     public List<LogFlowManager.FlowResultLine> getFlowResults() {
-        return mFlowResults;
+        return mFlowResults == null ? null : mFlowResults.stream().filter(flowResultLine -> flowResultLine.isValid).collect(Collectors.toList());
     }
 
     public void setFlowResults(List<LogFlowManager.FlowResultLine> flowResult) {
@@ -242,7 +243,7 @@ public class LogInfo {
 
     public boolean hasErrorFlowResult() {
         for (LogFlowManager.FlowResultLine line : mFlowResults) {
-            if (line.flowResult.errorCause != null) {
+            if (line.isValid && line.flowResult.errorCause != null) {
                 return true;
             }
         }

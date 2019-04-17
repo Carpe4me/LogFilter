@@ -80,6 +80,12 @@
       "pattern": "leaveRoomForError:0",
       "desc": "room video end"
     },
+    "owner_not_in_room": {
+      "tag": "RoomProXLog",
+      "match_type": "contains",
+      "pattern": "isOwnerInRoom:false",
+      "desc": "owner leave room already"
+    },
     "error": {
       "tag": "RoomProXLog",
       "match_type": "regex",
@@ -134,7 +140,7 @@
       "msg": "init_owner_stat",
       "addToResultIfError": false,
       "removeResultIfError": true,
-      "desc": "当前是主播"
+      "desc": "当前是主播流程"
     },
     {
       "from": [
@@ -201,6 +207,7 @@
     },
     {
       "from": [
+        "LiveTypeSet",
         "VideoStarted",
         "VideoConnected",
         "VideoDone"
@@ -230,6 +237,7 @@
     },
     {
       "from": [
+        "LiveTypeSet",
         "MediaStarted",
         "VideoStarted",
         "MediaConnected",
@@ -238,8 +246,11 @@
         "VideoDone"
       ],
       "to": "END",
-      "msg": "video_end",
-      "desc": "直播结束(ROOM_ERR_VIDEO_END)"
+      "msg": [
+        "video_end",
+        "owner_not_in_room"
+      ],
+      "desc": "直播结束(ROOM_ERR_VIDEO_END 或者 isOwnerInRoom=false)"
     },
     {
       "from": [

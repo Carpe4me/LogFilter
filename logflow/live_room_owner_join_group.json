@@ -153,6 +153,8 @@
     {
       "from": [
         "PreparingRoom",
+        "CheckingCanLive",
+        "WaitingEnterRoom",
         "PrepareForJoin",
         "JoiningLive",
         "InRoom"
