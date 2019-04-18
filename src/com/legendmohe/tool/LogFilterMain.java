@@ -1782,7 +1782,6 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         mMainSplitPane.setHiddenListener(new ExpandableSplitPane.HiddenListener() {
             @Override
             public void onStateChanged(ExpandableSplitPane pane, Component whichSide, boolean hidden) {
-                T.d("onStateChanged() called whichSide = [" + whichSide.hashCode() + "], hidden = [" + hidden + "]");
             }
         });
         return mMainSplitPane;
