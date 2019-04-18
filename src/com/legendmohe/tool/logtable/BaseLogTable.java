@@ -681,8 +681,10 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
             m_strTagShow = m_strTagShow.replace("|" + newTag, "");
         } else if (m_strTagShow.contains(newTag)) {
             m_strTagShow = m_strTagShow.replace(newTag, "");
-        } else {
+        } else if (m_strTagShow.length() > 0) {
             m_strTagShow += "|" + newTag;
+        } else {
+            m_strTagShow = newTag;
         }
     }
 
@@ -691,8 +693,10 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
             m_strTagRemove = m_strTagRemove.replace("|" + newTag, "");
         } else if (m_strTagRemove.contains(newTag)) {
             m_strTagRemove = m_strTagRemove.replace(newTag, "");
-        } else {
+        } else if (m_strTagRemove.length() > 0) {
             m_strTagRemove += "|" + newTag;
+        } else {
+            m_strTagRemove = newTag;
         }
     }
 

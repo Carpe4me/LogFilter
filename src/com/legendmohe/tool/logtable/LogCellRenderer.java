@@ -237,31 +237,32 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
 
         // html里面的空格会被压缩成一个
         strText = strText.replaceAll(" ", "\u00A0");
-        // render highlight
-        String strHighLight = mResolver.GetHighlight();
-        if (!Utils.isEmpty(strHighLight)) {
-            strHighLight = strHighLight.replaceAll(" ", "\u00A0");
-            List<HighLightItem> highLightItems = collectHighLightResultItems(1, strText, strHighLight);
-            // collect result
-            resultList.add(highLightItems);
-            resultCount += highLightItems.size();
-        }
         // render filter
         if (columnIndex == LogFilterTableModel.COLUMN_MESSAGE || columnIndex == LogFilterTableModel.COLUMN_TAG) {
             String strFind = columnIndex == LogFilterTableModel.COLUMN_MESSAGE ? mResolver.GetFilterFind() : mResolver.GetFilterShowTag();
             if (!Utils.isEmpty(strFind)) {
                 strFind = strFind.replaceAll(" ", "\u00A0");
-                List<HighLightItem> highLightItems = collectHighLightResultItems(2, strText, strFind);
+                List<HighLightItem> highLightItems = collectHighLightResultItems(HIGH_LIGHT_TYPE_FILTER, strText, strFind);
                 // collect result
                 resultList.add(highLightItems);
                 resultCount += highLightItems.size();
             }
         }
+        // render highlight
+        String strHighLight = mResolver.GetHighlight();
+        if (!Utils.isEmpty(strHighLight)) {
+            strHighLight = strHighLight.replaceAll(" ", "\u00A0");
+            List<HighLightItem> highLightItems = collectHighLightResultItems(HIGH_LIGHT_TYPE_HIGH_LIGHT, strText, strHighLight);
+            // collect result
+            resultList.add(highLightItems);
+            resultCount += highLightItems.size();
+        }
         // render search
         String strSearch = mResolver.GetSearchHighlight();
         if (!Utils.isEmpty(strSearch)) {
             strSearch = strSearch.replaceAll(" ", "\u00A0");
-            List<HighLightItem> highLightItems = collectHighLightResultItems(3, strText, strSearch);
+            // collect result
+            List<HighLightItem> highLightItems = collectHighLightResultItems(HIGH_LIGHT_TYPE_SEARCH, strText, strSearch);
             resultList.add(highLightItems);
             resultCount += highLightItems.size();
         }
@@ -373,13 +374,17 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
         }
     }
 
+    private static final int HIGH_LIGHT_TYPE_FILTER = 1;
+    private static final int HIGH_LIGHT_TYPE_HIGH_LIGHT = 2;
+    private static final int HIGH_LIGHT_TYPE_SEARCH = 3;
+
     // 不同高亮类型的配置
     private static Map<Integer, HighLightConfig> sHighConfig = new HashMap<>();
 
     static {
-        sHighConfig.put(1, new HighLightConfig(1, "00FF00", true));
-        sHighConfig.put(2, new HighLightConfig(1, "FF0000", false));
-        sHighConfig.put(3, new HighLightConfig(1, "FFFF00", true));
+        sHighConfig.put(HIGH_LIGHT_TYPE_FILTER, new HighLightConfig(HIGH_LIGHT_TYPE_FILTER, "FF0000", false));
+        sHighConfig.put(HIGH_LIGHT_TYPE_HIGH_LIGHT, new HighLightConfig(HIGH_LIGHT_TYPE_HIGH_LIGHT, "00FF00", true));
+        sHighConfig.put(HIGH_LIGHT_TYPE_SEARCH, new HighLightConfig(HIGH_LIGHT_TYPE_SEARCH, "FFFF00", true));
     }
 
     // 高亮配置
