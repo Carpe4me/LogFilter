@@ -893,7 +893,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
                 m_arSubLogInfoAll.add(logInfo);
                 m_hmMarkedInfoAll.put(line, line);
                 if (mFilterEnabled)
-                    m_hmMarkedInfoFiltered.put(line, nIndex);
+                    m_hmMarkedInfoFiltered.put(line, m_arLogInfoFiltered.size());
             } else {
                 m_arSubLogInfoAll.remove(logInfo);
                 m_hmMarkedInfoAll.remove(line);
@@ -3509,6 +3509,14 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
                     public void onItemSelected(LogFlowDialog dialog, LogFlowDialog.ResultItem result) {
                         // jump to result line
                         m_tbLogTable.changeSelection(result.logInfo);
+                    }
+
+                    @Override
+                    public void onMarkItem(LogFlowDialog logFlowDialog, LogFlowDialog.ResultItem resultItem) {
+                        if (resultItem != null) {
+                            LogInfo logInfo = resultItem.logInfo;
+                            markLogInfo(0, logInfo.getLine() - 1, !logInfo.isMarked());
+                        }
                     }
                 });
                 dialog.show();

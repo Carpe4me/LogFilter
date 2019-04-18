@@ -384,6 +384,12 @@ public class LogTable extends BaseLogTable {
                     // jump to result line
                     changeSelection(result.logInfo);
                 }
+
+                @Override
+                public void onMarkItem(LogFlowDialog logFlowDialog, LogFlowDialog.ResultItem resultItem) {
+                    LogInfo resultLog = resultItem.logInfo;
+                    mBaseLogTableListener.markLogInfo(0, resultLog.getLine() - 1, !resultLog.isMarked());
+                }
             });
             dialog.show();
         }

@@ -21,12 +21,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
@@ -191,16 +194,52 @@ public class LogFlowDialog {
                 Point p = e.getPoint();
                 int row = resultTable.rowAtPoint(p);
                 int column = resultTable.columnAtPoint(p);
-                if (row < 0 || row > resultTable.getRowCount()) {
-                    return;
-                }
 
-                if (e.getClickCount() == 2) {
-                    ResultItem result = dataList.get(row);
-                    if (mListener != null) {
-                        mListener.onItemSelected(LogFlowDialog.this, result);
+                if (SwingUtilities.isLeftMouseButton(e)) {
+                    if (row < 0 || row > resultTable.getRowCount()) {
+                        return;
                     }
+
+                    if (e.getClickCount() == 2) {
+                        ResultItem result = dataList.get(row);
+                        if (mListener != null) {
+                            mListener.onItemSelected(LogFlowDialog.this, result);
+                        }
+                    }
+                } else if (SwingUtilities.isRightMouseButton(e)) {
+                    boolean hasSelected = false;
+                    for (int sRow : resultTable.getSelectedRows()) {
+                        if (sRow == row) {
+                            hasSelected = true;
+                            break;
+                        }
+                    }
+                    if (!hasSelected) {
+                        resultTable.setRowSelectionInterval(row, row);
+                        resultTable.setColumnSelectionInterval(column, column);
+                    }
+
+                    ResultItem result = dataList.get(row);
+                    JPopupMenu popup = createRightClickPopUp(result);
+                    popup.show(e.getComponent(), e.getX(), e.getY());
                 }
+            }
+
+            private JPopupMenu createRightClickPopUp(ResultItem result) {
+                JPopupMenu menuPopup = new JPopupMenu();
+                JMenuItem markItem = new JMenuItem(new AbstractAction("mark") {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        if (result == null) {
+                            return;
+                        }
+                        if (mListener != null) {
+                            mListener.onMarkItem(LogFlowDialog.this, result);
+                        }
+                    }
+                });
+                menuPopup.add(markItem);
+                return menuPopup;
             }
         });
 
@@ -317,5 +356,7 @@ public class LogFlowDialog {
         void onOkButtonClicked(LogFlowDialog dialog);
 
         void onItemSelected(LogFlowDialog dialog, ResultItem result);
+
+        void onMarkItem(LogFlowDialog logFlowDialog, ResultItem resultItem);
     }
 }
