@@ -1,4 +1,4 @@
-LogFilterColor.ini
+*.ini
 *.class
 .idea
 *.txt
