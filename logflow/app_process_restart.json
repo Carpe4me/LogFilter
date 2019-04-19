@@ -1,0 +1,26 @@
+{
+  "index": 0,
+  "name": "进程存活状态",
+  "desc": "进程重启时间点",
+  "msg": {
+    "process_start": {
+      "tag": "OverwallManager",
+      "match_type": "startsWith",
+      "pattern": "init",
+      "desc": "process restart"
+    }
+  },
+  "state": [
+    {
+      "type": "start",
+      "name": "START"
+    },
+    {
+      "type": "end",
+      "name": "STARTED"
+    }
+  ],
+  "link": [
+    "START--process_start-->STARTED:进程重启"
+  ]
+}
