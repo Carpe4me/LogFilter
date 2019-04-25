@@ -56,6 +56,12 @@
       "match_type": "regex",
       "pattern": "leaveRoomForError:[^0]",
       "desc": "leave room with error"
+    },
+    "recorder_error": {
+      "tag": "RoomSession",
+      "match_type": "startsWith",
+      "pattern": "recorder has no data callback, fatal",
+      "desc": "open recorder device fail"
     }
   },
   "state": [
@@ -185,6 +191,21 @@
       "to": "ERROR",
       "msg": "error",
       "desc": "因错误退出房间"
+    },
+    {
+      "from": [
+        "Preparing",
+        "MediaStarted",
+        "VideoStarted",
+        "LiveTypeSet",
+        "MediaStarted",
+        "VideoStarted",
+        "MediaConnected",
+        "VideoConnected"
+      ],
+      "to": "ERROR",
+      "msg": "recorder_error",
+      "desc": "媒体打开录音设备失败"
     }
   ]
 }
