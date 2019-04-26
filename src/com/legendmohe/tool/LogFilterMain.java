@@ -49,6 +49,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.InputEvent;
@@ -347,6 +349,12 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
 
         final LogFilterMain main = new LogFilterMain();
         main.pack();
+        main.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                main.restoreSplitPane();
+            }
+        });
         main.restoreSplitPane();
 
         if (args != null && args.length > 0) {
@@ -1784,11 +1792,12 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
             public void onStateChanged(ExpandableSplitPane pane, Component whichSide, boolean hidden) {
             }
         });
+        mMainSplitPane.setContinuousLayout(true);
         return mMainSplitPane;
     }
 
     Component getOptionPanel() {
-        return new JScrollPane(getOptionFilter());
+        return getOptionFilter();
     }
 
     Component getStatusPanel() {
