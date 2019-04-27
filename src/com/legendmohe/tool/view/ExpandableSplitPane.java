@@ -74,7 +74,7 @@ public class ExpandableSplitPane extends JSplitPane {
             } else if (isRightComponentHidden()) {
                 // show right
                 if (!isHidden) {
-                    clickDividerButton(mRightButton);
+                    clickDividerButton(mLeftButton);
                 }
             } else {
                 if (isHidden) {
@@ -168,8 +168,8 @@ public class ExpandableSplitPane extends JSplitPane {
         }
     }
 
-    private void clickDividerButton(JButton leftButton) {
-        leftButton.doClick();
+    private void clickDividerButton(JButton btn) {
+        btn.doClick();
     }
 
     private boolean isNoSideHidden() {

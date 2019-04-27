@@ -310,7 +310,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
     private boolean mSyncScrollSelected;
 
     private final UIStateSaver mUIStateSaver;
-    private JSplitPane mSplitPane;
+    private ExpandableSplitPane mSplitPane;
     @FieldSaveState
     private int mLogSplitPaneDividerLocation = -1;
     private ExpandableSplitPane mMainSplitPane;
@@ -692,7 +692,9 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
     private void restoreSplitPane() {
         mSplitPane.setResizeWeight(1.0);
         mSplitPane.setOneTouchExpandable(true);
-        mSplitPane.setDividerLocation(mLogSplitPaneDividerLocation);
+        if (mLogSplitPaneDividerLocation > 0) {
+            mSplitPane.setDividerLocation(mLogSplitPaneDividerLocation);
+        }
 
         mMainSplitPane.setResizeWeight(1.0);
         mMainSplitPane.setOneTouchExpandable(true);
@@ -1758,6 +1760,19 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         });
         jpActionPanel.add(hideLeftBtn);
 
+        JButton hideBottomBtn = new JButton("Toggle Bottom Panel");
+        hideBottomBtn.setMargin(new Insets(0, 0, 0, 0));
+        hideBottomBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mSplitPane.setOneSideHidden(
+                        mSplitPane.getRightComponent(),
+                        !mSplitPane.isSideHidden(mSplitPane.getRightComponent())
+                );
+            }
+        });
+        jpActionPanel.add(hideBottomBtn);
+
         optionWest.add(mSyncScrollCheckBox);
         optionWest.add(mSyncSelectedCheckBox);
         optionWest.add(jlFont);
@@ -1851,7 +1866,11 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         m_tSublogTable = new SubLogTable(m_tSubLogTableModel, this);
         m_subLogScrollVPane = new JScrollPane(m_tSublogTable);
 
-        mSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, mainLogPanel, m_subLogScrollVPane);
+        mSplitPane = new ExpandableSplitPane(
+                JSplitPane.VERTICAL_SPLIT,
+                mainLogPanel,
+                m_subLogScrollVPane
+        );
         return mSplitPane;
     }
 
