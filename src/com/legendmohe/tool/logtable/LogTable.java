@@ -35,8 +35,6 @@ import javax.swing.event.TableColumnModelEvent;
 import javax.swing.event.TableColumnModelListener;
 import javax.swing.table.TableColumn;
 
-import javafx.util.Pair;
-
 public class LogTable extends BaseLogTable {
     private static final long serialVersionUID = 1L;
     private DiffService mDiffService;
@@ -422,6 +420,24 @@ public class LogTable extends BaseLogTable {
         if (context instanceof Integer) {
             Integer row = (Integer) context;
             changeSelection(row, 0, false, false);
+        }
+    }
+
+    public static class Pair<K, V> {
+        private K key;
+        private V value;
+
+        public Pair(K key, V value) {
+            this.key = key;
+            this.value = value;
+        }
+
+        public K getKey() {
+            return key;
+        }
+
+        public V getValue() {
+            return value;
         }
     }
 }
