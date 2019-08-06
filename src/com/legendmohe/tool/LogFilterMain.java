@@ -22,6 +22,7 @@ import com.legendmohe.tool.view.LogFlowDialog;
 import com.legendmohe.tool.view.PackageViewDialog;
 import com.legendmohe.tool.view.RecentFileMenu;
 import com.legendmohe.tool.view.RowsContentDialog;
+import com.legendmohe.tool.view.TextConverterDialog;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -515,6 +516,16 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         diffMenu.add(mDisconnectDiffMenuItem);
 
         toolsMenu.add(diffMenu);
+
+        JMenuItem converterItem = new JMenuItem("text converter");
+        converterItem.setToolTipText("convert all kinds of log msg");
+        converterItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                new TextConverterDialog().show();
+            }
+        });
+
+        toolsMenu.add(converterItem);
 
         JMenu parserMenu = new JMenu("Parser");
         parserMenu.addMenuListener(new MenuListener() {
