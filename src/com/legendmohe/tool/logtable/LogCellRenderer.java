@@ -118,10 +118,12 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
                 row,
                 column);
 
-        renderFont(c);
-        renderBackground(isSelected, logInfo, row, column, c);
-        renderBorder(row, column, c);
-        renderLogFlow(isSelected, logInfo, column, c);
+        if (c != null) {
+            renderFont(c);
+            renderBackground(isSelected, logInfo, row, column, c);
+            renderBorder(row, column, c);
+            renderLogFlow(isSelected, logInfo, column, c);
+        }
         return c;
     }
 
@@ -202,6 +204,9 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
     }
 
     private void renderBackground(boolean isSelected, LogInfo logInfo, int row, int column, Component c) {
+        if (c == null) {
+            return;
+        }
         c.setForeground(logInfo.getTextColor());
         if (isSelected) {
             c.setFont(getFont().deriveFont(mResolver.getFontSize() + 1));
