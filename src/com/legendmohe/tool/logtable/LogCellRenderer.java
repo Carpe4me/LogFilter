@@ -204,7 +204,7 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
     }
 
     private void renderBackground(boolean isSelected, LogInfo logInfo, int row, int column, Component c) {
-        if (c == null) {
+        if (c == null || logInfo == null) {
             return;
         }
         c.setForeground(logInfo.getTextColor());
@@ -407,6 +407,9 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
     ///////////////////////////////////log flow///////////////////////////////////
 
     private void renderLogFlow(boolean isSelected, LogInfo logInfo, int column, Component c) {
+        if (logInfo == null) {
+            return;
+        }
         // log flow显示逻辑
         JLabel label = (JLabel) c;
         if (mResolver.isShowLogFlowResult()) {
