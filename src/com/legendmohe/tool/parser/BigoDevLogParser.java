@@ -8,6 +8,8 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -46,7 +48,10 @@ public class BigoDevLogParser extends AbstractLogParser {
 
                 logInfo.setLine(Integer.valueOf(line));
                 logInfo.setTime(date);
-                logInfo.setTimestamp(TIMESTAMP_FORMAT.parse(logInfo.getTime()).getTime());
+
+                Date parseDate = TIMESTAMP_FORMAT.parse(logInfo.getTime());
+                parseDate.setYear(Calendar.getInstance().get(Calendar.YEAR) - 1900);
+                logInfo.setTimestamp(parseDate.getTime());
                 logInfo.setLogLV(level);
                 logInfo.setTag(tag);
                 logInfo.setMessage(msg);
