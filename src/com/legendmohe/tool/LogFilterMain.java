@@ -15,6 +15,7 @@ import com.legendmohe.tool.parser.BigoDevLogParser;
 import com.legendmohe.tool.parser.BigoXLogParser;
 import com.legendmohe.tool.parser.ILogParser;
 import com.legendmohe.tool.parser.LogCatParser;
+import com.legendmohe.tool.thirdparty.util.OsCheck;
 import com.legendmohe.tool.view.DumpsysViewDialog;
 import com.legendmohe.tool.view.ExpandableSplitPane;
 import com.legendmohe.tool.view.ListDialog;
@@ -92,35 +93,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
-import javax.swing.DefaultListModel;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JRadioButtonMenuItem;
-import javax.swing.JScrollBar;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTextField;
-import javax.swing.JToggleButton;
-import javax.swing.KeyStroke;
-import javax.swing.ListSelectionModel;
-import javax.swing.OverlayLayout;
-import javax.swing.SwingConstants;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
@@ -135,6 +108,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.text.DefaultEditorKit;
 
 public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.BaseLogTableListener, IDiffCmdHandler {
     private static final long serialVersionUID = 1L;
@@ -346,6 +320,14 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
             e.printStackTrace();
         } catch (UnsupportedLookAndFeelException e) {
             e.printStackTrace();
+        }
+
+        if (OsCheck.getOperatingSystemType() == OsCheck.OSType.MacOS) {
+            InputMap im = (InputMap) UIManager.get("TextField.focusInputMap");
+            im.put(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.META_DOWN_MASK), DefaultEditorKit.copyAction);
+            im.put(KeyStroke.getKeyStroke(KeyEvent.VK_V, KeyEvent.META_DOWN_MASK), DefaultEditorKit.pasteAction);
+            im.put(KeyStroke.getKeyStroke(KeyEvent.VK_X, KeyEvent.META_DOWN_MASK), DefaultEditorKit.cutAction);
+            im.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, KeyEvent.META_DOWN_MASK), DefaultEditorKit.selectAllAction);
         }
 
         final LogFilterMain main = new LogFilterMain();
@@ -3248,8 +3230,8 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
             // ctrl + T 过滤tag关键词
             // ctrl + B 聚焦到log table
             // alt + 左箭头 上一个历史行 alt + 右箭头 下一个历史行
-            boolean altPressed = ((e.getModifiers() & InputEvent.ALT_MASK) == InputEvent.ALT_MASK);
-            boolean ctrlPressed = ((e.getModifiers() & InputEvent.CTRL_MASK) == InputEvent.CTRL_MASK);
+            boolean altPressed = Utils.isAltKeyPressed(e);
+            boolean ctrlPressed = Utils.isControlKeyPressed(e);
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_F2:
                     if (e.isControlDown() && e.getID() == KeyEvent.KEY_PRESSED) {

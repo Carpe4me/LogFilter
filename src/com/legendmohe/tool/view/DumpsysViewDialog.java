@@ -199,14 +199,13 @@ public class DumpsysViewDialog extends JDialog implements ActionListener {
         JScrollPane scrollPane = new JScrollPane(mMainTable);
         c.add(scrollPane, BorderLayout.CENTER);
 
-        KeyStroke copy = KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_MASK, false);
+        KeyStroke copy = KeyStroke.getKeyStroke(KeyEvent.VK_C, Utils.getControlKeyMask(), false);
         mMainTable.registerKeyboardAction(this, "Copy", copy, JComponent.WHEN_FOCUSED);
 
         mMainTable.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
-                boolean altPressed = ((e.getModifiers() & InputEvent.ALT_MASK) == InputEvent.ALT_MASK);
-                boolean ctrlPressed = ((e.getModifiers() & InputEvent.CTRL_MASK) == InputEvent.CTRL_MASK);
+                boolean ctrlPressed = Utils.isControlKeyPressed(e);
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_F: {
                         if (ctrlPressed) {

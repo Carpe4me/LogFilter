@@ -95,7 +95,7 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
     }
 
     protected void init() {
-        KeyStroke copy = KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_MASK, false);
+        KeyStroke copy = KeyStroke.getKeyStroke(KeyEvent.VK_C, Utils.getControlKeyMask(), false);
         registerKeyboardAction(this, "Copy", copy, JComponent.WHEN_FOCUSED);
 
         addFocusListener(this);

@@ -1,5 +1,7 @@
 package com.legendmohe.tool;
 
+import com.legendmohe.tool.thirdparty.util.OsCheck;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
@@ -27,12 +29,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.swing.AbstractAction;
-import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
-import javax.swing.KeyStroke;
+import javax.swing.*;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.event.UndoableEditListener;
+import javax.swing.text.DefaultEditorKit;
 import javax.swing.text.JTextComponent;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
@@ -250,11 +250,19 @@ public class Utils {
             }
         });
 
-        // Create keyboard accelerators for undo/redo actions (Ctrl+Z/Ctrl+Y)
-        pTextComponent.getInputMap().put(
-                KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_DOWN_MASK), UNDO_ACTION);
-        pTextComponent.getInputMap().put(
-                KeyStroke.getKeyStroke(KeyEvent.VK_Y, InputEvent.CTRL_DOWN_MASK), REDO_ACTION);
+        if (OsCheck.getOperatingSystemType() == OsCheck.OSType.MacOS) {
+            // Create keyboard accelerators for undo/redo actions (Ctrl+Z/Ctrl+Y)
+            pTextComponent.getInputMap().put(
+                    KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.META_DOWN_MASK), UNDO_ACTION);
+            pTextComponent.getInputMap().put(
+                    KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.META_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK), REDO_ACTION);
+        } else {
+            // Create keyboard accelerators for undo/redo actions (Ctrl+Z/Ctrl+Y)
+            pTextComponent.getInputMap().put(
+                    KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_DOWN_MASK), UNDO_ACTION);
+            pTextComponent.getInputMap().put(
+                    KeyStroke.getKeyStroke(KeyEvent.VK_Y, InputEvent.CTRL_DOWN_MASK), REDO_ACTION);
+        }
     }
 
     public static void showMsgDialog(Component component, String s) {
@@ -292,5 +300,25 @@ public class Utils {
         graphics.setPaint(color);
         graphics.fillRect(0, 0, width, height);
         return new ImageIcon(image);
+    }
+
+    ////////////////////////////////key//////////////////////////////////////
+
+    public static int getControlKeyMask() {
+        if (OsCheck.getOperatingSystemType() == OsCheck.OSType.MacOS) {
+            return InputEvent.META_MASK;
+        } else {
+            return InputEvent.CTRL_MASK;
+        }
+    }
+
+    public static boolean isControlKeyPressed(KeyEvent e) {
+        int keyMask = getControlKeyMask();
+        return (e.getModifiers() & keyMask) == keyMask;
+    }
+
+    public static boolean isAltKeyPressed(KeyEvent e) {
+        int keyMask = InputEvent.ALT_MASK;
+        return (e.getModifiers() & keyMask) == keyMask;
     }
 }
