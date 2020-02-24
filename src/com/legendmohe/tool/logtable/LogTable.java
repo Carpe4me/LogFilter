@@ -364,7 +364,7 @@ public class LogTable extends BaseLogTable {
             });
             popup.addBottomComponent(button);
         }
-        popup.showPopup(this, location.x - 1, location.y - 1);
+        popup.showPopup(this, location.x + 5, location.y + 5);
         mMsgTipsPopups.add(popup);
     }
 
