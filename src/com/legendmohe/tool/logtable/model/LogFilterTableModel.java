@@ -38,7 +38,7 @@ public class LogFilterTableModel extends AbstractTableModel {
         return ColName.length;
     }
 
-    public int getRowCount() {
+    public synchronized int getRowCount() {
         if (m_arData != null)
             return m_arData.size();
         else
@@ -49,18 +49,18 @@ public class LogFilterTableModel extends AbstractTableModel {
         return ColName[col];
     }
 
-    public Object getValueAt(int rowIndex, int columnIndex) {
+    public synchronized Object getValueAt(int rowIndex, int columnIndex) {
         if (rowIndex < m_arData.size()) {
             return m_arData.get(rowIndex).getContentByColumn(columnIndex);
         }
         return null;
     }
 
-    public LogInfo getRow(int row) {
+    public synchronized LogInfo getRow(int row) {
         return row < m_arData.size() ? m_arData.get(row) : null;
     }
 
-    public void setData(ArrayList<LogInfo> arData) {
+    public synchronized void setData(ArrayList<LogInfo> arData) {
         m_arData = arData;
     }
 }

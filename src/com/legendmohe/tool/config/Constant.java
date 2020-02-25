@@ -90,4 +90,10 @@ public class Constant {
     public static int COLOR_7 = COLOR_DEBUG;
     public static int COLOR_8 = COLOR_ERROR;
     public static String[] COLOR_HIGHLIGHT;
+
+    public static final String COLOR_HIGH_LIGHT_TYPE_FILTER = "FF0000";
+    public static final String COLOR_HIGH_LIGHT_TYPE_HIGH_LIGHT = "00FF00";
+    public static final String COLOR_HIGH_LIGHT_TYPE_SEARCH = "FFFF00";
+    public static final int COLOR_LOG_CELL_BORDER = 0x00000000;
+    public static final int COLOR_LOG_TABLE_POPUP_BACKGROUND = 0xDAD8E5;
 }

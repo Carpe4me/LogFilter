@@ -1,6 +1,7 @@
 package com.legendmohe.tool.view;
 
 import com.legendmohe.tool.Utils;
+import com.legendmohe.tool.config.Constant;
 
 import java.applet.Applet;
 import java.awt.BorderLayout;
@@ -61,7 +62,7 @@ public class FixPopup extends JPanel {
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, BORDER_THICKNESS, true));
-        setBackground(new Color(0xDAD8E5));
+        setBackground(new Color(Constant.COLOR_LOG_TABLE_POPUP_BACKGROUND));
 
         JPanel btnPanel = new JPanel(new BorderLayout());
         setupToolBar(btnPanel);

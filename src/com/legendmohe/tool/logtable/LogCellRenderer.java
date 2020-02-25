@@ -59,7 +59,7 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
     private final int HIGH_LIGHT_BORDER_WIDTH = 2;
 
     private final int BORDER_WIDTH = 1;
-    private final Color BORDER_COLOR = new Color(100, 100, 100);
+    private final Color BORDER_COLOR = new Color(Constant.COLOR_LOG_CELL_BORDER);
 
     private JTable mTable;
     private ILogRenderResolver mResolver;
@@ -387,9 +387,9 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
     private static Map<Integer, HighLightConfig> sHighConfig = new HashMap<>();
 
     static {
-        sHighConfig.put(HIGH_LIGHT_TYPE_FILTER, new HighLightConfig(HIGH_LIGHT_TYPE_FILTER, "FF0000", false));
-        sHighConfig.put(HIGH_LIGHT_TYPE_HIGH_LIGHT, new HighLightConfig(HIGH_LIGHT_TYPE_HIGH_LIGHT, "00FF00", true));
-        sHighConfig.put(HIGH_LIGHT_TYPE_SEARCH, new HighLightConfig(HIGH_LIGHT_TYPE_SEARCH, "FFFF00", true));
+        sHighConfig.put(HIGH_LIGHT_TYPE_FILTER, new HighLightConfig(HIGH_LIGHT_TYPE_FILTER, Constant.COLOR_HIGH_LIGHT_TYPE_FILTER, false));
+        sHighConfig.put(HIGH_LIGHT_TYPE_HIGH_LIGHT, new HighLightConfig(HIGH_LIGHT_TYPE_HIGH_LIGHT, Constant.COLOR_HIGH_LIGHT_TYPE_HIGH_LIGHT, true));
+        sHighConfig.put(HIGH_LIGHT_TYPE_SEARCH, new HighLightConfig(HIGH_LIGHT_TYPE_SEARCH, Constant.COLOR_HIGH_LIGHT_TYPE_SEARCH, true));
     }
 
     // 高亮配置
