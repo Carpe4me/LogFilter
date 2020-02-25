@@ -1,7 +1,6 @@
 package com.legendmohe.tool.logtable;
 
 import com.legendmohe.tool.EventBus;
-import com.legendmohe.tool.LogFilterMain;
 import com.legendmohe.tool.LogInfo;
 import com.legendmohe.tool.T;
 import com.legendmohe.tool.logtable.model.LogFilterTableModel;
@@ -20,8 +19,8 @@ import javax.swing.SwingUtilities;
 public class SubLogTable extends BaseLogTable {
     private static final long serialVersionUID = 1L;
 
-    public SubLogTable(LogFilterTableModel tablemodel, LogFilterMain filterMain) {
-        super(tablemodel, filterMain);
+    public SubLogTable(LogFilterTableModel tablemodel, BaseLogTableListener listener) {
+        super(tablemodel, listener);
         initListener();
         setHistoryEnable(false);
     }

@@ -17,7 +17,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -74,9 +73,9 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
 
     private boolean mShowLogFlowResult;
 
-    public BaseLogTable(TableModel model, BaseLogTableListener filterMain) {
+    public BaseLogTable(TableModel model, BaseLogTableListener listener) {
         super(model);
-        mBaseLogTableListener = filterMain;
+        mBaseLogTableListener = listener;
         m_strSearchHighlight = "";
         m_strHighlight = "";
         m_strPidShow = "";
@@ -113,7 +112,6 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
 
         initHoverListener();
     }
-
 
     public void changeSelection(LogInfo target) {
         for (int nIndex = 0; nIndex < getRowCount(); nIndex++) {
@@ -887,11 +885,11 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
 
     private static final int CELL_HOVER_DELAY = 800;
 
+    private Timer mHoverTimer;
+    private Point mHoverHintCell;
+
     private void initHoverListener() {
         MouseAdapter mouseAdapter = new MouseAdapter() {
-
-            private Timer mTimer;
-            private Point mHintCell;
 
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -909,31 +907,13 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
                 int row = rowAtPoint(p);
                 int col = columnAtPoint(p);
                 if ((row > -1 && row < getRowCount()) && (col > -1 && col < getColumnCount())) {
-                    if (mHintCell == null || (mHintCell.x != col || mHintCell.y != row)) {
-                        mHintCell = new Point(col, row);
-                        Object value = getValueAt(row, col);
+                    if (mHoverHintCell == null || (mHoverHintCell.x != col || mHoverHintCell.y != row)) {
+                        mHoverHintCell = new Point(col, row);
                         stopHoverTimer();
-                        mTimer = new Timer(CELL_HOVER_DELAY, new ActionListener() {
-                            @Override
-                            public void actionPerformed(ActionEvent e) {
-                                onHoverTriggerShow(value, row, col);
-//                                    Utils.showMsgDialog(BaseLogTable.this, "trigger!");
-                            }
-                        });
-                        mTimer.setRepeats(false);
-                        mTimer.setCoalesce(true);
-                        mTimer.start();
+                        startHoverTimer(row, col, getValueAt(row, col));
                     }
                 } else {
                     stopHoverTimer();
-                }
-            }
-
-            private void stopHoverTimer() {
-                if (mTimer != null) {
-                    mTimer.stop();
-                    mTimer = null;
-                    onHoverTriggerHide();
                 }
             }
         };
@@ -947,12 +927,38 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
         });
     }
 
+    private synchronized void startHoverTimer(int row, int col, Object value) {
+        mHoverTimer = new Timer(CELL_HOVER_DELAY, e -> onHoverTriggerShow(value, row, col));
+        mHoverTimer.setRepeats(false);
+        mHoverTimer.setCoalesce(true);
+        mHoverTimer.start();
+    }
+
+    private synchronized void stopHoverTimer() {
+        if (mHoverTimer != null) {
+            mHoverTimer.stop();
+            mHoverTimer = null;
+            mHoverHintCell = null;
+            onHoverTriggerHide();
+        }
+    }
+
     protected void onHoverTriggerShow(Object value, int row, int col) {
 
     }
 
     protected void onHoverTriggerHide() {
 
+    }
+
+    ///////////////////////////////////scroll///////////////////////////////////
+
+    @Override
+    public void addNotify() {
+        super.addNotify();
+        if (getParent() instanceof JViewport) {
+            ((JViewport) getParent()).addChangeListener(e -> stopHoverTimer());
+        }
     }
 
     ///////////////////////////////////classes///////////////////////////////////

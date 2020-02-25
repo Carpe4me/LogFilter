@@ -1,7 +1,6 @@
 package com.legendmohe.tool.logtable;
 
 import com.legendmohe.tool.EventBus;
-import com.legendmohe.tool.LogFilterMain;
 import com.legendmohe.tool.LogInfo;
 import com.legendmohe.tool.T;
 import com.legendmohe.tool.diff.DiffService;
@@ -39,8 +38,8 @@ public class LogTable extends BaseLogTable {
     private static final long serialVersionUID = 1L;
     private DiffService mDiffService;
 
-    public LogTable(LogFilterTableModel tableModel, LogFilterMain filterMain) {
-        super(tableModel, filterMain);
+    public LogTable(LogFilterTableModel tableModel, BaseLogTableListener listener) {
+        super(tableModel, listener);
         initListener();
     }
 
@@ -364,7 +363,7 @@ public class LogTable extends BaseLogTable {
             });
             popup.addBottomComponent(button);
         }
-        popup.showPopup(this, location.x + 5, location.y + 5);
+        popup.showPopup(this, location.x, location.y);
         mMsgTipsPopups.add(popup);
     }
 
