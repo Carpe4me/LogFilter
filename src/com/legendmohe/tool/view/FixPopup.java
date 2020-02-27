@@ -7,8 +7,10 @@ import java.applet.Applet;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.ComponentOrientation;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.FontMetrics;
 import java.awt.Point;
 import java.awt.Window;
@@ -54,10 +56,12 @@ public class FixPopup extends JPanel {
     // popup内部的component，用于drag
     private Component mInternalPopupComponent;
 
+    private String mMessage;
     private Object mContext;
     private final JPanel mBottomPanel;
 
     public FixPopup(String message, int maxWidth, int minWidth, Object context) {
+        mMessage = message;
         mContext = context;
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -158,9 +162,21 @@ public class FixPopup extends JPanel {
         btnPanel.setOpaque(false);
         btnPanel.setBorder(new EmptyBorder(TOOLBAR_PANEL_PADDING, TOOLBAR_PANEL_PADDING, 0, TOOLBAR_PANEL_PADDING));
 
+        JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 0));
+        rightPanel.setBorder(null);
+        rightPanel.setBackground(null);
+        rightPanel.setOpaque(false);
+        rightPanel.setComponentOrientation(
+                ComponentOrientation.LEFT_TO_RIGHT);
+        btnPanel.add(rightPanel, BorderLayout.EAST);
+
+        JButton copyBtn = new JButton();
+        setupCopyButton(copyBtn);
+        rightPanel.add(copyBtn);
+
         JButton pinBtn = new JButton();
         setupPinButton(pinBtn);
-        btnPanel.add(pinBtn, BorderLayout.EAST);
+        rightPanel.add(pinBtn);
 
         JButton goButton = new JButton();
         setupGoButton(goButton);
@@ -179,6 +195,20 @@ public class FixPopup extends JPanel {
             }
         });
         syncPinBtnState(pinBtn);
+    }
+
+    private void setupCopyButton(JButton copyBtn) {
+        copyBtn.setBorder(null);
+        copyBtn.setBorderPainted(false);
+        copyBtn.setContentAreaFilled(false);
+        copyBtn.setOpaque(false);
+        copyBtn.setText("copy");
+        copyBtn.setForeground(Color.GRAY);
+        copyBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Utils.sendContentToClipboard(mMessage);
+            }
+        });
     }
 
     private void setupGoButton(JButton goButton) {
