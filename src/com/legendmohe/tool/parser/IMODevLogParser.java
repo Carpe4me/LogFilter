@@ -32,7 +32,7 @@ public class IMODevLogParser extends AbstractLogParser {
         Group 5.	33-47	BatteryService
         Group 6.	48-80	 Sending ACTION_BATTERY_CHANGED.
      */
-    final private Pattern mLogPattern = Pattern.compile("(.+) (\\d+)  (\\d+) (\\w+) (\\w+):(.+)");
+    final private Pattern mLogPattern = Pattern.compile("(.+)\\s+(\\d+)\\s+(\\d+)\\s+(\\w+)\\s+(\\w+)\\s*:(.+)");
 
     @Override
     public LogInfo parseLog(String strText) {
