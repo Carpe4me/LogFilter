@@ -17,6 +17,7 @@ public class Constant {
     public static final int PARSER_TYPE_LOGCAT = 0;
     public static final int PARSER_TYPE_BIGO_DEV_LOG = 1;
     public static final int PARSER_TYPE_BIGO_XLOG = 2;
+    public static final int PARSER_TYPE_IMO_DEV_LOG = 3;
     static final int DEVICES_ANDROID = 0;
     static final int DEVICES_IOS = 1;
     static final int DEVICES_CUSTOM = 2;

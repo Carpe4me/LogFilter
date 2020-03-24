@@ -14,6 +14,7 @@ import com.legendmohe.tool.logtable.model.LogFilterTableModel;
 import com.legendmohe.tool.parser.BigoDevLogParser;
 import com.legendmohe.tool.parser.BigoXLogParser;
 import com.legendmohe.tool.parser.ILogParser;
+import com.legendmohe.tool.parser.IMODevLogParser;
 import com.legendmohe.tool.parser.LogCatParser;
 import com.legendmohe.tool.thirdparty.util.OsCheck;
 import com.legendmohe.tool.view.DumpsysViewDialog;
@@ -120,10 +121,12 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         sTypeToParserMap.put(Constant.PARSER_TYPE_LOGCAT, new LogCatParser());
         sTypeToParserMap.put(Constant.PARSER_TYPE_BIGO_DEV_LOG, new BigoDevLogParser());
         sTypeToParserMap.put(Constant.PARSER_TYPE_BIGO_XLOG, new BigoXLogParser());
+        sTypeToParserMap.put(Constant.PARSER_TYPE_IMO_DEV_LOG, new IMODevLogParser());
 
         sTypeToParserNameMap.put(Constant.PARSER_TYPE_LOGCAT, "logcat");
         sTypeToParserNameMap.put(Constant.PARSER_TYPE_BIGO_DEV_LOG, "bigo dev log");
         sTypeToParserNameMap.put(Constant.PARSER_TYPE_BIGO_XLOG, "bigo xlog");
+        sTypeToParserNameMap.put(Constant.PARSER_TYPE_IMO_DEV_LOG, "imo dev log");
     }
 
     JLabel m_tfStatus;
@@ -561,11 +564,23 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         });
         parserMenu.add(bigoXLogParserMenu);
 
+        JRadioButtonMenuItem imoDevLogParserMenu = new JRadioButtonMenuItem("IMODevLog Parser", LogFilterMain.this.m_parserType == Constant.PARSER_TYPE_IMO_DEV_LOG);
+        imoDevLogParserMenu.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    LogFilterMain.this.switchToLogParser(Constant.PARSER_TYPE_IMO_DEV_LOG);
+                }
+            }
+        });
+        parserMenu.add(imoDevLogParserMenu);
+
         // 就这样放进去就可以了。。。
         ButtonGroup parserBG = new ButtonGroup();
         parserBG.add(logcatParserMenu);
         parserBG.add(bigoParserMenu);
         parserBG.add(bigoXLogParserMenu);
+        parserBG.add(imoDevLogParserMenu);
 
         JMenu flowMenu = new JMenu("Flow");
         JMenuItem showAllFlow = new JMenuItem("show all log flow");
