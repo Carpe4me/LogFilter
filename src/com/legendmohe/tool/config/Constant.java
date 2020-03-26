@@ -14,10 +14,11 @@ public class Constant {
     public static final int MIN_WIDTH = 1100;
     public static final int MIN_HEIGHT = 500;
     // 对应menu的index，必须从0开始
-    public static final int PARSER_TYPE_LOGCAT = 0;
-    public static final int PARSER_TYPE_BIGO_DEV_LOG = 1;
-    public static final int PARSER_TYPE_BIGO_XLOG = 2;
-    public static final int PARSER_TYPE_IMO_DEV_LOG = 3;
+    public static final int PARSER_TYPE_DEFAULT_LOG = 0;
+    public static final int PARSER_TYPE_LOGCAT = 1;
+    public static final int PARSER_TYPE_BIGO_DEV_LOG = 2;
+    public static final int PARSER_TYPE_BIGO_XLOG = 3;
+    public static final int PARSER_TYPE_IMO_DEV_LOG = 4;
     static final int DEVICES_ANDROID = 0;
     static final int DEVICES_IOS = 1;
     static final int DEVICES_CUSTOM = 2;

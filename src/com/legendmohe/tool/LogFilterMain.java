@@ -13,6 +13,7 @@ import com.legendmohe.tool.logtable.SubLogTable;
 import com.legendmohe.tool.logtable.model.LogFilterTableModel;
 import com.legendmohe.tool.parser.BigoDevLogParser;
 import com.legendmohe.tool.parser.BigoXLogParser;
+import com.legendmohe.tool.parser.DefaultLogParser;
 import com.legendmohe.tool.parser.ILogParser;
 import com.legendmohe.tool.parser.IMODevLogParser;
 import com.legendmohe.tool.parser.LogCatParser;
@@ -122,11 +123,13 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         sTypeToParserMap.put(Constant.PARSER_TYPE_BIGO_DEV_LOG, new BigoDevLogParser());
         sTypeToParserMap.put(Constant.PARSER_TYPE_BIGO_XLOG, new BigoXLogParser());
         sTypeToParserMap.put(Constant.PARSER_TYPE_IMO_DEV_LOG, new IMODevLogParser());
+        sTypeToParserMap.put(Constant.PARSER_TYPE_DEFAULT_LOG, new DefaultLogParser());
 
         sTypeToParserNameMap.put(Constant.PARSER_TYPE_LOGCAT, "logcat");
         sTypeToParserNameMap.put(Constant.PARSER_TYPE_BIGO_DEV_LOG, "bigo dev log");
         sTypeToParserNameMap.put(Constant.PARSER_TYPE_BIGO_XLOG, "bigo xlog");
         sTypeToParserNameMap.put(Constant.PARSER_TYPE_IMO_DEV_LOG, "imo dev log");
+        sTypeToParserNameMap.put(Constant.PARSER_TYPE_DEFAULT_LOG, "default");
     }
 
     JLabel m_tfStatus;
@@ -267,7 +270,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
     RecentFileMenu mRecentMenu;
 
     @FieldSaveState
-    int m_parserType = Constant.PARSER_TYPE_LOGCAT;
+    int m_parserType = Constant.PARSER_TYPE_DEFAULT_LOG;
 
     @FieldSaveState
     int[] m_colWidths = LogFilterTableModel.DEFAULT_WIDTH;
@@ -531,6 +534,17 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
             }
         });
 
+        JRadioButtonMenuItem defaultLogParserMenu = new JRadioButtonMenuItem("DefaultLog Parser", LogFilterMain.this.m_parserType == Constant.PARSER_TYPE_DEFAULT_LOG);
+        defaultLogParserMenu.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    LogFilterMain.this.switchToLogParser(Constant.PARSER_TYPE_DEFAULT_LOG);
+                }
+            }
+        });
+        parserMenu.add(defaultLogParserMenu);
+
         JRadioButtonMenuItem logcatParserMenu = new JRadioButtonMenuItem("Logcat Parser", LogFilterMain.this.m_parserType == Constant.PARSER_TYPE_LOGCAT);
         logcatParserMenu.addItemListener(new ItemListener() {
             @Override
@@ -577,6 +591,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
 
         // 就这样放进去就可以了。。。
         ButtonGroup parserBG = new ButtonGroup();
+        parserBG.add(defaultLogParserMenu);
         parserBG.add(logcatParserMenu);
         parserBG.add(bigoParserMenu);
         parserBG.add(bigoXLogParserMenu);
