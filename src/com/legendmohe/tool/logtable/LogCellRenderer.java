@@ -10,6 +10,7 @@ import com.legendmohe.tool.logtable.model.LogFilterTableModel;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.EventQueue;
+import java.awt.Font;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -119,7 +120,7 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
                 column);
 
         if (c != null) {
-            renderFont(c);
+            renderFont(logInfo, row, column, c);
             renderBackground(isSelected, logInfo, row, column, c);
             renderBorder(row, column, c);
             renderLogFlow(isSelected, logInfo, column, c);
@@ -220,8 +221,12 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
         }
     }
 
-    private void renderFont(Component c) {
-        c.setFont(getFont().deriveFont(mResolver.getFontSize()));
+    private void renderFont(LogInfo logInfo, int row, int column, Component c) {
+        if (column == LogFilterTableModel.COLUMN_LINE) {
+            c.setFont(getFont().deriveFont(Font.BOLD, mResolver.getFontSize()));
+        } else {
+            c.setFont(getFont().deriveFont(Font.PLAIN, mResolver.getFontSize()));
+        }
     }
 
     ///////////////////////////////////high light///////////////////////////////////
