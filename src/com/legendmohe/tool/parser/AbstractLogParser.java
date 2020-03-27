@@ -2,13 +2,14 @@ package com.legendmohe.tool.parser;
 
 import com.legendmohe.tool.LogInfo;
 import com.legendmohe.tool.config.Constant;
+import com.legendmohe.tool.logtable.model.LogFilterTableModel;
 
 import java.awt.Color;
 
 /**
  * Created by hexinyu on 2018/11/7.
  */
-abstract class AbstractLogParser implements ILogParser {
+public abstract class AbstractLogParser implements ILogParser {
 
     @Override
     public Color getFontColor(LogInfo logInfo) {
@@ -34,5 +35,18 @@ abstract class AbstractLogParser implements ILogParser {
             return new Color(Constant.COLOR_5);
         else
             return Color.BLACK;
+    }
+
+    public static final int[] gDefColumns = new int[LogFilterTableModel.COLUMN_MAX];
+
+    static {
+        for (int i = 0; i < gDefColumns.length; i++) {
+            gDefColumns[i] = i;
+        }
+    }
+
+    @Override
+    public int[] getSupportedColumns() {
+        return gDefColumns;
     }
 }

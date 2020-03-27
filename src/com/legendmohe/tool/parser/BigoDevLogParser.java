@@ -68,4 +68,9 @@ public class BigoDevLogParser extends AbstractLogParser {
         }
         return logInfo;
     }
+
+    @Override
+    public int[] getSupportedColumns() {
+        return super.getSupportedColumns();
+    }
 }

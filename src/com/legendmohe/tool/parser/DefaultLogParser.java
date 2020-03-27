@@ -1,6 +1,7 @@
 package com.legendmohe.tool.parser;
 
 import com.legendmohe.tool.LogInfo;
+import com.legendmohe.tool.logtable.model.LogFilterTableModel;
 
 /**
  * do nothing
@@ -14,5 +15,14 @@ public class DefaultLogParser extends AbstractLogParser {
         LogInfo logInfo = new LogInfo();
         logInfo.setMessage(strText);
         return logInfo;
+    }
+
+    @Override
+    public int[] getSupportedColumns() {
+        return new int[] {
+                LogFilterTableModel.COLUMN_LINE,
+                LogFilterTableModel.COLUMN_BOOKMARK,
+                LogFilterTableModel.COLUMN_MESSAGE
+        };
     }
 }

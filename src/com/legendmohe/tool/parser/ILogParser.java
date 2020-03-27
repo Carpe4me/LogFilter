@@ -13,4 +13,6 @@ public interface ILogParser {
     LogInfo parseLog(String strText);
 
     Color getFontColor(LogInfo logInfo);
+
+    int[] getSupportedColumns();
 }

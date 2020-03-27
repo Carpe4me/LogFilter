@@ -11,6 +11,7 @@ import com.legendmohe.tool.logtable.BaseLogTable;
 import com.legendmohe.tool.logtable.LogTable;
 import com.legendmohe.tool.logtable.SubLogTable;
 import com.legendmohe.tool.logtable.model.LogFilterTableModel;
+import com.legendmohe.tool.parser.AbstractLogParser;
 import com.legendmohe.tool.parser.BigoDevLogParser;
 import com.legendmohe.tool.parser.BigoXLogParser;
 import com.legendmohe.tool.parser.DefaultLogParser;
@@ -958,6 +959,14 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         if (content != null && content.length() > 0) {
             openShowRowContentDialog(content);
         }
+    }
+
+    @Override
+    public int[] getSupportedColumns() {
+        if (m_iLogParser == null) {
+            return AbstractLogParser.gDefColumns;
+        }
+        return m_iLogParser.getSupportedColumns();
     }
 
     void clearData() {
@@ -3755,6 +3764,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         m_iLogParser = sTypeToParserMap.get(parserType);
         m_parserType = parserType;
         m_tfParserType.setText(sTypeToParserNameMap.get(parserType));
+        loadTableColumnState();
 
         if (parserType != Constant.PARSER_TYPE_LOGCAT
                 && m_arLogInfoAll.size() > 0
