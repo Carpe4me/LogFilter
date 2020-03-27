@@ -2587,28 +2587,22 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         if (m_nFilterLogLV == LogInfo.LOG_LV_ALL)
             return true;
         if ((m_nFilterLogLV & LogInfo.LOG_LV_VERBOSE) != 0
-                && (logInfo.getLogLV().equals("V") || logInfo.getLogLV()
-                .equals("VERBOSE")))
+                && logInfo.getLogLV().startsWith("V"))
             return true;
         if ((m_nFilterLogLV & LogInfo.LOG_LV_DEBUG) != 0
-                && (logInfo.getLogLV().equals("D") || logInfo.getLogLV()
-                .equals("DEBUG")))
+                && logInfo.getLogLV().startsWith("D"))
             return true;
         if ((m_nFilterLogLV & LogInfo.LOG_LV_INFO) != 0
-                && (logInfo.getLogLV().equals("I") || logInfo.getLogLV()
-                .equals("INFO")))
+                && logInfo.getLogLV().startsWith("I"))
             return true;
         if ((m_nFilterLogLV & LogInfo.LOG_LV_WARN) != 0
-                && (logInfo.getLogLV().equals("W") || logInfo.getLogLV()
-                .equals("WARN")))
+                && logInfo.getLogLV().startsWith("W"))
             return true;
         if ((m_nFilterLogLV & LogInfo.LOG_LV_ERROR) != 0
-                && (logInfo.getLogLV().equals("E") || logInfo.getLogLV()
-                .equals("ERROR")))
+                && logInfo.getLogLV().startsWith("E"))
             return true;
         if ((m_nFilterLogLV & LogInfo.LOG_LV_FATAL) != 0
-                && (logInfo.getLogLV().equals("F") || logInfo.getLogLV()
-                .equals("FATAL")))
+                && logInfo.getLogLV().startsWith("F"))
             return true;
 
         return false;
@@ -3125,27 +3119,47 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
             LogFilterTableModel.setColumnWidth(nIndex, m_colWidths[nIndex]);
         }
         m_colWidths = LogFilterTableModel.ColWidth;
-
-        getLogTable().showColumn(LogFilterTableModel.COLUMN_BOOKMARK,
-                m_chkClmBookmark.isSelected());
-        getLogTable().showColumn(LogFilterTableModel.COLUMN_LINE,
-                m_chkClmLine.isSelected());
-        getLogTable().showColumn(LogFilterTableModel.COLUMN_DATE,
-                m_chkClmDate.isSelected());
-        getLogTable().showColumn(LogFilterTableModel.COLUMN_TIME,
-                m_chkClmTime.isSelected());
-        getLogTable().showColumn(LogFilterTableModel.COLUMN_LOGLV,
-                m_chkClmLogLV.isSelected());
-        getLogTable().showColumn(LogFilterTableModel.COLUMN_PID,
-                m_chkClmPid.isSelected());
-        getLogTable().showColumn(LogFilterTableModel.COLUMN_THREAD,
-                m_chkClmThread.isSelected());
-        getLogTable().showColumn(LogFilterTableModel.COLUMN_TAG,
-                m_chkClmTag.isSelected());
-        getLogTable().showColumn(LogFilterTableModel.COLUMN_MESSAGE,
-                m_chkClmMessage.isSelected());
-        getLogTable().showColumn(LogFilterTableModel.COLUMN_FILE,
-                m_chkClmFile.isSelected());
+        // 不支持的column不能操作
+        m_chkClmBookmark.setEnabled(
+                getLogTable().showColumn(LogFilterTableModel.COLUMN_BOOKMARK,
+                        m_chkClmBookmark.isSelected())
+        );
+        m_chkClmLine.setEnabled(
+                getLogTable().showColumn(LogFilterTableModel.COLUMN_LINE,
+                        m_chkClmLine.isSelected())
+        );
+        m_chkClmDate.setEnabled(
+                getLogTable().showColumn(LogFilterTableModel.COLUMN_DATE,
+                        m_chkClmDate.isSelected())
+        );
+        m_chkClmTime.setEnabled(
+                getLogTable().showColumn(LogFilterTableModel.COLUMN_TIME,
+                        m_chkClmTime.isSelected())
+        );
+        m_chkClmLogLV.setEnabled(
+                getLogTable().showColumn(LogFilterTableModel.COLUMN_LOGLV,
+                        m_chkClmLogLV.isSelected())
+        );
+        m_chkClmPid.setEnabled(
+                getLogTable().showColumn(LogFilterTableModel.COLUMN_PID,
+                        m_chkClmPid.isSelected())
+        );
+        m_chkClmThread.setEnabled(
+                getLogTable().showColumn(LogFilterTableModel.COLUMN_THREAD,
+                        m_chkClmThread.isSelected())
+        );
+        m_chkClmTag.setEnabled(
+                getLogTable().showColumn(LogFilterTableModel.COLUMN_TAG,
+                        m_chkClmTag.isSelected())
+        );
+        m_chkClmMessage.setEnabled(
+                getLogTable().showColumn(LogFilterTableModel.COLUMN_MESSAGE,
+                        m_chkClmMessage.isSelected())
+        );
+        m_chkClmFile.setEnabled(
+                getLogTable().showColumn(LogFilterTableModel.COLUMN_FILE,
+                        m_chkClmFile.isSelected())
+        );
 
         getSubTable().showColumn(LogFilterTableModel.COLUMN_BOOKMARK,
                 m_chkClmBookmark.isSelected());

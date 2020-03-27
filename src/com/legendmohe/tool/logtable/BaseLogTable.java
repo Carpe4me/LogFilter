@@ -243,9 +243,10 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
         }
     }
 
-    public void showColumn(int nColumn, boolean bShow) {
+    public boolean showColumn(int nColumn, boolean bShow) {
         // 不显示当前parser不支持的column
-        if (bShow && !isSupportedColumn(nColumn)) {
+        boolean supportedColumn = isSupportedColumn(nColumn);
+        if (bShow && !supportedColumn) {
             bShow = false;
         }
 
@@ -279,6 +280,7 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
             }
             hideColumn(nColumn);
         }
+        return supportedColumn;
     }
 
     private boolean isSupportedColumn(int nColumn) {
