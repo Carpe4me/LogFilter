@@ -36,6 +36,7 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FileDialog;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -373,6 +374,11 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
     }
 
     private static void configByPlatform() {
+        if (OsCheck.getOperatingSystemType() == OsCheck.OSType.Windows) {
+            setUIFont(new javax.swing.plaf.FontUIResource("微软雅黑", Font.PLAIN, 12));
+        } else {
+            setUIFont(new javax.swing.plaf.FontUIResource("Consoles", Font.PLAIN, 12));
+        }
         try {
             UIManager.setLookAndFeel(
                     UIManager.getCrossPlatformLookAndFeelClassName());
@@ -392,6 +398,16 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
             im.put(KeyStroke.getKeyStroke(KeyEvent.VK_V, KeyEvent.META_DOWN_MASK), DefaultEditorKit.pasteAction);
             im.put(KeyStroke.getKeyStroke(KeyEvent.VK_X, KeyEvent.META_DOWN_MASK), DefaultEditorKit.cutAction);
             im.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, KeyEvent.META_DOWN_MASK), DefaultEditorKit.selectAllAction);
+        }
+    }
+
+    public static void setUIFont(javax.swing.plaf.FontUIResource f) {
+        java.util.Enumeration keys = UIManager.getDefaults().keys();
+        while (keys.hasMoreElements()) {
+            Object key = keys.nextElement();
+            Object value = UIManager.get(key);
+            if (value instanceof javax.swing.plaf.FontUIResource)
+                UIManager.put(key, f);
         }
     }
 
@@ -419,8 +435,6 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         bindRecentlyPopup();
         startFilterParse();
 
-        setVisible(true);
-
         // register state saver
         mUIStateSaver = new UIStateSaver(this, Constant.INI_FILE_STATE);
         mUIStateSaver.load();
@@ -445,6 +459,8 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
 
         KeyboardFocusManager.getCurrentKeyboardFocusManager()
                 .addKeyEventDispatcher(mKeyEventDispatcher);
+
+        setVisible(true);
     }
 
     ///////////////////////////////////setup process///////////////////////////////////
