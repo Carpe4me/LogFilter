@@ -2,6 +2,7 @@ package com.legendmohe.tool.parser;
 
 import com.legendmohe.tool.LogInfo;
 import com.legendmohe.tool.T;
+import com.legendmohe.tool.logtable.model.LogFilterTableModel;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -90,5 +91,20 @@ public class BigoXLogParser extends AbstractLogParser {
             }
         }
         return TIMESTAMP_FORMAT_WITH_TIMEZONE.parse(time).getTime();
+    }
+
+    @Override
+    public int[] getSupportedColumns() {
+        return new int[]{
+                LogFilterTableModel.COLUMN_LINE,
+                LogFilterTableModel.COLUMN_BOOKMARK,
+                LogFilterTableModel.COLUMN_FILE,
+                LogFilterTableModel.COLUMN_TIME,
+                LogFilterTableModel.COLUMN_DATE,
+                LogFilterTableModel.COLUMN_LOGLV,
+                LogFilterTableModel.COLUMN_TAG,
+                LogFilterTableModel.COLUMN_THREAD,
+                LogFilterTableModel.COLUMN_MESSAGE,
+        };
     }
 }

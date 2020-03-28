@@ -2,6 +2,7 @@ package com.legendmohe.tool.parser;
 
 import com.legendmohe.tool.LogInfo;
 import com.legendmohe.tool.T;
+import com.legendmohe.tool.logtable.model.LogFilterTableModel;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -84,5 +85,21 @@ public class IMODevLogParser extends AbstractLogParser {
             logInfo.setMessage(strText);
         }
         return logInfo;
+    }
+
+    @Override
+    public int[] getSupportedColumns() {
+        return new int[]{
+                LogFilterTableModel.COLUMN_LINE,
+                LogFilterTableModel.COLUMN_BOOKMARK,
+                LogFilterTableModel.COLUMN_FILE,
+                LogFilterTableModel.COLUMN_TIME,
+                LogFilterTableModel.COLUMN_DATE,
+                LogFilterTableModel.COLUMN_LOGLV,
+                LogFilterTableModel.COLUMN_TAG,
+                LogFilterTableModel.COLUMN_THREAD,
+                LogFilterTableModel.COLUMN_PID,
+                LogFilterTableModel.COLUMN_MESSAGE,
+        };
     }
 }
