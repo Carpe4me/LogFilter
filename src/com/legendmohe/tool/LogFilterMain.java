@@ -58,7 +58,6 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.awt.event.InputEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
@@ -96,7 +95,37 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
+import javax.swing.DefaultListModel;
+import javax.swing.InputMap;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTextField;
+import javax.swing.JToggleButton;
+import javax.swing.KeyStroke;
+import javax.swing.ListSelectionModel;
+import javax.swing.OverlayLayout;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
@@ -316,6 +345,34 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
     ///////////////////////////////////main///////////////////////////////////
 
     public static void main(final String args[]) {
+        // You should always work with UI inside Event Dispatch Thread (EDT)
+        // That includes installing L&F, creating any Swing components etc.
+        SwingUtilities.invokeLater(() -> {
+            configByPlatform();
+
+            final LogFilterMain main = new LogFilterMain();
+            main.pack();
+            main.addComponentListener(new ComponentAdapter() {
+                @Override
+                public void componentResized(ComponentEvent e) {
+                    main.restoreSplitPane();
+                }
+            });
+            main.restoreSplitPane();
+
+            if (args != null && args.length > 0) {
+                EventQueue.invokeLater(() -> {
+                    File[] files = new File[args.length];
+                    for (int i = 0; i < args.length; i++) {
+                        files[i] = new File(args[i]).getAbsoluteFile();
+                    }
+                    main.parseLogFile(files);
+                });
+            }
+        });
+    }
+
+    private static void configByPlatform() {
         try {
             UIManager.setLookAndFeel(
                     UIManager.getCrossPlatformLookAndFeelClassName());
@@ -335,28 +392,6 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
             im.put(KeyStroke.getKeyStroke(KeyEvent.VK_V, KeyEvent.META_DOWN_MASK), DefaultEditorKit.pasteAction);
             im.put(KeyStroke.getKeyStroke(KeyEvent.VK_X, KeyEvent.META_DOWN_MASK), DefaultEditorKit.cutAction);
             im.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, KeyEvent.META_DOWN_MASK), DefaultEditorKit.selectAllAction);
-        }
-
-        final LogFilterMain main = new LogFilterMain();
-        main.pack();
-        main.addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentResized(ComponentEvent e) {
-                main.restoreSplitPane();
-            }
-        });
-        main.restoreSplitPane();
-
-        if (args != null && args.length > 0) {
-            EventQueue.invokeLater(new Runnable() {
-                public void run() {
-                    File[] files = new File[args.length];
-                    for (int i = 0; i < args.length; i++) {
-                        files[i] = new File(args[i]).getAbsoluteFile();
-                    }
-                    main.parseLogFile(files);
-                }
-            });
         }
     }
 
