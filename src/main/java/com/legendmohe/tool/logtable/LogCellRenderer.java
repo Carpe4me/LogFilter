@@ -65,10 +65,12 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
     private JTable mTable;
     private ILogRenderResolver mResolver;
     private int mColumnIdx;
+    private boolean mEnableGroupTag;
 
-    public LogCellRenderer(int iIndex, JTable table, ILogRenderResolver resolver) {
+    public LogCellRenderer(int iIndex, JTable table, ILogRenderResolver resolver, boolean enableGroupTag) {
         super();
         mColumnIdx = iIndex;
+        this.mEnableGroupTag = enableGroupTag;
         HIGH_LIGHT_NORMAL_BORDER_BOTTOM = BorderFactory.createCompoundBorder(null, BorderFactory.createMatteBorder(0, 0, HIGH_LIGHT_BORDER_WIDTH, 0, new Color(Constant.COLOR_LOG_FLOW_NORMAL)));
         HIGH_LIGHT_ERROR_BORDER_BOTTOM = BorderFactory.createCompoundBorder(null, BorderFactory.createMatteBorder(0, 0, HIGH_LIGHT_BORDER_WIDTH, 0, new Color(Constant.COLOR_LOG_FLOW_ERROR)));
 
@@ -111,20 +113,25 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
         LogFilterTableModel tableModel = (LogFilterTableModel) mTable.getModel();
         LogInfo logInfo;
         // merge tag group
-        if (column == LogFilterTableModel.COLUMN_TAG && row > 0) {
+        logInfo = tableModel.getRow(row);
+        Object targetContent = logInfo.getContentByColumn(column);
+        if (mEnableGroupTag && row > 0 && column == LogFilterTableModel.COLUMN_TAG) {
             LogInfo lastLogInfo = tableModel.getRow(row - 1);
-            logInfo = tableModel.getRow(row);
-            if (!lastLogInfo.getTag().equals(logInfo.getTag())) {
+            if ((!logInfo.isSingleMsgLine() && lastLogInfo.isSingleMsgLine()) || !lastLogInfo.getContentByColumn(column).equals(targetContent)) {
                 if (value != null) {
-                    value = buildCellContent(column, String.valueOf(logInfo.getContentByColumn(column)));
+                    value = buildCellContent(column, String.valueOf(targetContent));
                 }
             } else {
                 value = "";
             }
         } else {
-            logInfo = tableModel.getRow(row);
-            if (value != null) {
-                value = buildCellContent(column, String.valueOf(logInfo.getContentByColumn(column)));
+            // 分行log单独处理
+            if (logInfo.isSingleMsgLine() && !(column == LogFilterTableModel.COLUMN_MESSAGE || column == LogFilterTableModel.COLUMN_LINE)) {
+                value = "";
+            } else {
+                if (value != null) {
+                    value = buildCellContent(column, String.valueOf(targetContent));
+                }
             }
         }
         Component c = super.getTableCellRendererComponent(table,

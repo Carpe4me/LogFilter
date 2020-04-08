@@ -35,6 +35,7 @@ public class LogInfo {
     private Color m_TextColor;
     private TYPE mType = TYPE.SYSTEM;
     private List<LogFlowManager.FlowResultLine> mFlowResults;
+    private boolean isSingleMsgLine = false;
 
     private static Map<String, Pattern> sPatternCache = new HashMap<>();
 
@@ -252,6 +253,14 @@ public class LogInfo {
 
     public boolean hasFlowResults() {
         return mFlowResults != null && mFlowResults.size() > 0;
+    }
+
+    public boolean isSingleMsgLine() {
+        return isSingleMsgLine;
+    }
+
+    public void setSingleMsgLine(boolean singleMsgLine) {
+        isSingleMsgLine = singleMsgLine;
     }
 
     public TYPE getType() {

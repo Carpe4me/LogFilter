@@ -107,11 +107,13 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
         setShowGrid(false);
 
         for (int iIndex = 0; iIndex < getColumnCount(); iIndex++) {
-            getColumnModel().getColumn(iIndex).setCellRenderer(new LogCellRenderer(iIndex, this, this));
+            getColumnModel().getColumn(iIndex).setCellRenderer(new LogCellRenderer(iIndex, this, this, getEnableGroupTag()));
         }
 
         initHoverListener();
     }
+
+    protected abstract boolean getEnableGroupTag();
 
     public void changeSelection(LogInfo target) {
         for (int nIndex = 0; nIndex < getRowCount(); nIndex++) {

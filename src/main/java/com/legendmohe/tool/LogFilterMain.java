@@ -2040,9 +2040,18 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
                                         logInfo.setTimestamp(oldInfo.getTimestamp());
                                         // add last tag for tag group
                                         logInfo.setTag(oldInfo.getTag());
+                                        logInfo.setThread(oldInfo.getThread());
+                                        logInfo.setPid(oldInfo.getPid());
+                                        logInfo.setTime(oldInfo.getTime());
+                                        logInfo.setLogLV(oldInfo.getLogLV());
+                                        logInfo.setDate(oldInfo.getDate());
+                                        logInfo.setTextColor(oldInfo.getTextColor());
                                     } else {
                                         logInfo.setTimestamp(0);
                                     }
+                                    logInfo.setSingleMsgLine(true);
+                                } else {
+                                    logInfo.setSingleMsgLine(false);
                                 }
                                 logInfo.setFileName(String.valueOf(fileIdx));
                                 newLogInfos.add(logInfo);

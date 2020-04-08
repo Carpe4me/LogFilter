@@ -131,4 +131,9 @@ public class SubLogTable extends BaseLogTable {
     public boolean isCellEditable(int row, int column) {
         return column == LogFilterTableModel.COLUMN_BOOKMARK;
     }
+
+    @Override
+    protected boolean getEnableGroupTag() {
+        return false;
+    }
 }

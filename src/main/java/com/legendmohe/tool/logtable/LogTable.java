@@ -422,6 +422,11 @@ public class LogTable extends BaseLogTable {
         }
     }
 
+    @Override
+    protected boolean getEnableGroupTag() {
+        return true;
+    }
+
     public static class Pair<K, V> {
         private K key;
         private V value;
