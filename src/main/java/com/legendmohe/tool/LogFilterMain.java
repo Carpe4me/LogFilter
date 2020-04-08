@@ -2038,6 +2038,8 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
                                     if (newLogInfos.size() > 1) {
                                         LogInfo oldInfo = newLogInfos.get(newLogInfos.size() - 1);
                                         logInfo.setTimestamp(oldInfo.getTimestamp());
+                                        // add last tag for tag group
+                                        logInfo.setTag(oldInfo.getTag());
                                     } else {
                                         logInfo.setTimestamp(0);
                                     }

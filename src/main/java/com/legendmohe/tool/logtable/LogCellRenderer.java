@@ -108,9 +108,24 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
         if (!mResolver.isColumnShown(column)) {
             return null;
         }
-        LogInfo logInfo = ((LogFilterTableModel) mTable.getModel()).getRow(row);
-        if (value != null) {
-            value = buildCellContent(column, String.valueOf(logInfo.getContentByColumn(column)));
+        LogFilterTableModel tableModel = (LogFilterTableModel) mTable.getModel();
+        LogInfo logInfo;
+        // merge tag group
+        if (column == LogFilterTableModel.COLUMN_TAG && row > 0) {
+            LogInfo lastLogInfo = tableModel.getRow(row - 1);
+            logInfo = tableModel.getRow(row);
+            if (!lastLogInfo.getTag().equals(logInfo.getTag())) {
+                if (value != null) {
+                    value = buildCellContent(column, String.valueOf(logInfo.getContentByColumn(column)));
+                }
+            } else {
+                value = "";
+            }
+        } else {
+            logInfo = tableModel.getRow(row);
+            if (value != null) {
+                value = buildCellContent(column, String.valueOf(logInfo.getContentByColumn(column)));
+            }
         }
         Component c = super.getTableCellRendererComponent(table,
                 value,
