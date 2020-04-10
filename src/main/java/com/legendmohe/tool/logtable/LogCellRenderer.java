@@ -38,6 +38,8 @@ import javax.swing.table.DefaultTableCellRenderer;
 public class LogCellRenderer extends DefaultTableCellRenderer {
     private static final long serialVersionUID = 1L;
 
+    public static final int DIM_CONTENT_APLHA = 0x1e;
+
     private final Border SELECTED_BORDER_TOP_LEFT;
     private final Border SELECTED_BORDER_TOP_RIGHT;
     private final Border SELECTED_BORDER_TOP;
@@ -55,24 +57,16 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
     private final Border SELECTED_BORDER_TOP_BOTTOM_RIGHT;
     private final Border SELECTED_BORDER_NONE;
 
-    private final Border HIGH_LIGHT_NORMAL_BORDER_BOTTOM;
-    private final Border HIGH_LIGHT_ERROR_BORDER_BOTTOM;
-    private final int HIGH_LIGHT_BORDER_WIDTH = 2;
-
     private final int BORDER_WIDTH = 1;
     private final Color BORDER_COLOR = new Color(Constant.COLOR_LOG_CELL_BORDER);
 
     private JTable mTable;
     private ILogRenderResolver mResolver;
-    private int mColumnIdx;
     private boolean mEnableGroupTag;
 
-    public LogCellRenderer(int iIndex, JTable table, ILogRenderResolver resolver, boolean enableGroupTag) {
+    public LogCellRenderer(JTable table, ILogRenderResolver resolver, boolean enableGroupTag) {
         super();
-        mColumnIdx = iIndex;
         this.mEnableGroupTag = enableGroupTag;
-        HIGH_LIGHT_NORMAL_BORDER_BOTTOM = BorderFactory.createCompoundBorder(null, BorderFactory.createMatteBorder(0, 0, HIGH_LIGHT_BORDER_WIDTH, 0, new Color(Constant.COLOR_LOG_FLOW_NORMAL)));
-        HIGH_LIGHT_ERROR_BORDER_BOTTOM = BorderFactory.createCompoundBorder(null, BorderFactory.createMatteBorder(0, 0, HIGH_LIGHT_BORDER_WIDTH, 0, new Color(Constant.COLOR_LOG_FLOW_ERROR)));
 
         SELECTED_BORDER_TOP = BorderFactory.createCompoundBorder(null, BorderFactory.createMatteBorder(BORDER_WIDTH, 0, 0, 0, BORDER_COLOR));
         SELECTED_BORDER_BOTTOM = BorderFactory.createCompoundBorder(null, BorderFactory.createMatteBorder(0, 0, BORDER_WIDTH, 0, BORDER_COLOR));
@@ -93,7 +87,7 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
         SELECTED_BORDER_TOP_BOTTOM_RIGHT = BorderFactory.createCompoundBorder(SELECTED_BORDER_TOP_BOTTOM, SELECTED_BORDER_RIGHT);
 
         SELECTED_BORDER_TOTAL = BorderFactory.createCompoundBorder(SELECTED_BORDER_TOP_LEFT, SELECTED_BORDER_BOTTOM_RIGHT);
-        SELECTED_BORDER_NONE = null;
+        SELECTED_BORDER_NONE = BorderFactory.createEmptyBorder(0, 4, 0, 4);
 
         this.mTable = table;
         this.mResolver = resolver;
@@ -113,25 +107,25 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
         LogFilterTableModel tableModel = (LogFilterTableModel) mTable.getModel();
         LogInfo logInfo;
         // merge tag group
+        boolean dimLine = false;
         logInfo = tableModel.getRow(row);
         Object targetContent = logInfo.getContentByColumn(column);
-        if (mEnableGroupTag && row > 0 && column == LogFilterTableModel.COLUMN_TAG) {
+        if (mEnableGroupTag && row > 0 && !logInfo.isSingleMsgLine() &&
+                (column == LogFilterTableModel.COLUMN_TAG || column == LogFilterTableModel.COLUMN_TIME)) {
             LogInfo lastLogInfo = tableModel.getRow(row - 1);
             if ((!logInfo.isSingleMsgLine() && lastLogInfo.isSingleMsgLine()) || !lastLogInfo.getContentByColumn(column).equals(targetContent)) {
-                if (value != null) {
-                    value = buildCellContent(column, String.valueOf(targetContent));
-                }
+                dimLine = false;
+                value = buildCellContent(column, String.valueOf(targetContent));
             } else {
-                value = "";
+                dimLine = true;
+                value = String.valueOf(targetContent);
             }
         } else {
             // 分行log单独处理
             if (logInfo.isSingleMsgLine() && !(column == LogFilterTableModel.COLUMN_MESSAGE || column == LogFilterTableModel.COLUMN_LINE)) {
                 value = "";
             } else {
-                if (value != null) {
-                    value = buildCellContent(column, String.valueOf(targetContent));
-                }
+                value = buildCellContent(column, String.valueOf(targetContent));
             }
         }
         Component c = super.getTableCellRendererComponent(table,
@@ -143,7 +137,7 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
 
         if (c != null) {
             renderFont(logInfo, row, column, c);
-            renderBackground(isSelected, logInfo, row, column, c);
+            renderBackground(isSelected, logInfo, c, dimLine);
             renderBorder(row, column, c);
             renderLogFlow(isSelected, logInfo, column, c);
         }
@@ -226,11 +220,22 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
         cc.setBorder(SELECTED_BORDER_NONE);
     }
 
-    private void renderBackground(boolean isSelected, LogInfo logInfo, int row, int column, Component c) {
+    private void renderBackground(boolean isSelected, LogInfo logInfo, Component c, boolean dim) {
         if (c == null || logInfo == null) {
             return;
         }
-        c.setForeground(logInfo.getTextColor());
+        if (logInfo.getTextColor() != null) {
+            if (dim) {
+                c.setForeground(new Color(
+                        logInfo.getTextColor().getRed(),
+                        logInfo.getTextColor().getGreen(),
+                        logInfo.getTextColor().getBlue(),
+                        DIM_CONTENT_APLHA
+                ));
+            } else {
+                c.setForeground(logInfo.getTextColor());
+            }
+        }
         if (isSelected) {
             c.setFont(getFont().deriveFont(mResolver.getFontSize() + 1));
             if (logInfo.isMarked()) {

@@ -107,7 +107,7 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
         setShowGrid(false);
 
         for (int iIndex = 0; iIndex < getColumnCount(); iIndex++) {
-            getColumnModel().getColumn(iIndex).setCellRenderer(new LogCellRenderer(iIndex, this, this, getEnableGroupTag()));
+            getColumnModel().getColumn(iIndex).setCellRenderer(new LogCellRenderer(this, this, getEnableGroupTag()));
         }
 
         initHoverListener();
