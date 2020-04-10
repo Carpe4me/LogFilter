@@ -31,7 +31,7 @@ public class BigoXLogParser extends AbstractLogParser {
     Group 4.	37-48	`RoomProXLog`
     Group 5.	49-195	`RoomSessionhandleLoginRoomSessionSuccess (3) roomProperty ==> isTextForbid:false, isOwnerInRoom:true, isOwnerAbsent:false, isPcMicLink:false, isUs`
      */
-    final private Pattern mLogPattern = Pattern.compile("\\[(\\w+)\\]\\[(.+?)\\]\\[(\\d+?)\\]\\[(.+?)\\](.+)");
+    final private Pattern mLogPattern = Pattern.compile("\\[(\\w+)\\]\\[(.+?)\\]\\[(\\d+?)\\]\\[(.+?\\]*)\\](.+)");
 
     @Override
     public LogInfo parseLog(String strText) {
