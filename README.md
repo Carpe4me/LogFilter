@@ -2,7 +2,7 @@
 这是一个用于看androidlog的基于java swing的桌面软件。基于[LogFilter](https://github.com/iookill/LogFilter)开发。
 基本功能如截图所示：
 
-![http://ww3.sinaimg.cn/large/0060lm7Tgw1f0bkpsqb92j30wn0kwgwl.jpg](http://ww3.sinaimg.cn/large/0060lm7Tgw1f0bkpsqb92j30wn0kwgwl.jpg)
+![screenshot](https://raw.githubusercontent.com/legendmohe/LogFilter/master/screenshots/log_2020_04_13.png)
 
 # 项目地址
 
