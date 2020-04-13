@@ -1,7 +1,7 @@
 package com.legendmohe.tool.diff;
 
 import com.legendmohe.tool.IDiffCmdHandler;
-import com.legendmohe.tool.LogFilterMain;
+import com.legendmohe.tool.LogFilterComponent;
 import com.legendmohe.tool.T;
 import com.legendmohe.tool.thirdparty.json.JSONObject;
 
@@ -20,7 +20,7 @@ public class DiffService {
     private DiffServiceType mDiffServiceType;
     private boolean mIsDiffConnected;
 
-    public DiffService(LogFilterMain mainPanel, int serverPort) {
+    public DiffService(LogFilterComponent mainPanel, int serverPort) {
         mCmdHandler = mainPanel;
         setupDiffServer(serverPort);
     }

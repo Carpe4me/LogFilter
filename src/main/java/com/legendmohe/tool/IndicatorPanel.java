@@ -42,13 +42,13 @@ public class IndicatorPanel extends JPanel {
     HashMap<Integer, Integer> m_hmBookmark;
     ConcurrentHashMap<Integer, Integer> m_hmError;
     Graphics m_g;
-    LogFilterMain m_LogFilterMain;
+    LogFilterComponent m_LogFilterComponent;
     public boolean m_bDrawFull;
 
 
-    public IndicatorPanel(LogFilterMain logFilterMain) {
+    public IndicatorPanel(LogFilterComponent logFilterComponent) {
         super();
-        m_LogFilterMain = logFilterMain;
+        m_LogFilterComponent = logFilterComponent;
         m_chBookmark = new JCheckBox();
         m_chBookmark.addItemListener(m_itemListener);
         m_chBookmark.setBorder(new EmptyBorder(0, 0, 0, 0));
@@ -72,7 +72,7 @@ public class IndicatorPanel extends JPanel {
                 if (m_arLogInfo != null) {
                     float fRate = (float) (e.getY() - m_rcBookmark.y) / (float) (m_rcBookmark.height);
                     int nIndex = (int) (m_arLogInfo.size() * fRate);
-                    m_LogFilterMain.getLogTable().showRowCenterIfNotInRect(nIndex, false);
+                    m_LogFilterComponent.getLogTable().showRowCenterIfNotInRect(nIndex, false);
                 }
             }
 
@@ -93,13 +93,13 @@ public class IndicatorPanel extends JPanel {
                 if (m_arLogInfo != null) {
                     float fRate = (float) (e.getY() - m_rcBookmark.y) / (float) (m_rcBookmark.height);
                     int nIndex = (int) (m_arLogInfo.size() * fRate);
-                    m_LogFilterMain.getLogTable().showRowCenterIfNotInRect(nIndex, false);
+                    m_LogFilterComponent.getLogTable().showRowCenterIfNotInRect(nIndex, false);
                 }
             }
         });
         addMouseWheelListener(new MouseWheelListener() {
             public void mouseWheelMoved(MouseWheelEvent e) {
-                m_LogFilterMain.m_logScrollVPane.dispatchEvent(e);
+                m_LogFilterComponent.m_logScrollVPane.dispatchEvent(e);
             }
         });
     }
@@ -133,7 +133,7 @@ public class IndicatorPanel extends JPanel {
 
             //�ϸ�ũ indicator�� �׸���.
             for (Integer nIndex : m_hmBookmark.keySet()) {
-                if (m_LogFilterMain.mLogParsingState == Constant.PARSING_STATUS_CHANGE_PENDING || m_LogFilterMain.mLogParsingState == Constant.PARSING_STATUS_PARSING)
+                if (m_LogFilterComponent.mLogParsingState == Constant.PARSING_STATUS_CHANGE_PENDING || m_LogFilterComponent.mLogParsingState == Constant.PARSING_STATUS_PARSING)
                     break;
                 int nY1 = (int) (INDICATRO_Y_POS + m_hmBookmark.get(nIndex) * fRate);
                 int nY2 = (int) (nY1 + HEIGHT);
@@ -148,7 +148,7 @@ public class IndicatorPanel extends JPanel {
 
             //���� indicator�� �׸���.
             for (Integer nIndex : m_hmError.keySet()) {
-                if (m_LogFilterMain.mLogParsingState == Constant.PARSING_STATUS_CHANGE_PENDING || m_LogFilterMain.mLogParsingState == Constant.PARSING_STATUS_PARSING)
+                if (m_LogFilterComponent.mLogParsingState == Constant.PARSING_STATUS_CHANGE_PENDING || m_LogFilterComponent.mLogParsingState == Constant.PARSING_STATUS_PARSING)
                     break;
                 int nY1 = (int) (INDICATRO_Y_POS + m_hmError.get(nIndex) * fRate);
                 int nY2 = (int) (nY1 + HEIGHT);
@@ -181,15 +181,15 @@ public class IndicatorPanel extends JPanel {
         int TOTAL_COUNT = m_arLogInfo.size();
 
         if (TOTAL_COUNT > 0) {
-            JViewport viewport = (JViewport) m_LogFilterMain.m_logScrollVPane.getViewport();
+            JViewport viewport = (JViewport) m_LogFilterComponent.m_logScrollVPane.getViewport();
             Rectangle viewRect = viewport.getViewRect();
 
-            int nItemHeight = m_LogFilterMain.getLogTable().getRowHeight();
+            int nItemHeight = m_LogFilterComponent.getLogTable().getRowHeight();
             if (nItemHeight > 0) {
                 float fRate = (float) m_rcBookmark.height / (float) TOTAL_COUNT;
 
-                int nFirst = m_LogFilterMain.getLogTable().rowAtPoint(new Point(0, viewRect.y));
-                int nLast = m_LogFilterMain.getLogTable().rowAtPoint(new Point(0, viewRect.height - 1));
+                int nFirst = m_LogFilterComponent.getLogTable().rowAtPoint(new Point(0, viewRect.y));
+                int nLast = m_LogFilterComponent.getLogTable().rowAtPoint(new Point(0, viewRect.height - 1));
                 int nY1 = (int) (m_rcBookmark.y + nFirst * fRate);
                 int nH = (int) ((nLast + 1) * fRate);
                 if (nH <= 0)
@@ -208,9 +208,9 @@ public class IndicatorPanel extends JPanel {
     ItemListener m_itemListener = new ItemListener() {
         public void itemStateChanged(ItemEvent itemEvent) {
             if (itemEvent.getSource().equals(m_chBookmark)) {
-                m_LogFilterMain.postEvent(new EventBus.Event(EventBus.TYPE.EVENT_CLICK_BOOKMARK));
+                m_LogFilterComponent.postEvent(new EventBus.Event(EventBus.TYPE.EVENT_CLICK_BOOKMARK));
             } else if (itemEvent.getSource().equals(m_chError)) {
-                m_LogFilterMain.postEvent(new EventBus.Event(EventBus.TYPE.EVENT_CLICK_ERROR));
+                m_LogFilterComponent.postEvent(new EventBus.Event(EventBus.TYPE.EVENT_CLICK_ERROR));
             }
         }
     };

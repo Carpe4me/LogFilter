@@ -18,7 +18,6 @@ import com.legendmohe.tool.parser.DefaultLogParser;
 import com.legendmohe.tool.parser.ILogParser;
 import com.legendmohe.tool.parser.IMODevLogParser;
 import com.legendmohe.tool.parser.LogCatParser;
-import com.legendmohe.tool.thirdparty.util.OsCheck;
 import com.legendmohe.tool.view.DumpsysViewDialog;
 import com.legendmohe.tool.view.ExpandableSplitPane;
 import com.legendmohe.tool.view.ListDialog;
@@ -31,12 +30,9 @@ import com.legendmohe.tool.view.TextConverterDialog;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.FileDialog;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -55,8 +51,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.ItemEvent;
@@ -64,9 +58,6 @@ import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowStateListener;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
@@ -100,12 +91,11 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultListModel;
-import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenu;
@@ -124,9 +114,6 @@ import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.OverlayLayout;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
@@ -141,9 +128,8 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.text.DefaultEditorKit;
 
-public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.BaseLogTableListener, IDiffCmdHandler {
+public class LogFilterComponent extends JComponent implements EventBus, BaseLogTable.BaseLogTableListener, IDiffCmdHandler {
     private static final long serialVersionUID = 1L;
 
     private static final Map<Integer, ILogParser> sTypeToParserMap = new HashMap<>();
@@ -163,6 +149,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         sTypeToParserNameMap.put(Constant.PARSER_TYPE_DEFAULT_LOG, "default");
     }
 
+    LogFilterFrame.FrameInfoProvider frameInfoProvider;
     JLabel m_tfStatus;
     IndicatorPanel m_ipIndicator;
     ArrayList<LogInfo> m_arLogInfoAll;
@@ -290,14 +277,6 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
     Object FILTER_LOCK;
     volatile int mLogParsingState;
     int m_nFilterLogLV;
-    @FieldSaveState
-    int m_nWinWidth = Constant.DEFAULT_WIDTH;
-    @FieldSaveState
-    int m_nWinHeight = Constant.DEFAULT_HEIGHT;
-    int m_nLastWidth;
-    int m_nLastHeight;
-    @FieldSaveState
-    int mWindowState;
     RecentFileMenu mRecentMenu;
 
     @FieldSaveState
@@ -343,91 +322,21 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
 
     private Map<Component, List<String>> mRecentlyInputHistory = new HashMap<>();
 
-    ///////////////////////////////////main///////////////////////////////////
-
-    public static void main(final String args[]) {
-        // You should always work with UI inside Event Dispatch Thread (EDT)
-        // That includes installing L&F, creating any Swing components etc.
-        SwingUtilities.invokeLater(() -> {
-            configByPlatform();
-
-            final LogFilterMain main = new LogFilterMain();
-            main.pack();
-            main.addComponentListener(new ComponentAdapter() {
-                @Override
-                public void componentResized(ComponentEvent e) {
-                    main.restoreSplitPane();
-                }
-            });
-            main.restoreSplitPane();
-
-            if (args != null && args.length > 0) {
-                EventQueue.invokeLater(() -> {
-                    File[] files = new File[args.length];
-                    for (int i = 0; i < args.length; i++) {
-                        files[i] = new File(args[i]).getAbsoluteFile();
-                    }
-                    main.parseLogFile(files);
-                });
-            }
-        });
-    }
-
-    private static void configByPlatform() {
-        if (OsCheck.getOperatingSystemType() == OsCheck.OSType.Windows) {
-            setUIFont(new javax.swing.plaf.FontUIResource("微软雅黑", Font.PLAIN, 12));
-        } else {
-            setUIFont(new javax.swing.plaf.FontUIResource("Consoles", Font.PLAIN, 12));
-        }
-        try {
-            UIManager.setLookAndFeel(
-                    UIManager.getCrossPlatformLookAndFeelClassName());
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (UnsupportedLookAndFeelException e) {
-            e.printStackTrace();
-        }
-
-        if (OsCheck.getOperatingSystemType() == OsCheck.OSType.MacOS) {
-            InputMap im = (InputMap) UIManager.get("TextField.focusInputMap");
-            im.put(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.META_DOWN_MASK), DefaultEditorKit.copyAction);
-            im.put(KeyStroke.getKeyStroke(KeyEvent.VK_V, KeyEvent.META_DOWN_MASK), DefaultEditorKit.pasteAction);
-            im.put(KeyStroke.getKeyStroke(KeyEvent.VK_X, KeyEvent.META_DOWN_MASK), DefaultEditorKit.cutAction);
-            im.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, KeyEvent.META_DOWN_MASK), DefaultEditorKit.selectAllAction);
-        }
-    }
-
-    public static void setUIFont(javax.swing.plaf.FontUIResource f) {
-        java.util.Enumeration keys = UIManager.getDefaults().keys();
-        while (keys.hasMoreElements()) {
-            Object key = keys.nextElement();
-            Object value = UIManager.get(key);
-            if (value instanceof javax.swing.plaf.FontUIResource)
-                UIManager.put(key, f);
-        }
-    }
 
     ///////////////////////////////////constructor///////////////////////////////////
 
-    private LogFilterMain() {
+    LogFilterComponent(LogFilterFrame.FrameInfoProvider frameInfoProvider) {
         super();
-
-        addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
-                exit();
-            }
-        });
+        this.frameInfoProvider = frameInfoProvider;
         initValue();
 
-        Container pane = getContentPane();
-        pane.setLayout(new BorderLayout());
+        setTitle(Constant.WINDOW_TITLE + " " + Constant.VERSION);
+        JMenuBar jMenuBar = setupMenuBar();
 
-        pane.add(getMainSplitPane(), BorderLayout.CENTER);
-        pane.add(getStatusPanel(), BorderLayout.SOUTH);
+        setLayout(new BorderLayout());
+        add(getMainSplitPane(), BorderLayout.CENTER);
+        add(getStatusPanel(), BorderLayout.SOUTH);
+        add(jMenuBar, BorderLayout.NORTH);
 
         setDnDListener();
         addChangeListener();
@@ -448,24 +357,14 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         loadParser();
         addDesc();
 
-        setTitle(Constant.WINDOW_TITLE + " " + Constant.VERSION);
-        addWindowStateListener(new WindowStateListener() {
-            @Override
-            public void windowStateChanged(WindowEvent e) {
-                mWindowState = e.getNewState();
-            }
-        });
-        setupMenuBar();
-
         KeyboardFocusManager.getCurrentKeyboardFocusManager()
                 .addKeyEventDispatcher(mKeyEventDispatcher);
 
-        setVisible(true);
     }
 
     ///////////////////////////////////setup process///////////////////////////////////
 
-    private void setupMenuBar() {
+    private JMenuBar setupMenuBar() {
         JMenuBar menuBar = new JMenuBar();
         JMenu fileMenu = new JMenu("File");
         fileMenu.setMnemonic(KeyEvent.VK_F);
@@ -477,7 +376,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         fileOpen.setToolTipText("Open log file");
         fileOpen.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                LogFilterMain.this.openFileBrowserToLoad(FileType.LOG);
+                LogFilterComponent.this.openFileBrowserToLoad(FileType.LOG);
             }
         });
 
@@ -487,14 +386,14 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         modeOpen.setToolTipText("Open .mode file");
         modeOpen.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                LogFilterMain.this.openFileBrowserToLoad(FileType.MODE);
+                LogFilterComponent.this.openFileBrowserToLoad(FileType.MODE);
             }
         });
         JMenuItem modeSave = new JMenuItem("Save Mode File");
         modeSave.setToolTipText("Save .mode file");
         modeSave.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                LogFilterMain.this.openFileBrowserToSave(FileType.MODE);
+                LogFilterComponent.this.openFileBrowserToSave(FileType.MODE);
             }
         });
 
@@ -508,7 +407,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
                 for (int i = 0; i < files.length; i++) {
                     recentFiles[i] = new File(files[i]);
                 }
-                LogFilterMain.this.parseLogFile(recentFiles);
+                LogFilterComponent.this.parseLogFile(recentFiles);
             }
         };
 
@@ -529,7 +428,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
 
         mDisconnectDiffMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                LogFilterMain.this.mDiffService.disconnectDiffClient();
+                LogFilterComponent.this.mDiffService.disconnectDiffClient();
                 mConnectDiffMenuItem.setEnabled(true);
                 mDisconnectDiffMenuItem.setEnabled(false);
             }
@@ -538,13 +437,13 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
             @Override
             public void actionPerformed(ActionEvent e) {
                 String serverPort = JOptionPane.showInputDialog(
-                        LogFilterMain.this,
+                        frameInfoProvider.getContainerFrame(),
                         "Enter Server Port",
                         "",
                         JOptionPane.QUESTION_MESSAGE
                 );
                 if (serverPort != null && serverPort.length() != 0) {
-                    if (LogFilterMain.this.mDiffService.setupDiffClient(serverPort)) {
+                    if (LogFilterComponent.this.mDiffService.setupDiffClient(serverPort)) {
                         mConnectDiffMenuItem.setEnabled(false);
                         mDisconnectDiffMenuItem.setEnabled(true);
                     }
@@ -571,7 +470,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         parserMenu.addMenuListener(new MenuListener() {
             @Override
             public void menuSelected(MenuEvent e) {
-                JMenuItem menuItem = parserMenu.getItem(LogFilterMain.this.m_parserType);
+                JMenuItem menuItem = parserMenu.getItem(LogFilterComponent.this.m_parserType);
                 menuItem.setSelected(true);
             }
 
@@ -586,56 +485,56 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
             }
         });
 
-        JRadioButtonMenuItem defaultLogParserMenu = new JRadioButtonMenuItem("DefaultLog Parser", LogFilterMain.this.m_parserType == Constant.PARSER_TYPE_DEFAULT_LOG);
+        JRadioButtonMenuItem defaultLogParserMenu = new JRadioButtonMenuItem("DefaultLog Parser", LogFilterComponent.this.m_parserType == Constant.PARSER_TYPE_DEFAULT_LOG);
         defaultLogParserMenu.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
-                    LogFilterMain.this.switchToLogParser(Constant.PARSER_TYPE_DEFAULT_LOG);
+                    LogFilterComponent.this.switchToLogParser(Constant.PARSER_TYPE_DEFAULT_LOG);
                 }
             }
         });
         parserMenu.add(defaultLogParserMenu);
 
-        JRadioButtonMenuItem logcatParserMenu = new JRadioButtonMenuItem("Logcat Parser", LogFilterMain.this.m_parserType == Constant.PARSER_TYPE_LOGCAT);
+        JRadioButtonMenuItem logcatParserMenu = new JRadioButtonMenuItem("Logcat Parser", LogFilterComponent.this.m_parserType == Constant.PARSER_TYPE_LOGCAT);
         logcatParserMenu.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
-                    LogFilterMain.this.switchToLogParser(Constant.PARSER_TYPE_LOGCAT);
+                    LogFilterComponent.this.switchToLogParser(Constant.PARSER_TYPE_LOGCAT);
                 }
             }
         });
         parserMenu.add(logcatParserMenu);
 
-        JRadioButtonMenuItem bigoParserMenu = new JRadioButtonMenuItem("BigoDevLog Parser", LogFilterMain.this.m_parserType == Constant.PARSER_TYPE_BIGO_DEV_LOG);
+        JRadioButtonMenuItem bigoParserMenu = new JRadioButtonMenuItem("BigoDevLog Parser", LogFilterComponent.this.m_parserType == Constant.PARSER_TYPE_BIGO_DEV_LOG);
         bigoParserMenu.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
-                    LogFilterMain.this.switchToLogParser(Constant.PARSER_TYPE_BIGO_DEV_LOG);
+                    LogFilterComponent.this.switchToLogParser(Constant.PARSER_TYPE_BIGO_DEV_LOG);
                 }
             }
         });
         parserMenu.add(bigoParserMenu);
 
-        JRadioButtonMenuItem bigoXLogParserMenu = new JRadioButtonMenuItem("BigoXLog Parser", LogFilterMain.this.m_parserType == Constant.PARSER_TYPE_BIGO_XLOG);
+        JRadioButtonMenuItem bigoXLogParserMenu = new JRadioButtonMenuItem("BigoXLog Parser", LogFilterComponent.this.m_parserType == Constant.PARSER_TYPE_BIGO_XLOG);
         bigoXLogParserMenu.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
-                    LogFilterMain.this.switchToLogParser(Constant.PARSER_TYPE_BIGO_XLOG);
+                    LogFilterComponent.this.switchToLogParser(Constant.PARSER_TYPE_BIGO_XLOG);
                 }
             }
         });
         parserMenu.add(bigoXLogParserMenu);
 
-        JRadioButtonMenuItem imoDevLogParserMenu = new JRadioButtonMenuItem("IMODevLog Parser", LogFilterMain.this.m_parserType == Constant.PARSER_TYPE_IMO_DEV_LOG);
+        JRadioButtonMenuItem imoDevLogParserMenu = new JRadioButtonMenuItem("IMODevLog Parser", LogFilterComponent.this.m_parserType == Constant.PARSER_TYPE_IMO_DEV_LOG);
         imoDevLogParserMenu.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
-                    LogFilterMain.this.switchToLogParser(Constant.PARSER_TYPE_IMO_DEV_LOG);
+                    LogFilterComponent.this.switchToLogParser(Constant.PARSER_TYPE_IMO_DEV_LOG);
                 }
             }
         });
@@ -653,7 +552,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         JMenuItem showAllFlow = new JMenuItem("show all log flow");
         showAllFlow.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                LogFilterMain.this.showAllFlow();
+                LogFilterComponent.this.showAllFlow();
             }
         });
 
@@ -672,10 +571,10 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         menuBar.add(toolsMenu);
         menuBar.add(parserMenu);
         menuBar.add(flowMenu);
-        this.setJMenuBar(menuBar);
+        return menuBar;
     }
 
-    private JMenu initAndGetViewMenu(final LogFilterMain mainFrame) {
+    private JMenu initAndGetViewMenu(final LogFilterComponent mainFrame) {
         JMenu viewMenu = new JMenu("View");
         JMenuItem packagesMenuItem = new JMenuItem("Show Running Packages");
         packagesMenuItem.setToolTipText("show running packages on current android device");
@@ -737,7 +636,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         return viewMenu;
     }
 
-    private void loadCustomMenu(final LogFilterMain mainFrame, JMenu customMenu) {
+    private void loadCustomMenu(final LogFilterComponent mainFrame, JMenu customMenu) {
         Properties p = new Properties();
         try {
             p.load(new FileInputStream(Constant.INI_FILE_DUMP_SYS));
@@ -764,7 +663,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         }
     }
 
-    private void restoreSplitPane() {
+    void restoreSplitPane() {
         mSplitPane.setResizeWeight(1.0);
         mSplitPane.setOneTouchExpandable(true);
         if (mLogSplitPaneDividerLocation > 0) {
@@ -784,7 +683,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         return Constant.OUTPUT_LOG_DIR + File.separator + "LogFilter_" + format.format(now) + ".txt";
     }
 
-    private void exit() {
+    void exit() {
         if (m_Process != null)
             m_Process.destroy();
         if (m_thProcess != null)
@@ -795,8 +694,6 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
             m_thFilterParse.interrupt();
 
         saveColor();
-        m_nWinWidth = getSize().width;
-        m_nWinHeight = getSize().height;
         mLogSplitPaneDividerLocation = mSplitPane.getDividerLocation();
         mMainSplitPaneDividerLocation = mMainSplitPane.getDividerLocation();
         mUIStateSaver.save();
@@ -804,9 +701,6 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
     }
 
     private void loadUI() {
-        setMinimumSize(new Dimension(Constant.MIN_WIDTH, Constant.MIN_HEIGHT));
-        setExtendedState(mWindowState);
-        setPreferredSize(new Dimension(m_nWinWidth, m_nWinHeight));
 
         loadTableColumnState();
 
@@ -1241,10 +1135,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
         m_logScrollVPane.getViewport().addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
                 // m_ipIndicator.m_bDrawFull = false;
-                if (getExtendedState() != JFrame.MAXIMIZED_BOTH) {
-                    m_nLastWidth = getWidth();
-                    m_nLastHeight = getHeight();
-                }
+                frameInfoProvider.onViewPortChanged(LogFilterComponent.this, e);
                 m_ipIndicator.repaint();
             }
         });
@@ -2180,7 +2071,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
 
     void setDnDListener() {
 
-        new DropTarget(this, DnDConstants.ACTION_COPY_OR_MOVE,
+        new DropTarget(m_tbLogTable, DnDConstants.ACTION_COPY_OR_MOVE,
                 new DropTargetListener() {
                     public void dropActionChanged(DropTargetDragEvent dtde) {
                     }
@@ -2316,7 +2207,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
     }
 
     public void setTitle(String strTitle) {
-        super.setTitle(strTitle);
+        frameInfoProvider.setTitle(strTitle);
     }
 
     void stopLogcatParserProcess() {
@@ -3332,7 +3223,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
     private KeyEventDispatcher mKeyEventDispatcher = new KeyEventDispatcher() {
         @Override
         public boolean dispatchKeyEvent(KeyEvent e) {
-            if (!LogFilterMain.this.isFocused()) {
+            if (!frameInfoProvider.isFocused()) {
                 return false;
             }
 
@@ -3413,7 +3304,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
     ///////////////////////////////////对话框///////////////////////////////////
 
     public void openFileBrowserToLoad(FileType type) {
-        FileDialog fd = new FileDialog(this, "File open", FileDialog.LOAD);
+        FileDialog fd = new FileDialog(frameInfoProvider.getContainerFrame(), "File open", FileDialog.LOAD);
         if (type == FileType.LOG) {
             fd.setDirectory(m_strLastDir);
         }
@@ -3439,7 +3330,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
             title = m_selectedDevice.toString();
             deviceID = m_selectedDevice.code;
         }
-        PackageViewDialog packageViewDialog = new PackageViewDialog(this, title, deviceID, new PackageViewDialog.PackageViewDialogListener() {
+        PackageViewDialog packageViewDialog = new PackageViewDialog(frameInfoProvider.getContainerFrame(), title, deviceID, new PackageViewDialog.PackageViewDialogListener() {
 
             @Override
             public void onFliterPidSelected(String value) {
@@ -3452,7 +3343,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
                     pidShow += "|" + value;
                 }
                 m_tbLogTable.SetFilterShowPid(pidShow);
-                LogFilterMain.this.postEvent(new Event(EventBus.TYPE.EVENT_CHANGE_FILTER_SHOW_PID));
+                LogFilterComponent.this.postEvent(new Event(EventBus.TYPE.EVENT_CHANGE_FILTER_SHOW_PID));
             }
         });
         packageViewDialog.setModal(false);
@@ -3466,7 +3357,7 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
             title = m_selectedDevice.toString();
             deviceID = m_selectedDevice.code;
         }
-        DumpsysViewDialog dumpsysViewDialog = new DumpsysViewDialog(this, title, deviceID, cmd, new DumpsysViewDialog.DumpsysViewDialogListener() {
+        DumpsysViewDialog dumpsysViewDialog = new DumpsysViewDialog(frameInfoProvider.getContainerFrame(), title, deviceID, cmd, new DumpsysViewDialog.DumpsysViewDialogListener() {
 
 
             @Override
@@ -3488,13 +3379,13 @@ public class LogFilterMain extends JFrame implements EventBus, BaseLogTable.Base
             return;
         }
         String title = "Selected Rows";
-        RowsContentDialog contentDialog = new RowsContentDialog(this, title, content);
+        RowsContentDialog contentDialog = new RowsContentDialog(frameInfoProvider.getContainerFrame(), title, content);
         contentDialog.setModal(false);
         contentDialog.setVisible(true);
     }
 
     private void openFileBrowserToSave(FileType type) {
-        FileDialog fd = new FileDialog(this, "File save", FileDialog.SAVE);
+        FileDialog fd = new FileDialog(frameInfoProvider.getContainerFrame(), "File save", FileDialog.SAVE);
         if (type != FileType.MODE) {
             return;
         }
