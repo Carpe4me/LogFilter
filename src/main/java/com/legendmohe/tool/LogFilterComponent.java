@@ -33,6 +33,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FileDialog;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -70,6 +71,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -302,10 +304,10 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
     private boolean mSyncScrollSelected;
 
     private final UIStateSaver mUIStateSaver;
-    private ExpandableSplitPane mSplitPane;
+    private JSplitPane mSplitPane;
     @FieldSaveState
     private int mLogSplitPaneDividerLocation = -1;
-    private ExpandableSplitPane mMainSplitPane;
+    private JSplitPane mMainSplitPane;
     @FieldSaveState
     private int mMainSplitPaneDividerLocation = -1;
 
@@ -316,12 +318,12 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
     private JPanel mSearchPanel;
 
     @FieldSaveState
-    private Set<String> mFilterTagHistory = new HashSet<>();
+    private final Set<String> mFilterTagHistory = new HashSet<>();
 
     // 当前处理的文件集合
     private File[] mLastParseredFiles;
 
-    private Map<Component, List<String>> mRecentlyInputHistory = new HashMap<>();
+    private final Map<Component, List<String>> mRecentlyInputHistory = new HashMap<>();
 
 
     ///////////////////////////////////constructor///////////////////////////////////
@@ -957,11 +959,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
                 DefaultListModel listModel = (DefaultListModel) m_lDeviceList
                         .getModel();
                 listModel.clear();
-                if (e.getItem().equals(Constant.COMBO_CUSTOM_COMMAND)) {
-                    m_comboDeviceCmd.setEditable(true);
-                } else {
-                    m_comboDeviceCmd.setEditable(false);
-                }
+                m_comboDeviceCmd.setEditable(e.getItem().equals(Constant.COMBO_CUSTOM_COMMAND));
             }
         });
 
@@ -1617,14 +1615,33 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
     }
 
     Component createOptionFilter() {
+        JPanel floatingPanel = new JPanel(new BorderLayout());
+
         JPanel optionFilter = new JPanel();
         optionFilter.setLayout(new BoxLayout(optionFilter, BoxLayout.Y_AXIS));
-
         optionFilter.add(createDevicePanel());
         optionFilter.add(createFilterPanel());
         optionFilter.add(createCheckPanel());
 
-        return optionFilter;
+        floatingPanel.add(optionFilter, BorderLayout.CENTER);
+
+        JPanel btnPanel = new JPanel(new BorderLayout());
+        JButton button = new JButton("<-");
+        button.setFont(new Font(button.getFont().getName(), button.getFont().getStyle(), 10));
+        button.setOpaque(false);
+        button.setContentAreaFilled(false);
+        button.setBorderPainted(false);
+        button.setFocusable(false);
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frameInfoProvider.onFilterFloating(LogFilterComponent.this, getOptionPanel());
+            }
+        });
+        btnPanel.add(button, BorderLayout.EAST);
+        floatingPanel.add(btnPanel, BorderLayout.NORTH);
+
+        return floatingPanel;
     }
 
     Component createOptionMenu() {
@@ -1725,31 +1742,31 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         });
         jpActionPanel.add(followBtn);
 
-        JButton hideLeftBtn = new JButton("Toggle Left Panel");
-        hideLeftBtn.setMargin(new Insets(0, 0, 0, 0));
-        hideLeftBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                mMainSplitPane.setOneSideHidden(
-                        mMainSplitPane.getLeftComponent(),
-                        !mMainSplitPane.isSideHidden(mMainSplitPane.getLeftComponent())
-                );
-            }
-        });
-        jpActionPanel.add(hideLeftBtn);
-
-        JButton hideBottomBtn = new JButton("Toggle Bottom Panel");
-        hideBottomBtn.setMargin(new Insets(0, 0, 0, 0));
-        hideBottomBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                mSplitPane.setOneSideHidden(
-                        mSplitPane.getRightComponent(),
-                        !mSplitPane.isSideHidden(mSplitPane.getRightComponent())
-                );
-            }
-        });
-        jpActionPanel.add(hideBottomBtn);
+//        JButton hideLeftBtn = new JButton("Toggle Left Panel");
+//        hideLeftBtn.setMargin(new Insets(0, 0, 0, 0));
+//        hideLeftBtn.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                mMainSplitPane.setOneSideHidden(
+//                        mMainSplitPane.getLeftComponent(),
+//                        !mMainSplitPane.isSideHidden(mMainSplitPane.getLeftComponent())
+//                );
+//            }
+//        });
+//        jpActionPanel.add(hideLeftBtn);
+//
+//        JButton hideBottomBtn = new JButton("Toggle Bottom Panel");
+//        hideBottomBtn.setMargin(new Insets(0, 0, 0, 0));
+//        hideBottomBtn.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                mSplitPane.setOneSideHidden(
+//                        mSplitPane.getRightComponent(),
+//                        !mSplitPane.isSideHidden(mSplitPane.getRightComponent())
+//                );
+//            }
+//        });
+//        jpActionPanel.add(hideBottomBtn);
 
         optionWest.add(mSyncScrollCheckBox);
         optionWest.add(mSyncSelectedCheckBox);
@@ -1784,16 +1801,16 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
     }
 
     Component createMainSplitPane() {
-        mMainSplitPane = new ExpandableSplitPane(
+        mMainSplitPane = new JSplitPane(
                 JSplitPane.HORIZONTAL_SPLIT,
                 getOptionPanel(),
                 createLogPanel()
         );
-        mMainSplitPane.setHiddenListener(new ExpandableSplitPane.HiddenListener() {
-            @Override
-            public void onStateChanged(ExpandableSplitPane pane, Component whichSide, boolean hidden) {
-            }
-        });
+//        mMainSplitPane.setHiddenListener(new ExpandableSplitPane.HiddenListener() {
+//            @Override
+//            public void onStateChanged(ExpandableSplitPane pane, Component whichSide, boolean hidden) {
+//            }
+//        });
         mMainSplitPane.setContinuousLayout(true);
         return mMainSplitPane;
     }
@@ -1928,7 +1945,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
                         in = new DataInputStream(fstream);
                         if (m_comboEncode.getSelectedItem().equals("UTF-8"))
                             br = new BufferedReader(new InputStreamReader(in,
-                                    "UTF-8"));
+                                    StandardCharsets.UTF_8));
                         else
                             br = new BufferedReader(new InputStreamReader(in));
 
@@ -2251,7 +2268,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
                     in = new DataInputStream(fstream);
                     if (m_comboEncode.getSelectedItem().equals("UTF-8"))
                         br = new BufferedReader(new InputStreamReader(in,
-                                "UTF-8"));
+                                StandardCharsets.UTF_8));
                     else
                         br = new BufferedReader(new InputStreamReader(in));
 
@@ -2521,9 +2538,9 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
                     m_Process = Runtime.getRuntime().exec(getProcessCmd());
                     BufferedReader stdOut = new BufferedReader(
                             new InputStreamReader(m_Process.getInputStream(),
-                                    "UTF-8"));
+                                    StandardCharsets.UTF_8));
                     Writer fileOut = new BufferedWriter(new OutputStreamWriter(
-                            new FileOutputStream(m_strLogFileName), "UTF-8"));
+                            new FileOutputStream(m_strLogFileName), StandardCharsets.UTF_8));
 
                     startLogcatParse();
 
@@ -2567,11 +2584,8 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         if ((m_nFilterLogLV & LogInfo.LOG_LV_ERROR) != 0
                 && logInfo.getLogLV().startsWith("E"))
             return true;
-        if ((m_nFilterLogLV & LogInfo.LOG_LV_FATAL) != 0
-                && logInfo.getLogLV().startsWith("F"))
-            return true;
-
-        return false;
+        return (m_nFilterLogLV & LogInfo.LOG_LV_FATAL) != 0
+                && logInfo.getLogLV().startsWith("F");
     }
 
     boolean checkPidFilter(LogInfo logInfo) {
@@ -2726,23 +2740,19 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
     }
 
     boolean checkUseFilter() {
-        if (!m_ipIndicator.m_chBookmark.isSelected()
-                && !m_ipIndicator.m_chError.isSelected()
-                && checkLogLVFilter(new LogInfo())
-                && (getLogTable().GetFilterShowPid().length() == 0 || !m_chkEnableShowPid.isSelected())
-                && (getLogTable().GetFilterShowTid().length() == 0 || !m_chkEnableShowTid.isSelected())
-                && (getLogTable().GetFilterShowTag().length() == 0 || !m_chkEnableShowTag.isSelected())
-                && (getLogTable().GetFilterRemoveTag().length() == 0 || !m_chkEnableRemoveTag.isSelected())
-                && (getLogTable().GetFilterBookmarkTag().length() == 0 || !m_chkEnableBookmarkTag.isSelected())
-                && (getLogTable().GetFilterFileName().length() == 0 || !m_chkEnableFileNameFilter.isSelected())
-                && (!getLogTable().isFilterLogFlow() || !m_chkEnableLogFlowTag.isSelected())
-                && ((getLogTable().GetFilterFromTime() == -1l && getLogTable().GetFilterToTime() == -1l) || !m_chkEnableTimeTag.isSelected())
-                && (getLogTable().GetFilterFind().length() == 0 || !m_chkEnableIncludeWord.isSelected())
-                && (getLogTable().GetFilterRemove().length() == 0 || !m_chkEnableExcludeWord.isSelected())
-        ) {
-            mFilterEnabled = false;
-        } else
-            mFilterEnabled = true;
+        mFilterEnabled = m_ipIndicator.m_chBookmark.isSelected()
+                || m_ipIndicator.m_chError.isSelected()
+                || !checkLogLVFilter(new LogInfo())
+                || (getLogTable().GetFilterShowPid().length() != 0 && m_chkEnableShowPid.isSelected())
+                || (getLogTable().GetFilterShowTid().length() != 0 && m_chkEnableShowTid.isSelected())
+                || (getLogTable().GetFilterShowTag().length() != 0 && m_chkEnableShowTag.isSelected())
+                || (getLogTable().GetFilterRemoveTag().length() != 0 && m_chkEnableRemoveTag.isSelected())
+                || (getLogTable().GetFilterBookmarkTag().length() != 0 && m_chkEnableBookmarkTag.isSelected())
+                || (getLogTable().GetFilterFileName().length() != 0 && m_chkEnableFileNameFilter.isSelected())
+                || (getLogTable().isFilterLogFlow() && m_chkEnableLogFlowTag.isSelected())
+                || ((getLogTable().GetFilterFromTime() != -1l || getLogTable().GetFilterToTime() != -1l) && m_chkEnableTimeTag.isSelected())
+                || (getLogTable().GetFilterFind().length() != 0 && m_chkEnableIncludeWord.isSelected())
+                || (getLogTable().GetFilterRemove().length() != 0 && m_chkEnableExcludeWord.isSelected());
         return mFilterEnabled;
     }
 
@@ -3233,7 +3243,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
 
     ///////////////////////////////////热键///////////////////////////////////
 
-    private KeyEventDispatcher mKeyEventDispatcher = new KeyEventDispatcher() {
+    private final KeyEventDispatcher mKeyEventDispatcher = new KeyEventDispatcher() {
         @Override
         public boolean dispatchKeyEvent(KeyEvent e) {
             if (!frameInfoProvider.isFrameFocused()) {
@@ -3668,7 +3678,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
     }
 
     private int mLastVBarValue = 0;
-    private AdjustmentListener mScrollListener = new AdjustmentListener() {
+    private final AdjustmentListener mScrollListener = new AdjustmentListener() {
         @Override
         public void adjustmentValueChanged(AdjustmentEvent e) {
             JScrollBar scrollBar = (JScrollBar) e.getSource();

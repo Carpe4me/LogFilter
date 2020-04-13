@@ -28,6 +28,7 @@ public class LogFilterFrame extends JFrame {
 
     private FrameInfoProvider frameInfoProvider;
     private UIStateSaver mUIStateSaver;
+    private FloatingWinListener floatingWinListener;
 
     @FieldSaveState
     int m_nWinWidth = Constant.DEFAULT_WIDTH;
@@ -41,7 +42,8 @@ public class LogFilterFrame extends JFrame {
 
     ///////////////////////////////////init///////////////////////////////////
 
-    public LogFilterFrame() throws HeadlessException {
+    public LogFilterFrame(FloatingWinListener floatingWinListener) throws HeadlessException {
+        this.floatingWinListener = floatingWinListener;
         frameInfoProvider = new FrameInfoProvider() {
             @Override
             public JFrame getContainerFrame() {
@@ -64,6 +66,13 @@ public class LogFilterFrame extends JFrame {
             @Override
             public boolean isFrameFocused() {
                 return LogFilterFrame.this.isFocused();
+            }
+
+            @Override
+            public void onFilterFloating(LogFilterComponent filter, Component component) {
+                if (LogFilterFrame.this.floatingWinListener != null) {
+                    LogFilterFrame.this.floatingWinListener.onQueryFloatingWin(component);
+                }
             }
         };
         initUI();
@@ -215,9 +224,15 @@ public class LogFilterFrame extends JFrame {
         void setTabTitle(LogFilterComponent filterComponent, String strTitle, String tips);
 
         boolean isFrameFocused();
+
+        void onFilterFloating(LogFilterComponent filter, Component component);
     }
 
     private interface FilterLooper {
         void onLoop(LogFilterComponent filter);
+    }
+
+    interface FloatingWinListener {
+        void onQueryFloatingWin(Component component);
     }
 }
