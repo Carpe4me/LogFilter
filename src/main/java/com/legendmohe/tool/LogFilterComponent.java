@@ -334,8 +334,8 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         JMenuBar jMenuBar = setupMenuBar();
 
         setLayout(new BorderLayout());
-        add(getMainSplitPane(), BorderLayout.CENTER);
-        add(getStatusPanel(), BorderLayout.SOUTH);
+        add(createMainSplitPane(), BorderLayout.CENTER);
+        add(createStatusPanel(), BorderLayout.SOUTH);
         add(jMenuBar, BorderLayout.NORTH);
 
         setDnDListener();
@@ -930,7 +930,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         logFlowManager.reset();
     }
 
-    Component getIndicatorPanel() {
+    Component createIndicatorPanel() {
         JPanel jp = new JPanel();
         jp.setLayout(new BorderLayout());
 
@@ -940,7 +940,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         return jp;
     }
 
-    Component getDevicePanel() {
+    Component createDevicePanel() {
         JPanel jpOptionDevice = new JPanel();
         jpOptionDevice.setBorder(BorderFactory
                 .createTitledBorder("Device select"));
@@ -1239,7 +1239,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         });
     }
 
-    Component getFilterPanel() {
+    Component createFilterPanel() {
         m_chkEnableIncludeWord = new JCheckBox();
         m_chkEnableExcludeWord = new JCheckBox();
         m_chkEnableShowTag = new JCheckBox();
@@ -1335,7 +1335,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         jpShow.add(m_tfShowTag, BorderLayout.CENTER);
 
         JPanel tagIncludeExtPanel = new JPanel(new BorderLayout());
-        JButton tagIncludeExtBtn = getExtDialogButton(Constant.EXT_DIALOG_TYPE_INCLUDE_TAG);
+        JButton tagIncludeExtBtn = createExtDialogButton(Constant.EXT_DIALOG_TYPE_INCLUDE_TAG);
         tagIncludeExtPanel.add(tagIncludeExtBtn, BorderLayout.WEST);
         tagIncludeExtPanel.add(m_chkEnableShowTag, BorderLayout.EAST);
         jpShow.add(tagIncludeExtPanel, BorderLayout.EAST);
@@ -1347,7 +1347,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         jpRemoveTag.add(m_tfRemoveTag, BorderLayout.CENTER);
 
         JPanel tagExcludeExtPanel = new JPanel(new BorderLayout());
-        JButton tagExcludeExtBtn = getExtDialogButton(Constant.EXT_DIALOG_TYPE_EXCLUDE_TAG);
+        JButton tagExcludeExtBtn = createExtDialogButton(Constant.EXT_DIALOG_TYPE_EXCLUDE_TAG);
         tagExcludeExtPanel.add(tagExcludeExtBtn, BorderLayout.WEST);
         tagExcludeExtPanel.add(m_chkEnableRemoveTag, BorderLayout.EAST);
         jpRemoveTag.add(tagExcludeExtPanel, BorderLayout.EAST);
@@ -1397,7 +1397,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         return jpMain;
     }
 
-    private JButton getExtDialogButton(int type) {
+    private JButton createExtDialogButton(int type) {
         JButton tagIncludeExtBtn = new JButton("...");
         tagIncludeExtBtn.setBorder(new EmptyBorder(3, 3, 3, 3));
         tagIncludeExtBtn.setBorderPainted(false);
@@ -1478,7 +1478,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         return tagIncludeExtBtn;
     }
 
-    Component getHighlightPanel() {
+    Component createHighlightPanel() {
         m_chkEnableHighlight = new JCheckBox();
         m_chkEnableHighlight.setSelected(true);
 
@@ -1492,7 +1492,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         return jpMain;
     }
 
-    Component getSearchPanel() {
+    Component createSearchPanel() {
         m_tfSearch = new JTextField();
         m_tfSearch.addActionListener(new ActionListener() {
             @Override
@@ -1533,7 +1533,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         return jpMain;
     }
 
-    Component getCheckPanel() {
+    Component createCheckPanel() {
         m_chkVerbose = new JCheckBox();
         m_chkDebug = new JCheckBox();
         m_chkInfo = new JCheckBox();
@@ -1616,18 +1616,18 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         return jpMain;
     }
 
-    Component getOptionFilter() {
+    Component createOptionFilter() {
         JPanel optionFilter = new JPanel();
         optionFilter.setLayout(new BoxLayout(optionFilter, BoxLayout.Y_AXIS));
 
-        optionFilter.add(getDevicePanel());
-        optionFilter.add(getFilterPanel());
-        optionFilter.add(getCheckPanel());
+        optionFilter.add(createDevicePanel());
+        optionFilter.add(createFilterPanel());
+        optionFilter.add(createCheckPanel());
 
         return optionFilter;
     }
 
-    Component getOptionMenu() {
+    Component createOptionMenu() {
         JPanel optionMenu = new JPanel(new BorderLayout());
         JPanel optionWest = new JPanel(new FlowLayout(FlowLayout.LEADING));
 
@@ -1767,18 +1767,27 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         optionMenu.add(optionWest, BorderLayout.CENTER);
 
         mSearchPanel = new JPanel(new GridLayout(1, 2));
-        mSearchPanel.add(getHighlightPanel());
-        mSearchPanel.add(getSearchPanel());
+        mSearchPanel.add(createHighlightPanel());
+        mSearchPanel.add(createSearchPanel());
         mSearchPanel.setVisible(false);
         optionMenu.add(mSearchPanel, BorderLayout.SOUTH);
         return optionMenu;
     }
 
-    Component getMainSplitPane() {
+    private Component mOptionPanel;
+
+    Component getOptionPanel() {
+        if (mOptionPanel == null) {
+            mOptionPanel = createOptionPanel();
+        }
+        return mOptionPanel;
+    }
+
+    Component createMainSplitPane() {
         mMainSplitPane = new ExpandableSplitPane(
                 JSplitPane.HORIZONTAL_SPLIT,
                 getOptionPanel(),
-                getLogPanel()
+                createLogPanel()
         );
         mMainSplitPane.setHiddenListener(new ExpandableSplitPane.HiddenListener() {
             @Override
@@ -1789,11 +1798,11 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         return mMainSplitPane;
     }
 
-    Component getOptionPanel() {
-        return getOptionFilter();
+    Component createOptionPanel() {
+        return createOptionFilter();
     }
 
-    Component getStatusPanel() {
+    Component createStatusPanel() {
         JPanel mainP = new JPanel(new BorderLayout());
 
         JPanel tfPanel = new JPanel(new GridBagLayout());
@@ -1822,10 +1831,10 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         return mainP;
     }
 
-    Component getLogPanel() {
+    Component createLogPanel() {
         JPanel mainLogPanel = new JPanel(new BorderLayout());
 
-        mainLogPanel.add(getOptionMenu(), BorderLayout.NORTH);
+        mainLogPanel.add(createOptionMenu(), BorderLayout.NORTH);
 
         m_tmLogTableModel = new LogFilterTableModel();
         m_tmLogTableModel.setData(m_arLogInfoAll);
@@ -1837,7 +1846,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         tablePanel.add(m_logScrollVPane);
         mainLogPanel.add(tablePanel, BorderLayout.CENTER);
 
-        mainLogPanel.add(getIndicatorPanel(), BorderLayout.WEST);
+        mainLogPanel.add(createIndicatorPanel(), BorderLayout.WEST);
 
         m_tSubLogTableModel = new LogFilterTableModel();
         m_tSubLogTableModel.setData(m_arSubLogInfoAll);
