@@ -19,7 +19,6 @@ import com.legendmohe.tool.parser.ILogParser;
 import com.legendmohe.tool.parser.IMODevLogParser;
 import com.legendmohe.tool.parser.LogCatParser;
 import com.legendmohe.tool.view.DumpsysViewDialog;
-import com.legendmohe.tool.view.ExpandableSplitPane;
 import com.legendmohe.tool.view.ListDialog;
 import com.legendmohe.tool.view.LogFlowDialog;
 import com.legendmohe.tool.view.PackageViewDialog;
@@ -696,8 +695,13 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
             m_thFilterParse.interrupt();
 
         saveColor();
-        mLogSplitPaneDividerLocation = mSplitPane.getDividerLocation();
-        mMainSplitPaneDividerLocation = mMainSplitPane.getDividerLocation();
+
+        if (mSplitPane.getDividerLocation() > 1) {
+            mLogSplitPaneDividerLocation = mSplitPane.getDividerLocation();
+        }
+        if (mMainSplitPane.getDividerLocation() > 1) {
+            mMainSplitPaneDividerLocation = mMainSplitPane.getDividerLocation();
+        }
         mUIStateSaver.save();
     }
 
@@ -1870,7 +1874,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         m_tSublogTable = new SubLogTable(m_tSubLogTableModel, this);
         m_subLogScrollVPane = new JScrollPane(m_tSublogTable);
 
-        mSplitPane = new ExpandableSplitPane(
+        mSplitPane = new JSplitPane(
                 JSplitPane.VERTICAL_SPLIT,
                 mainLogPanel,
                 m_subLogScrollVPane
