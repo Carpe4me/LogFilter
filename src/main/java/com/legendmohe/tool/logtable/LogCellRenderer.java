@@ -111,7 +111,7 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
         logInfo = tableModel.getRow(row);
         Object targetContent = logInfo.getContentByColumn(column);
         if (mEnableGroupTag && row > 0 && !logInfo.isSingleMsgLine() &&
-                (column == LogFilterTableModel.COLUMN_TAG || column == LogFilterTableModel.COLUMN_TIME)) {
+                (column == LogFilterTableModel.COLUMN_TAG || column == LogFilterTableModel.COLUMN_TIME || column == LogFilterTableModel.COLUMN_DATE)) {
             LogInfo lastLogInfo = tableModel.getRow(row - 1);
             if ((!logInfo.isSingleMsgLine() && lastLogInfo.isSingleMsgLine()) || !lastLogInfo.getContentByColumn(column).equals(targetContent)) {
                 dimLine = false;
