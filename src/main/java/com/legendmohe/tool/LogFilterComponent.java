@@ -51,6 +51,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
+import java.awt.event.ContainerAdapter;
+import java.awt.event.ContainerEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.ItemEvent;
@@ -1629,8 +1631,9 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
 
         floatingPanel.add(optionFilter, BorderLayout.CENTER);
 
+        // floating window btn
         JPanel btnPanel = new JPanel(new BorderLayout());
-        JButton button = new JButton("<-");
+        JButton button = new JButton("floating");
         button.setFont(new Font(button.getFont().getName(), button.getFont().getStyle(), 10));
         button.setOpaque(false);
         button.setContentAreaFilled(false);
@@ -1644,7 +1647,6 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         });
         btnPanel.add(button, BorderLayout.EAST);
         floatingPanel.add(btnPanel, BorderLayout.NORTH);
-
         return floatingPanel;
     }
 
@@ -1746,32 +1748,6 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         });
         jpActionPanel.add(followBtn);
 
-//        JButton hideLeftBtn = new JButton("Toggle Left Panel");
-//        hideLeftBtn.setMargin(new Insets(0, 0, 0, 0));
-//        hideLeftBtn.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                mMainSplitPane.setOneSideHidden(
-//                        mMainSplitPane.getLeftComponent(),
-//                        !mMainSplitPane.isSideHidden(mMainSplitPane.getLeftComponent())
-//                );
-//            }
-//        });
-//        jpActionPanel.add(hideLeftBtn);
-//
-//        JButton hideBottomBtn = new JButton("Toggle Bottom Panel");
-//        hideBottomBtn.setMargin(new Insets(0, 0, 0, 0));
-//        hideBottomBtn.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                mSplitPane.setOneSideHidden(
-//                        mSplitPane.getRightComponent(),
-//                        !mSplitPane.isSideHidden(mSplitPane.getRightComponent())
-//                );
-//            }
-//        });
-//        jpActionPanel.add(hideBottomBtn);
-
         optionWest.add(mSyncScrollCheckBox);
         optionWest.add(mSyncSelectedCheckBox);
         optionWest.add(jlFont);
@@ -1810,12 +1786,13 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
                 getOptionPanel(),
                 createLogPanel()
         );
-//        mMainSplitPane.setHiddenListener(new ExpandableSplitPane.HiddenListener() {
-//            @Override
-//            public void onStateChanged(ExpandableSplitPane pane, Component whichSide, boolean hidden) {
-//            }
-//        });
         mMainSplitPane.setContinuousLayout(true);
+        mMainSplitPane.addContainerListener(new ContainerAdapter() {
+            @Override
+            public void componentAdded(ContainerEvent e) {
+                restoreSplitPane();
+            }
+        });
         return mMainSplitPane;
     }
 
