@@ -369,7 +369,7 @@ public class LogTable extends BaseLogTable {
 
     private void showCurrentFlowResultWithSelection(LogInfo logInfo) {
         if (logInfo.hasFlowResults()) {
-            LogFlowDialog dialog = new LogFlowDialog(logInfo);
+            LogFlowDialog dialog = new LogFlowDialog(mBaseLogTableListener.getLogFlowManager(), logInfo);
             dialog.setListener(new LogFlowDialog.Listener() {
                 @Override
                 public void onOkButtonClicked(LogFlowDialog dialog) {

@@ -45,18 +45,21 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
 public class LogFlowDialog {
+    private LogFlowManager logFlowManager;
     private Map<String, List<LogFlowManager.FlowResult>> mFlowResults;
     private JOptionPane optionPane;
     private JButton okButton;
     private Listener mListener;
     private JDialog dialog;
 
-    public LogFlowDialog(Map<String, List<LogFlowManager.FlowResult>> flowResultList) {
+    public LogFlowDialog(LogFlowManager logFlowManager, Map<String, List<LogFlowManager.FlowResult>> flowResultList) {
+        this.logFlowManager = logFlowManager;
         mFlowResults = flowResultList;
         createAndDisplayOptionPane();
     }
 
-    public LogFlowDialog(LogInfo logInfo) {
+    public LogFlowDialog(LogFlowManager logFlowManager, LogInfo logInfo) {
+        this.logFlowManager = logFlowManager;
         // 从某行result line拿到所属result的所有line
         Map<String, List<LogFlowManager.FlowResult>> resultMap = new HashMap<>();
         for (LogFlowManager.FlowResultLine resultLine : logInfo.getFlowResults()) {
@@ -76,7 +79,7 @@ public class LogFlowDialog {
             @Override
             public int compare(String o1, String o2) {
                 // 应该不会有性能问题
-                return LogFlowManager.getInstance().getResultIndex(o1) - LogFlowManager.getInstance().getResultIndex(o2);
+                return logFlowManager.getResultIndex(o1) - logFlowManager.getResultIndex(o2);
             }
         });
         for (String resultName : sortedName) {

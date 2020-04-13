@@ -5,6 +5,7 @@ import com.legendmohe.tool.ILogRenderResolver;
 import com.legendmohe.tool.LogInfo;
 import com.legendmohe.tool.T;
 import com.legendmohe.tool.Utils;
+import com.legendmohe.tool.logflow.LogFlowManager;
 import com.legendmohe.tool.logtable.model.LogFilterTableModel;
 import com.legendmohe.tool.parser.LogCatParser;
 
@@ -1008,6 +1009,8 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
         void showRowsContent(String content);
 
         int[] getSupportedColumns();
+
+        LogFlowManager getLogFlowManager();
     }
 
     /**

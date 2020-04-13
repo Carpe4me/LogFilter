@@ -27,14 +27,6 @@ public class LogFlowManager {
 
     private FlowPatternChecker mPatternChecker = new FlowPatternChecker();
 
-    private static class LazyHolder {
-        private static final LogFlowManager INSTANCE = new LogFlowManager();
-    }
-
-    public static LogFlowManager getInstance() {
-        return LazyHolder.INSTANCE;
-    }
-
     //////////////////////////////////////////////////////////////////////
 
     public synchronized void init(File configFolder) {

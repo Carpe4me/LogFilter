@@ -150,6 +150,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
     }
 
     LogFilterFrame.FrameInfoProvider frameInfoProvider;
+    LogFlowManager logFlowManager = new LogFlowManager();
     JLabel m_tfStatus;
     IndicatorPanel m_ipIndicator;
     ArrayList<LogInfo> m_arLogInfoAll;
@@ -330,7 +331,6 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         this.frameInfoProvider = frameInfoProvider;
         initValue();
 
-        setTitle(Constant.WINDOW_TITLE + " " + Constant.VERSION);
         JMenuBar jMenuBar = setupMenuBar();
 
         setLayout(new BorderLayout());
@@ -697,7 +697,6 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         mLogSplitPaneDividerLocation = mSplitPane.getDividerLocation();
         mMainSplitPaneDividerLocation = mMainSplitPane.getDividerLocation();
         mUIStateSaver.save();
-        System.exit(0);
     }
 
     private void loadUI() {
@@ -914,6 +913,11 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         return m_iLogParser.getSupportedColumns();
     }
 
+    @Override
+    public LogFlowManager getLogFlowManager() {
+        return logFlowManager;
+    }
+
     void clearData() {
         m_arSubLogInfoAll.clear();
         m_arLogInfoAll.clear();
@@ -923,7 +927,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         m_hmErrorAll.clear();
         m_hmErrorFiltered.clear();
         mLastProcessFlowLine = -1;
-        LogFlowManager.getInstance().reset();
+        logFlowManager.reset();
     }
 
     Component getIndicatorPanel() {
@@ -1894,7 +1898,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
             title.append(file.getName()).append(" | ");
         }
         mRecentMenu.addEntry(filePathBuilder.deleteCharAt(filePathBuilder.length() - 1).toString());
-        setTitle(title.deleteCharAt(title.length() - 1).toString());
+        setTitleAndTips(title.substring(0, title.length() - 3), filePathBuilder.toString());
         // parsing
         new Thread(new Runnable() {
             public void run() {
@@ -2206,8 +2210,8 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         m_tfStatus.setText(strText);
     }
 
-    public void setTitle(String strTitle) {
-        frameInfoProvider.setTitle(strTitle);
+    public void setTitleAndTips(String strTitle, String tips) {
+        frameInfoProvider.setTitle(LogFilterComponent.this, strTitle, tips);
     }
 
     void stopLogcatParserProcess() {
@@ -2244,7 +2248,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
 
                     String strLine;
 
-                    setTitle(m_strLogFileName);
+                    setTitleAndTips(m_strLogFileName, m_strLogFileName);
 
                     m_arLogInfoAll.clear();
 
@@ -3473,7 +3477,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
             confDir.mkdirs();
             T.d("create log flow config directory: " + confDir.getAbsolutePath());
         }
-        LogFlowManager.getInstance().init(confDir);
+        logFlowManager.init(confDir);
 
         m_tbLogTable.setShowLogFlowResult(mShowFlowInLogTable);
         m_tSublogTable.setShowLogFlowResult(mShowFlowInLogTable);
@@ -3523,9 +3527,9 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
     private void showAllFlow() {
         synchronized (FILTER_LOCK) {
             appendAllFlowLogAndSetLogState();
-            Map<String, List<LogFlowManager.FlowResult>> flowResults = LogFlowManager.getInstance().getCurrentResult();
+            Map<String, List<LogFlowManager.FlowResult>> flowResults = logFlowManager.getCurrentResult();
             if (flowResults.size() > 0) {
-                LogFlowDialog dialog = new LogFlowDialog(flowResults);
+                LogFlowDialog dialog = new LogFlowDialog(logFlowManager, flowResults);
                 dialog.setListener(new LogFlowDialog.Listener() {
                     @Override
                     public void onOkButtonClicked(LogFlowDialog dialog) {
@@ -3556,7 +3560,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
      */
     private void appendAllFlowLogAndSetLogState() {
         if (mLastProcessFlowLine <= 0) {
-            LogFlowManager.getInstance().reset();
+            logFlowManager.reset();
         }
         if (mLastProcessFlowLine < m_arLogInfoAll.size() - 1) {
             List<LogInfo> logInfos = new ArrayList<>(m_arLogInfoAll).subList(mLastProcessFlowLine + 1, m_arLogInfoAll.size());
@@ -3571,7 +3575,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
      */
     private boolean appendFlowLogAndSetLogState(LogInfo logInfo) {
         mLastProcessFlowLine = logInfo.getLine();
-        Map<String, LogFlowManager.FlowResultLine> checkResult = LogFlowManager.getInstance().check(logInfo);
+        Map<String, LogFlowManager.FlowResultLine> checkResult = logFlowManager.check(logInfo);
         if (checkResult != null && checkResult.size() > 0) {
             logInfo.setFlowResults(new ArrayList<>(checkResult.values()));
             return true;
