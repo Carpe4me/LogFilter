@@ -60,6 +60,7 @@ import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
@@ -99,6 +100,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenu;
@@ -132,11 +134,12 @@ import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 import javax.swing.table.AbstractTableModel;
 
-public class LogFilterComponent extends JComponent implements EventBus, BaseLogTable.BaseLogTableListener, IDiffCmdHandler {
+public class LogFilterComponent extends JComponent implements EventBus, BaseLogTable.BaseLogTableListener, IDiffCmdHandler, LogFilterFrame.CloseableTab {
     private static final long serialVersionUID = 1L;
 
     private static final Map<Integer, ILogParser> sTypeToParserMap = new HashMap<>();
     private static final Map<Integer, String> sTypeToParserNameMap = new HashMap<>();
+    private List<FloatingFrameInfo> mFloatingFrameInfos = new ArrayList<>();
 
     {
         sTypeToParserMap.put(Constant.PARSER_TYPE_LOGCAT, new LogCatParser());
@@ -1639,10 +1642,12 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         button.setContentAreaFilled(false);
         button.setBorderPainted(false);
         button.setFocusable(false);
-        button.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                frameInfoProvider.onFilterFloating(LogFilterComponent.this, getOptionPanel());
+        button.addActionListener(e -> {
+            FloatingFrameInfo frameInfo = frameInfoProvider.onFilterFloating(LogFilterComponent.this, getOptionPanel());
+            if (!frameInfo.isRemoved) {
+                mFloatingFrameInfos.add(frameInfo);
+            } else {
+                mFloatingFrameInfos.remove(frameInfo);
             }
         });
         btnPanel.add(button, BorderLayout.EAST);
@@ -3744,6 +3749,22 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         ) {
             parseLogFile(mLastParseredFiles);
         }
+    }
+
+    /**
+     * 自己从tabpane中被移除
+     * @param index
+     */
+    @Override
+    public void onCloseTab(int index) {
+        for (FloatingFrameInfo frameInfo : mFloatingFrameInfos) {
+            if (!frameInfo.isRemoved) {
+                frameInfo.frame.dispatchEvent(
+                        new WindowEvent(frameInfo.frame, WindowEvent.WINDOW_CLOSING)
+                );
+            }
+        }
+        mFloatingFrameInfos.clear();
     }
 
     ///////////////////////////////////interface///////////////////////////////////

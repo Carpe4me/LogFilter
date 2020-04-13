@@ -69,10 +69,11 @@ public class LogFilterFrame extends JFrame {
             }
 
             @Override
-            public void onFilterFloating(LogFilterComponent filter, Component component) {
+            public FloatingFrameInfo onFilterFloating(LogFilterComponent filter, Component component) {
                 if (LogFilterFrame.this.floatingWinListener != null) {
-                    LogFilterFrame.this.floatingWinListener.onQueryFloatingWin(component);
+                    return LogFilterFrame.this.floatingWinListener.onQueryFloatingWin(component);
                 }
+                return null;
             }
         };
         initUI();
@@ -146,6 +147,10 @@ public class LogFilterFrame extends JFrame {
             // 最后一个不能关
             int tabCount = tabbedPane.getTabCount();
             if (tabCount > 2) {
+                Component componentAt = tabbedPane.getComponentAt(index);
+                if (componentAt instanceof CloseableTab) {
+                    ((CloseableTab)componentAt).onCloseTab(index);
+                }
                 tabbedPane.remove(index);
                 if (index == tabCount - 2) {
                     tabbedPane.setSelectedIndex(index - 1);
@@ -225,14 +230,18 @@ public class LogFilterFrame extends JFrame {
 
         boolean isFrameFocused();
 
-        void onFilterFloating(LogFilterComponent filter, Component component);
+        FloatingFrameInfo onFilterFloating(LogFilterComponent filter, Component component);
     }
 
     private interface FilterLooper {
         void onLoop(LogFilterComponent filter);
     }
 
+    interface CloseableTab {
+        void onCloseTab(int index);
+    }
+
     interface FloatingWinListener {
-        void onQueryFloatingWin(Component component);
+        FloatingFrameInfo onQueryFloatingWin(Component component);
     }
 }
