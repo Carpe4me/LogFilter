@@ -54,14 +54,15 @@ public class LogFilterFrame extends JFrame {
             }
 
             @Override
-            public void setTitle(LogFilterComponent filterComponent, String strTitle, String tips) {
+            public void setTabTitle(LogFilterComponent filterComponent, String strTitle, String tips) {
                 int i = tabbedPane.indexOfComponent(filterComponent);
                 tabbedPane.setTitleAt(i, strTitle);
                 tabbedPane.setToolTipTextAt(i, tips);
+                SwingUtilities.invokeLater(() -> tabbedPane.getTabComponentAt(i).invalidate());
             }
 
             @Override
-            public boolean isFocused() {
+            public boolean isFrameFocused() {
                 return LogFilterFrame.this.isFocused();
             }
         };
@@ -134,9 +135,14 @@ public class LogFilterFrame extends JFrame {
     private void handleCloseTabClicked(int index) {
         if (index != -1) {
             // 最后一个不能关
-            if (tabbedPane.getTabCount() > 2) {
+            int tabCount = tabbedPane.getTabCount();
+            if (tabCount > 2) {
                 tabbedPane.remove(index);
-                tabbedPane.setSelectedIndex(index - 1);
+                if (index == tabCount - 2) {
+                    tabbedPane.setSelectedIndex(index - 1);
+                } else {
+                    tabbedPane.setSelectedIndex(index);
+                }
             }
         }
     }
@@ -206,9 +212,9 @@ public class LogFilterFrame extends JFrame {
 
         void onViewPortChanged(LogFilterComponent logFilterComponent, ChangeEvent e);
 
-        void setTitle(LogFilterComponent filterComponent, String strTitle, String tips);
+        void setTabTitle(LogFilterComponent filterComponent, String strTitle, String tips);
 
-        boolean isFocused();
+        boolean isFrameFocused();
     }
 
     private interface FilterLooper {

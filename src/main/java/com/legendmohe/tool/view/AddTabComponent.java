@@ -87,11 +87,9 @@ public class AddTabComponent extends JPanel {
             setContentAreaFilled(false);
             //No need to be focusable
             setFocusable(false);
-            setBorder(BorderFactory.createEtchedBorder());
             setBorderPainted(false);
             //Making nice rollover effect
             //we use the same listener for all buttons
-            addMouseListener(buttonMouseListener);
             setRolloverEnabled(true);
             //Close the proper tab by clicking the button
             addActionListener(this);
@@ -121,30 +119,12 @@ public class AddTabComponent extends JPanel {
             if (getModel().isRollover()) {
                 g2.setColor(Color.BLACK);
             }
-            int delta = 5;
+            int delta = 4;
             g2.drawLine(getWidth()/2, 0 + delta, getWidth()/2, getHeight() - delta);
             g2.drawLine(0 + delta, getHeight()/2, getWidth() - delta, getHeight()/2);
             g2.dispose();
         }
     }
-
-    private final static MouseListener buttonMouseListener = new MouseAdapter() {
-        public void mouseEntered(MouseEvent e) {
-            Component component = e.getComponent();
-            if (component instanceof AbstractButton) {
-                AbstractButton button = (AbstractButton) component;
-                button.setBorderPainted(true);
-            }
-        }
-
-        public void mouseExited(MouseEvent e) {
-            Component component = e.getComponent();
-            if (component instanceof AbstractButton) {
-                AbstractButton button = (AbstractButton) component;
-                button.setBorderPainted(false);
-            }
-        }
-    };
 
     public interface Listener {
         void onAddButtonClicked(int addComponentIndex);

@@ -2211,7 +2211,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
     }
 
     public void setTitleAndTips(String strTitle, String tips) {
-        frameInfoProvider.setTitle(LogFilterComponent.this, strTitle, tips);
+        frameInfoProvider.setTabTitle(LogFilterComponent.this, strTitle, tips);
     }
 
     void stopLogcatParserProcess() {
@@ -3227,7 +3227,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
     private KeyEventDispatcher mKeyEventDispatcher = new KeyEventDispatcher() {
         @Override
         public boolean dispatchKeyEvent(KeyEvent e) {
-            if (!frameInfoProvider.isFocused()) {
+            if (!frameInfoProvider.isFrameFocused()) {
                 return false;
             }
 
