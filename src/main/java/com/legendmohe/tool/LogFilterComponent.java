@@ -2189,6 +2189,11 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         frameInfoProvider.setTabTitle(LogFilterComponent.this, strTitle, tips);
     }
 
+    // 是否已经加载过log
+    public boolean hasLoadLogFileOrRunLogcat() {
+        return !mCurTitle.isEmpty();
+    }
+
     void stopLogcatParserProcess() {
         setProcessBtn(false);
         if (m_Process != null)

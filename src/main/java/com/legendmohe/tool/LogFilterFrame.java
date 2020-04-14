@@ -269,7 +269,13 @@ public class LogFilterFrame extends JFrame {
         fileOpen.setToolTipText("Open log file");
         fileOpen.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                withNewFilter(filter -> filter.openFileBrowserToLoad(LogFilterComponent.FileType.LOG));
+                withCurrentFilter(curFilter -> {
+                    if (curFilter.hasLoadLogFileOrRunLogcat()) {
+                        withNewFilter(filter -> filter.openFileBrowserToLoad(LogFilterComponent.FileType.LOG));
+                    } else {
+                        curFilter.openFileBrowserToLoad(LogFilterComponent.FileType.LOG);
+                    }
+                });
             }
         });
 
@@ -280,7 +286,13 @@ public class LogFilterFrame extends JFrame {
                 for (int i = 0; i < files.length; i++) {
                     recentFiles[i] = new File(files[i]);
                 }
-                withNewFilter(filter -> filter.parseLogFile(recentFiles));
+                withCurrentFilter(curFilter -> {
+                    if (curFilter.hasLoadLogFileOrRunLogcat()) {
+                        withNewFilter(filter -> filter.parseLogFile(recentFiles));
+                    } else {
+                        curFilter.parseLogFile(recentFiles);
+                    }
+                });
             }
         };
 
