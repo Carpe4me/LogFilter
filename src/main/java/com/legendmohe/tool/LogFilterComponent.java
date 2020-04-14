@@ -283,7 +283,6 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
     Object FILTER_LOCK;
     volatile int mLogParsingState;
     int m_nFilterLogLV;
-    RecentFileMenu mRecentMenu;
 
     @FieldSaveState
     int m_parserType = Constant.PARSER_TYPE_DEFAULT_LOG;
@@ -372,19 +371,8 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
 
     private JMenuBar setupMenuBar() {
         JMenuBar menuBar = new JMenuBar();
-        JMenu fileMenu = new JMenu("File");
+        JMenu fileMenu = new JMenu("Conf");
         fileMenu.setMnemonic(KeyEvent.VK_F);
-
-        JMenuItem fileOpen = new JMenuItem("Open");
-        fileOpen.setMnemonic(KeyEvent.VK_O);
-        fileOpen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O,
-                ActionEvent.ALT_MASK));
-        fileOpen.setToolTipText("Open log file");
-        fileOpen.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent event) {
-                LogFilterComponent.this.openFileBrowserToLoad(FileType.LOG);
-            }
-        });
 
         JMenu modeMenu = new JMenu("Mode");
 
@@ -406,20 +394,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         modeMenu.add(modeOpen);
         modeMenu.add(modeSave);
 
-        mRecentMenu = new RecentFileMenu("RecentFile", 10) {
-            public void onSelectFile(String filePath) {
-                String[] files = filePath.split("\\|");
-                File[] recentFiles = new File[files.length];
-                for (int i = 0; i < files.length; i++) {
-                    recentFiles[i] = new File(files[i]);
-                }
-                LogFilterComponent.this.parseLogFile(recentFiles);
-            }
-        };
-
-        fileMenu.add(fileOpen);
         fileMenu.add(modeMenu);
-        fileMenu.add(mRecentMenu);
 
         JMenu toolsMenu = new JMenu("Tools");
 
@@ -461,16 +436,6 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         diffMenu.add(mDisconnectDiffMenuItem);
 
         toolsMenu.add(diffMenu);
-
-        JMenuItem converterItem = new JMenuItem("text converter");
-        converterItem.setToolTipText("convert all kinds of log msg");
-        converterItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent event) {
-                new TextConverterDialog().show();
-            }
-        });
-
-        toolsMenu.add(converterItem);
 
         JMenu parserMenu = new JMenu("Parser");
         parserMenu.addMenuListener(new MenuListener() {
@@ -1906,7 +1871,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
             filePathBuilder.append(file.getAbsolutePath()).append("|");
             title.append(file.getName()).append(" | ");
         }
-        mRecentMenu.addEntry(filePathBuilder.deleteCharAt(filePathBuilder.length() - 1).toString());
+        frameInfoProvider.beforeLogFileParse(filePathBuilder.deleteCharAt(filePathBuilder.length() - 1).toString(), this);
         setTitleAndTips(title.substring(0, title.length() - 3), filePathBuilder.toString());
         // parsing
         new Thread(new Runnable() {
@@ -3767,7 +3732,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
 
     ///////////////////////////////////interface///////////////////////////////////
 
-    private enum FileType {
+    enum FileType {
         LOG, MODE
     }
 

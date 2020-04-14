@@ -953,6 +953,8 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
     }
 
     private synchronized void startHoverTimer(int row, int col, Object value) {
+        if (value instanceof String && ((String) value).length() == 0)
+            return;
         mHoverTimer = new Timer(CELL_HOVER_DELAY, e -> onHoverTriggerShow(value, row, col));
         mHoverTimer.setRepeats(false);
         mHoverTimer.setCoalesce(true);

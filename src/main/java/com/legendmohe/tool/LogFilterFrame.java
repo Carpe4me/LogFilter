@@ -5,22 +5,32 @@ import com.legendmohe.tool.annotation.UIStateSaver;
 import com.legendmohe.tool.config.Constant;
 import com.legendmohe.tool.view.AddTabComponent;
 import com.legendmohe.tool.view.ButtonTabComponent;
+import com.legendmohe.tool.view.RecentFileMenu;
+import com.legendmohe.tool.view.TextConverterDialog;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
 import java.io.File;
+import java.util.Map;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JTabbedPane;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 
@@ -75,6 +85,11 @@ public class LogFilterFrame extends JFrame {
                 }
                 return null;
             }
+
+            @Override
+            public void beforeLogFileParse(String filename, LogFilterComponent filterComponent) {
+                mRecentMenu.addEntry(filename);
+            }
         };
         initUI();
         restoreUIState();
@@ -82,6 +97,8 @@ public class LogFilterFrame extends JFrame {
 
     private void initUI() {
         setTitle(Constant.WINDOW_TITLE + " " + Constant.VERSION);
+        JMenuBar menuBar = createMenuBar();
+        setJMenuBar(menuBar);
 
         Container pane = getContentPane();
         pane.setLayout(new BorderLayout());
@@ -123,8 +140,9 @@ public class LogFilterFrame extends JFrame {
         tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
     }
 
-    private void addLogFilterComponentToTab(int index) {
-        tabbedPane.insertTab("Log", null, new LogFilterComponent(frameInfoProvider),
+    private LogFilterComponent addLogFilterComponentToTab(int index) {
+        LogFilterComponent component = new LogFilterComponent(frameInfoProvider);
+        tabbedPane.insertTab("Log", null, component,
                 "Open files or run logcat", index);
         tabbedPane.setTabComponentAt(index, new ButtonTabComponent(tabbedPane, new ButtonTabComponent.Listener() {
             @Override
@@ -132,6 +150,7 @@ public class LogFilterFrame extends JFrame {
                 handleCloseTabClicked(index);
             }
         }));
+        return component;
     }
 
     private void handleTabAddClicked(int addComponentIndex) {
@@ -171,15 +190,30 @@ public class LogFilterFrame extends JFrame {
     }
 
     private void withCurrentFilter(FilterLooper looper) {
-        for (int i = 0; i < tabbedPane.getTabCount(); i++) {
-            Component component = tabbedPane.getComponentAt(i);
-            if (component.hasFocus() && component instanceof LogFilterComponent) {
-                if (looper != null) {
-                    looper.onLoop(((LogFilterComponent) component));
-                }
-                return;
+        Component component = tabbedPane.getSelectedComponent();
+        if (component instanceof LogFilterComponent) {
+            if (looper != null) {
+                looper.onLoop(((LogFilterComponent) component));
             }
         }
+    }
+
+    private void withNewFilter(FilterLooper looper) {
+        int tabCount = tabbedPane.getTabCount();
+        LogFilterComponent newFilter = addLogFilterComponentToTab(tabCount - 1);
+        tabbedPane.setSelectedIndex(tabCount - 1);
+        withAllFilter(LogFilterComponent::restoreSplitPane);
+        if (looper != null) {
+            looper.onLoop(newFilter);
+        }
+    }
+
+    LogFilterComponent getFocusedFilterComponent() {
+        Component component = tabbedPane.getSelectedComponent();
+        if (component instanceof LogFilterComponent) {
+            return (LogFilterComponent) component;
+        }
+        return null;
     }
 
     private void restoreUIState() {
@@ -219,6 +253,58 @@ public class LogFilterFrame extends JFrame {
         withCurrentFilter(filterComponent -> filterComponent.parseLogFile(files));
     }
 
+    ///////////////////////////////////menu///////////////////////////////////
+
+    private RecentFileMenu mRecentMenu;
+
+    private JMenuBar createMenuBar() {
+        JMenuBar menuBar = new JMenuBar();
+        JMenu fileMenu = new JMenu("File");
+        fileMenu.setMnemonic(KeyEvent.VK_F);
+
+        JMenuItem fileOpen = new JMenuItem("Open");
+        fileOpen.setMnemonic(KeyEvent.VK_O);
+        fileOpen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O,
+                ActionEvent.ALT_MASK));
+        fileOpen.setToolTipText("Open log file");
+        fileOpen.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                withNewFilter(filter -> filter.openFileBrowserToLoad(LogFilterComponent.FileType.LOG));
+            }
+        });
+
+        mRecentMenu = new RecentFileMenu("RecentFile", 10) {
+            public void onSelectFile(String filePath) {
+                String[] files = filePath.split("\\|");
+                File[] recentFiles = new File[files.length];
+                for (int i = 0; i < files.length; i++) {
+                    recentFiles[i] = new File(files[i]);
+                }
+                withNewFilter(filter -> filter.parseLogFile(recentFiles));
+            }
+        };
+
+        fileMenu.add(fileOpen);
+        fileMenu.add(mRecentMenu);
+
+        JMenu toolsMenu = new JMenu("Extra");
+
+        JMenuItem converterItem = new JMenuItem("text converter");
+        converterItem.setToolTipText("convert all kinds of log msg");
+        converterItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                new TextConverterDialog().show();
+            }
+        });
+
+        toolsMenu.add(converterItem);
+
+
+        menuBar.add(fileMenu);
+        menuBar.add(toolsMenu);
+        return menuBar;
+    }
+
     //////////////////////////////////////////////////////////////////////
 
     public interface FrameInfoProvider {
@@ -231,6 +317,8 @@ public class LogFilterFrame extends JFrame {
         boolean isFrameFocused();
 
         FloatingFrameInfo onFilterFloating(LogFilterComponent filter, Component component, String title);
+
+        void beforeLogFileParse(String filename, LogFilterComponent filterComponent);
     }
 
     private interface FilterLooper {
