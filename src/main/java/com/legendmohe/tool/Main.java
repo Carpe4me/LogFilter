@@ -107,7 +107,7 @@ public class Main {
         private Map<Component, FloatingWinState> mParentMap = new HashMap<>();
 
         @Override
-        public FloatingFrameInfo onQueryFloatingWin(Component component) {
+        public FloatingFrameInfo onQueryFloatingWin(Component component, String title) {
             FloatingWinState state = mParentMap.get(component);
             if (state == null) {
                 JComponent parent = (JComponent) component.getParent();
@@ -131,6 +131,7 @@ public class Main {
                         mParentMap.remove(component);
                     }
                 });
+                newFloatingWin.setTitle(title);
                 newFloatingWin.getContentPane().add(component);
                 newFloatingWin.pack();
                 newFloatingWin.setVisible(true);

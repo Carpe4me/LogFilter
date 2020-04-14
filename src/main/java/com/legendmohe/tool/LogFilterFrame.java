@@ -69,9 +69,9 @@ public class LogFilterFrame extends JFrame {
             }
 
             @Override
-            public FloatingFrameInfo onFilterFloating(LogFilterComponent filter, Component component) {
+            public FloatingFrameInfo onFilterFloating(LogFilterComponent filter, Component component, String title) {
                 if (LogFilterFrame.this.floatingWinListener != null) {
-                    return LogFilterFrame.this.floatingWinListener.onQueryFloatingWin(component);
+                    return LogFilterFrame.this.floatingWinListener.onQueryFloatingWin(component, title);
                 }
                 return null;
             }
@@ -230,7 +230,7 @@ public class LogFilterFrame extends JFrame {
 
         boolean isFrameFocused();
 
-        FloatingFrameInfo onFilterFloating(LogFilterComponent filter, Component component);
+        FloatingFrameInfo onFilterFloating(LogFilterComponent filter, Component component, String title);
     }
 
     private interface FilterLooper {
@@ -242,6 +242,6 @@ public class LogFilterFrame extends JFrame {
     }
 
     interface FloatingWinListener {
-        FloatingFrameInfo onQueryFloatingWin(Component component);
+        FloatingFrameInfo onQueryFloatingWin(Component component, String title);
     }
 }

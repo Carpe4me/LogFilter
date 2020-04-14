@@ -100,7 +100,6 @@ import javax.swing.JCheckBox;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenu;
@@ -308,7 +307,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
     private boolean mSyncScrollSelected;
 
     private final UIStateSaver mUIStateSaver;
-    private JSplitPane mSplitPane;
+    private JSplitPane mLogSplitPane;
     @FieldSaveState
     private int mLogSplitPaneDividerLocation = -1;
     private JSplitPane mMainSplitPane;
@@ -326,6 +325,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
 
     // 当前处理的文件集合
     private File[] mLastParseredFiles;
+    private String mCurTitle = "";
 
     private final Map<Component, List<String>> mRecentlyInputHistory = new HashMap<>();
 
@@ -670,10 +670,10 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
     }
 
     void restoreSplitPane() {
-        mSplitPane.setResizeWeight(1.0);
-        mSplitPane.setOneTouchExpandable(true);
+        mLogSplitPane.setResizeWeight(1.0);
+        mLogSplitPane.setOneTouchExpandable(true);
         if (mLogSplitPaneDividerLocation > 0) {
-            mSplitPane.setDividerLocation(mLogSplitPaneDividerLocation);
+            mLogSplitPane.setDividerLocation(mLogSplitPaneDividerLocation);
         }
 
         mMainSplitPane.setResizeWeight(1.0);
@@ -701,8 +701,8 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
 
         saveColor();
 
-        if (mSplitPane.getDividerLocation() > 1) {
-            mLogSplitPaneDividerLocation = mSplitPane.getDividerLocation();
+        if (mLogSplitPane.getDividerLocation() > 1) {
+            mLogSplitPaneDividerLocation = mLogSplitPane.getDividerLocation();
         }
         if (mMainSplitPane.getDividerLocation() > 1) {
             mMainSplitPaneDividerLocation = mMainSplitPane.getDividerLocation();
@@ -1624,26 +1624,33 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
     }
 
     Component createOptionFilter() {
-        JPanel floatingPanel = new JPanel(new BorderLayout());
-
         JPanel optionFilter = new JPanel();
         optionFilter.setLayout(new BoxLayout(optionFilter, BoxLayout.Y_AXIS));
         optionFilter.add(createDevicePanel());
         optionFilter.add(createFilterPanel());
         optionFilter.add(createCheckPanel());
+        return wrapWithFloatingPanel(optionFilter);
+    }
 
-        floatingPanel.add(optionFilter, BorderLayout.CENTER);
+    // 提供floating 功能
+    private JPanel wrapWithFloatingPanel(JComponent target) {
+        JPanel floatingPanel = new JPanel(new BorderLayout());
+        floatingPanel.add(target, BorderLayout.CENTER);
+        floatingPanel.add(createFloatingBtnHeader(() -> floatingPanel), BorderLayout.NORTH);
+        return floatingPanel;
+    }
 
+    private JPanel createFloatingBtnHeader(FloatingTagetProvider target) {
         // floating window btn
         JPanel btnPanel = new JPanel(new BorderLayout());
         JButton button = new JButton("floating");
         button.setFont(new Font(button.getFont().getName(), button.getFont().getStyle(), 10));
         button.setOpaque(false);
         button.setContentAreaFilled(false);
-        button.setBorderPainted(false);
         button.setFocusable(false);
+        button.setBorder(BorderFactory.createEmptyBorder(4,0,0,6));
         button.addActionListener(e -> {
-            FloatingFrameInfo frameInfo = frameInfoProvider.onFilterFloating(LogFilterComponent.this, getOptionPanel());
+            FloatingFrameInfo frameInfo = frameInfoProvider.onFilterFloating(LogFilterComponent.this, target.getTarget(), mCurTitle);
             if (!frameInfo.isRemoved) {
                 mFloatingFrameInfos.add(frameInfo);
             } else {
@@ -1651,8 +1658,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
             }
         });
         btnPanel.add(button, BorderLayout.EAST);
-        floatingPanel.add(btnPanel, BorderLayout.NORTH);
-        return floatingPanel;
+        return btnPanel;
     }
 
     Component createOptionMenu() {
@@ -1776,19 +1782,10 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         return optionMenu;
     }
 
-    private Component mOptionPanel;
-
-    Component getOptionPanel() {
-        if (mOptionPanel == null) {
-            mOptionPanel = createOptionPanel();
-        }
-        return mOptionPanel;
-    }
-
     Component createMainSplitPane() {
         mMainSplitPane = new JSplitPane(
                 JSplitPane.HORIZONTAL_SPLIT,
-                getOptionPanel(),
+                createOptionPanel(),
                 createLogPanel()
         );
         mMainSplitPane.setContinuousLayout(true);
@@ -1856,12 +1853,12 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         m_tSublogTable = new SubLogTable(m_tSubLogTableModel, this);
         m_subLogScrollVPane = new JScrollPane(m_tSublogTable);
 
-        mSplitPane = new JSplitPane(
+        mLogSplitPane = new JSplitPane(
                 JSplitPane.VERTICAL_SPLIT,
                 mainLogPanel,
-                m_subLogScrollVPane
+                wrapWithFloatingPanel(m_subLogScrollVPane)
         );
-        return mSplitPane;
+        return mLogSplitPane;
     }
 
     void initValue() {
@@ -2223,6 +2220,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
     }
 
     public void setTitleAndTips(String strTitle, String tips) {
+        mCurTitle = strTitle;
         frameInfoProvider.setTabTitle(LogFilterComponent.this, strTitle, tips);
     }
 
@@ -3802,6 +3800,10 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         public String toString() {
             return "[" + this.model + "]" + this.code;
         }
+    }
+
+    private interface FloatingTagetProvider {
+        Component getTarget();
     }
 }
 
