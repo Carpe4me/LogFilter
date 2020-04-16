@@ -165,13 +165,6 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
                 renderBorderMiddleLine(column, cc);
             } else {
                 renderNoBorderLine(column, cc);
-                // 刷新上下的cell（有时候系统不会回调上下的cell的render方法）
-                if (mTable.isRowSelected(row - 1)) {
-                    ((AbstractTableModel) mTable.getModel()).fireTableCellUpdated(row - 1, column);
-                }
-                if (mTable.isRowSelected(row + 1)) {
-                    ((AbstractTableModel) mTable.getModel()).fireTableCellUpdated(row + 1, column);
-                }
             }
         }
     }

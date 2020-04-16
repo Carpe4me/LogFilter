@@ -197,13 +197,19 @@ public class Utils {
     ///////////////////////////////////system///////////////////////////////////
 
     private static String OS;
+    private static String JAVA_VERSION;
 
     static {
         OS = System.getProperty("os.name");
+        JAVA_VERSION = System.getProperty("java.specification.version");
     }
 
     public static String getOsName() {
         return OS;
+    }
+
+    public static String getJavaVersion() {
+        return JAVA_VERSION;
     }
 
     public static boolean isWindows() {
