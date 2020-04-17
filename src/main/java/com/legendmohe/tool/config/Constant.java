@@ -99,4 +99,9 @@ public class Constant {
     public static final String COLOR_HIGH_LIGHT_TYPE_SEARCH = "FFFF00";
     public static final int COLOR_LOG_CELL_BORDER = 0x00000000;
     public static final int COLOR_LOG_TABLE_POPUP_BACKGROUND = 0xDAD8E5;
+
+    ///////////////////////////////////style///////////////////////////////////
+
+    public static final int LOG_TABLE_ROW_PADDING = 9;
+    public static final int LOG_TABLE_CELL_CONTENT_PADDING = 4;
 }

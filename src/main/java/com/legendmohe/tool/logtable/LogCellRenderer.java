@@ -28,7 +28,7 @@ import javax.swing.JTable;
 import javax.swing.border.Border;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.table.AbstractTableModel;
+import javax.swing.plaf.BorderUIResource;
 import javax.swing.table.DefaultTableCellRenderer;
 
 /**
@@ -56,6 +56,7 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
     private final Border SELECTED_BORDER_TOP_BOTTOM_LEFT;
     private final Border SELECTED_BORDER_TOP_BOTTOM_RIGHT;
     private final Border SELECTED_BORDER_NONE;
+    private final Border SELECTED_BORDER_PADDING;
 
     private final int BORDER_WIDTH = 1;
     private final Color BORDER_COLOR = new Color(Constant.COLOR_LOG_CELL_BORDER);
@@ -87,7 +88,9 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
         SELECTED_BORDER_TOP_BOTTOM_RIGHT = BorderFactory.createCompoundBorder(SELECTED_BORDER_TOP_BOTTOM, SELECTED_BORDER_RIGHT);
 
         SELECTED_BORDER_TOTAL = BorderFactory.createCompoundBorder(SELECTED_BORDER_TOP_LEFT, SELECTED_BORDER_BOTTOM_RIGHT);
-        SELECTED_BORDER_NONE = BorderFactory.createEmptyBorder(0, 4, 0, 4);
+        SELECTED_BORDER_NONE = BorderFactory.createEmptyBorder(0, 0, 0, 0);
+
+        SELECTED_BORDER_PADDING = BorderFactory.createEmptyBorder(0, Constant.LOG_TABLE_CELL_CONTENT_PADDING, 0, Constant.LOG_TABLE_CELL_CONTENT_PADDING);
 
         this.mTable = table;
         this.mResolver = resolver;
@@ -166,6 +169,9 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
             } else {
                 renderNoBorderLine(column, cc);
             }
+
+            Border originalBorder = cc.getBorder();
+            cc.setBorder(new BorderUIResource.CompoundBorderUIResource(originalBorder, SELECTED_BORDER_PADDING));
         }
     }
 

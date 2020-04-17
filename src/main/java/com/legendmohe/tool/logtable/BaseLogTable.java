@@ -5,6 +5,7 @@ import com.legendmohe.tool.ILogRenderResolver;
 import com.legendmohe.tool.LogInfo;
 import com.legendmohe.tool.T;
 import com.legendmohe.tool.Utils;
+import com.legendmohe.tool.config.Constant;
 import com.legendmohe.tool.logflow.LogFlowManager;
 import com.legendmohe.tool.logtable.model.LogFilterTableModel;
 import com.legendmohe.tool.parser.LogCatParser;
@@ -102,7 +103,7 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
         setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         getTableHeader().setReorderingAllowed(false);
         m_fFontSize = 12;
-        setOpaque(false);
+        setOpaque(true);
         setAutoscrolls(false);
         setIntercellSpacing(new Dimension(0, 0));
         setShowGrid(false);
@@ -546,7 +547,7 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
 
     public void setFontSize(int nFontSize) {
         m_fFontSize = nFontSize;
-        setRowHeight(nFontSize + 6);
+        setRowHeight(nFontSize + Constant.LOG_TABLE_ROW_PADDING);
     }
 
     public void setValueAt(Object aValue, int row, int column) {
