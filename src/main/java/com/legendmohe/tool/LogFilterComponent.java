@@ -1613,7 +1613,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         button.setOpaque(false);
         button.setContentAreaFilled(false);
         button.setFocusable(false);
-        button.setBorder(BorderFactory.createEmptyBorder(4,0,0,6));
+        button.setBorder(BorderFactory.createEmptyBorder(4,6,4,6));
         button.addActionListener(e -> {
             FloatingFrameInfo frameInfo = frameInfoProvider.onFilterFloating(LogFilterComponent.this, target.getTarget(), mCurTitle);
             if (!frameInfo.isRemoved) {

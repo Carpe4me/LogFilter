@@ -1,5 +1,6 @@
 package com.legendmohe.tool.config;
 
+import java.awt.Color;
 import java.io.File;
 
 public class Constant {
@@ -73,13 +74,8 @@ public class Constant {
     public static int COLOR_GUIDE = 0x00000000;
     public static int COLOR_BOOKMARK = 0x00DDDDDD;
     public static int COLOR_BOOKMARK2 = 0x00DDDDFF;
-    public static int COLOR_LOG_FLOW_NORMAL = 0x0000ccff;
-    public static int COLOR_LOG_FLOW_NORMAL_LINE = 0x00cce6ff;
-    public static int COLOR_LOG_FLOW_ERROR = 0x00FF0000;
-    public static int COLOR_LOG_FLOW_ERROR_LINE = 0x00ffb3b3;
-    public static int COLOR_LOG_FLOW_TEXT = 0x00484848;
     public static int COLOR_DEBUG = 0x000000AA;
-    public static int COLOR_ERROR = 0x00FF0000;
+    public static int COLOR_ERROR = new Color(229, 71, 0).getRGB();
     public static int COLOR_FATAL = 0x00FF0000;
     public static int COLOR_INFO = 0x00009A00;
     public static int COLOR_WARN = 0x00FF9A00;
@@ -92,7 +88,17 @@ public class Constant {
     public static int COLOR_6 = COLOR_INFO;
     public static int COLOR_7 = COLOR_DEBUG;
     public static int COLOR_8 = COLOR_ERROR;
+    public static int COLOR_LOG_FLOW_NORMAL = 0x0000ccff;
+    public static int COLOR_LOG_FLOW_NORMAL_LINE = 0x00cce6ff;
+    public static int COLOR_LOG_FLOW_ERROR = 0x00FF0000;
+    public static int COLOR_LOG_FLOW_ERROR_LINE = 0x00ffb3b3;
+    public static int COLOR_LOG_FLOW_TEXT = 0x00484848;
     public static String[] COLOR_HIGHLIGHT;
+
+    public static final Color TABLE_SELECTION_BG_COLOR = new Color(219, 219, 219);
+
+    public static final Color COLOR_INDICATOR_BOOKMARK = new Color(64, 131, 201);
+    public static final Color COLOR_INDICATOR_ERROR = new Color(COLOR_ERROR);
 
     public static final String COLOR_HIGH_LIGHT_TYPE_FILTER = "FF0000";
     public static final String COLOR_HIGH_LIGHT_TYPE_HIGH_LIGHT = "00FF00";

@@ -1,5 +1,6 @@
 package com.legendmohe.tool;
 
+import com.formdev.flatlaf.FlatLightLaf;
 import com.legendmohe.tool.thirdparty.util.OsCheck;
 
 import java.awt.Component;
@@ -48,23 +49,30 @@ public class Main {
     }
 
     private static void configByPlatform() {
-        if (OsCheck.getOperatingSystemType() == OsCheck.OSType.Windows) {
-            setUIFont(new javax.swing.plaf.FontUIResource("微软雅黑", Font.PLAIN, 12));
-        } else {
-            setUIFont(new javax.swing.plaf.FontUIResource("Consoles", Font.PLAIN, 12));
-        }
+        FlatLightLaf.install();
         try {
-            UIManager.setLookAndFeel(
-                    UIManager.getCrossPlatformLookAndFeelClassName());
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            UIManager.setLookAndFeel(new FlatLightLaf());
         } catch (UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
+//
+//        if (OsCheck.getOperatingSystemType() == OsCheck.OSType.Windows) {
+//            setUIFont(new javax.swing.plaf.FontUIResource("微软雅黑", Font.PLAIN, 12));
+//        } else {
+//            setUIFont(new javax.swing.plaf.FontUIResource("Consoles", Font.PLAIN, 12));
+//        }
+//        try {
+//            UIManager.setLookAndFeel(
+//                    UIManager.getCrossPlatformLookAndFeelClassName());
+//        } catch (ClassNotFoundException e) {
+//            e.printStackTrace();
+//        } catch (InstantiationException e) {
+//            e.printStackTrace();
+//        } catch (IllegalAccessException e) {
+//            e.printStackTrace();
+//        } catch (UnsupportedLookAndFeelException e) {
+//            e.printStackTrace();
+//        }
 
         if (OsCheck.getOperatingSystemType() == OsCheck.OSType.MacOS) {
             InputMap im = (InputMap) UIManager.get("TextField.focusInputMap");
