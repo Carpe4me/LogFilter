@@ -2049,7 +2049,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
 
     void setDnDListener() {
 
-        new DropTarget(m_tbLogTable, DnDConstants.ACTION_COPY_OR_MOVE,
+        new DropTarget(mMainSplitPane, DnDConstants.ACTION_COPY_OR_MOVE,
                 new DropTargetListener() {
                     public void dropActionChanged(DropTargetDragEvent dtde) {
                     }
