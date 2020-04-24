@@ -306,6 +306,8 @@ public class LogTable extends BaseLogTable {
 
     private static final int FIX_POPUP_MIN_WIDTH = 100;
 
+    private static final int FIX_POPUP_MAX_HEIGHT = 200;
+
     private List<FixPopup> mMsgTipsPopups = new ArrayList<>();
 
     @Override
@@ -341,7 +343,7 @@ public class LogTable extends BaseLogTable {
         Pair<String, Boolean> popupContent = getPopupContent(value, row, col);
         String content = popupContent.getKey();
         boolean hasFlowResult = popupContent.getValue();
-        FixPopup popup = new FixPopup(content, FIX_POPUP_MAX_WIDTH, FIX_POPUP_MIN_WIDTH, row);
+        FixPopup popup = new FixPopup(content, FIX_POPUP_MAX_WIDTH, FIX_POPUP_MIN_WIDTH, FIX_POPUP_MAX_HEIGHT, row);
         popup.setListener(new FixPopup.Listener() {
             @Override
             public void onGoButtonClick(FixPopup popup) {

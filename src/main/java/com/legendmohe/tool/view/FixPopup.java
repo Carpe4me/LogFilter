@@ -26,6 +26,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.Popup;
 import javax.swing.PopupFactory;
@@ -60,7 +61,7 @@ public class FixPopup extends JPanel {
     private Object mContext;
     private final JPanel mBottomPanel;
 
-    public FixPopup(String message, int maxWidth, int minWidth, Object context) {
+    public FixPopup(String message, int maxWidth, int minWidth, int maxHeight, Object context) {
         mMessage = message;
         mContext = context;
 
@@ -74,7 +75,10 @@ public class FixPopup extends JPanel {
 
         JTextArea textArea = createMultiLineLabel(message);
         setupTextArea(textArea, maxWidth, minWidth);
-        add(textArea);
+
+        JScrollPane scrollPane = new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setPreferredSize(new Dimension(maxWidth, (int) Math.min(textArea.getPreferredSize().getHeight(), maxHeight) + 10));
+        add(scrollPane);
 
         mBottomPanel = createBottomPanel();
         add(mBottomPanel);
@@ -151,7 +155,7 @@ public class FixPopup extends JPanel {
         textArea.setOpaque(false);
         textArea.setFocusable(true);
         textArea.setFont(getFont().deriveFont(getFont().getSize()));
-//        textArea.setWrapStyleWord(true); // 高度会计算错误
+        textArea.setWrapStyleWord(false); // 高度会计算错误
         textArea.setLineWrap(true);
         return textArea;
     }
@@ -160,7 +164,7 @@ public class FixPopup extends JPanel {
         btnPanel.setBorder(null);
         btnPanel.setBackground(null);
         btnPanel.setOpaque(false);
-        btnPanel.setBorder(new EmptyBorder(TOOLBAR_PANEL_PADDING, TOOLBAR_PANEL_PADDING, 0, TOOLBAR_PANEL_PADDING));
+        btnPanel.setBorder(new EmptyBorder(TOOLBAR_PANEL_PADDING, TOOLBAR_PANEL_PADDING, TOOLBAR_PANEL_PADDING, TOOLBAR_PANEL_PADDING));
 
         JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 0));
         rightPanel.setBorder(null);

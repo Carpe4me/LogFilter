@@ -87,7 +87,7 @@ public class Constant {
     public static final String COLOR_HIGH_LIGHT_TYPE_SEARCH = "FFFF00";
 
     public static final Color COLOR_LOG_CELL_BORDER = new Color(0x00000000);
-    public static final Color COLOR_LOG_TABLE_POPUP_BACKGROUND = new Color(164, 187, 212);
+    public static final Color COLOR_LOG_TABLE_POPUP_BACKGROUND = new Color(242, 242, 242);
     public static final Color COLOR_LOG_TABLE_POPUP_BORDER= new Color(64, 131, 201);
     public static final int TABLE_POPUP_BORDER_THICKNESS= 1;
 
