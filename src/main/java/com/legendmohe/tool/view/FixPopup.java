@@ -253,7 +253,7 @@ public class FixPopup extends JPanel {
         }
 
         Dimension d = new Dimension();
-        d.setSize(targetWidth + (CONTENT_PANEL_PADDING) * 2, targetHeight + (CONTENT_PANEL_PADDING) * 2);
+        d.setSize(targetWidth + (CONTENT_PANEL_PADDING) * 2, targetHeight + (CONTENT_PANEL_PADDING) * 2 + 10);
 
         textArea.setPreferredSize(d);
         textArea.setBorder(new EmptyBorder(CONTENT_PANEL_PADDING, CONTENT_PANEL_PADDING, CONTENT_PANEL_PADDING, CONTENT_PANEL_PADDING));

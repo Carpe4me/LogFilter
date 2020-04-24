@@ -248,6 +248,8 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
             } else {
                 c.setForeground(logInfo.getTextColor());
             }
+        } else {
+            c.setForeground(Constant.COLOR_UNKNOWN);
         }
         if (isSelected) {
             if (logInfo.isMarked()) {

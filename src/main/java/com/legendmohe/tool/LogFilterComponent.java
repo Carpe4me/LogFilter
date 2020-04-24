@@ -22,9 +22,7 @@ import com.legendmohe.tool.view.DumpsysViewDialog;
 import com.legendmohe.tool.view.ListDialog;
 import com.legendmohe.tool.view.LogFlowDialog;
 import com.legendmohe.tool.view.PackageViewDialog;
-import com.legendmohe.tool.view.RecentFileMenu;
 import com.legendmohe.tool.view.RowsContentDialog;
-import com.legendmohe.tool.view.TextConverterDialog;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -108,13 +106,13 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JProgressBar;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
-import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.OverlayLayout;
 import javax.swing.SwingConstants;
@@ -156,7 +154,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
 
     LogFilterFrame.FrameInfoProvider frameInfoProvider;
     LogFlowManager logFlowManager = new LogFlowManager();
-    JLabel m_tfStatus;
+    JProgressBar m_progressLoading;
     IndicatorPanel m_ipIndicator;
     ArrayList<LogInfo> m_arLogInfoAll;
     ArrayList<LogInfo> m_arLogInfoFiltered;
@@ -1533,7 +1531,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         button.setOpaque(false);
         button.setContentAreaFilled(false);
         button.setFocusable(false);
-        button.setBorder(BorderFactory.createEmptyBorder(4,6,4,6));
+        button.setBorder(BorderFactory.createEmptyBorder(4, 6, 4, 6));
         button.addActionListener(e -> {
             FloatingFrameInfo frameInfo = frameInfoProvider.onFilterFloating(LogFilterComponent.this, target.getTarget(), mCurTitle);
             if (!frameInfo.isRemoved) {
@@ -1697,8 +1695,6 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
 
         Border border = BorderFactory.createCompoundBorder(new EmptyBorder(0, 4, 0, 0), new EtchedBorder());
 
-        m_tfStatus = new JLabel("ready");
-        m_tfStatus.setBorder(border);
         m_tfDiffPort = new JLabel("not bind");
         m_tfDiffPort.setBorder(border);
         m_tfDiffState = new JLabel("disconnected");
@@ -1706,13 +1702,19 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         m_tfParserType = new JLabel("");
         m_tfParserType.setBorder(border);
 
+        m_progressLoading = new JProgressBar(0, 100);
+        m_progressLoading.setVisible(false);
+        m_progressLoading.setIndeterminate(false);
+        m_progressLoading.setStringPainted(true);
+        m_progressLoading.setString("");
+        m_progressLoading.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
+
+        tfPanel.add(m_progressLoading, constraints);
         tfPanel.add(m_tfDiffState, constraints);
         tfPanel.add(m_tfDiffPort, constraints);
         tfPanel.add(m_tfParserType, constraints);
-        tfPanel.add(m_tfStatus, constraints);
 
         mainP.add(tfPanel, BorderLayout.EAST);
-
         return mainP;
     }
 
@@ -1796,7 +1798,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         // parsing
         new Thread(new Runnable() {
             public void run() {
-                setStatus("Parsing");
+                setLoadingState(LoadingState.LOADING, "parsing");
                 clearData();
                 getLogTable().clearSelection();
                 getSubTable().clearSelection();
@@ -1877,7 +1879,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
                 runFilter();
 
                 mLastParseredFiles = files;
-                setStatus("Parse complete");
+                setLoadingState(LoadingState.IDLE, "");
             }
         }).start();
     }
@@ -2100,8 +2102,19 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
                     + m_comboCmd.getSelectedItem();
     }
 
-    void setStatus(String strText) {
-        m_tfStatus.setText(strText);
+    void setLoadingState(LoadingState status, String text) {
+        switch (status) {
+            case IDLE:
+                m_progressLoading.setString("");
+                m_progressLoading.setVisible(false);
+                m_progressLoading.setIndeterminate(false);
+                break;
+            case LOADING:
+                m_progressLoading.setString(text);
+                m_progressLoading.setVisible(true);
+                m_progressLoading.setIndeterminate(true);
+                break;
+        }
     }
 
     public void setTitleAndTips(String strTitle, String tips) {
@@ -2138,6 +2151,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
                 BufferedReader br = null;
 
                 try {
+                    setLoadingState(LoadingState.LOADING, "dumping");
                     fstream = new FileInputStream(m_strLogFileName);
                     in = new DataInputStream(fstream);
                     if (m_comboEncode.getSelectedItem().equals("UTF-8"))
@@ -2221,6 +2235,8 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
                 } catch (Exception e) {
                     e.printStackTrace();
                     T.e(e);
+                } finally {
+                    setLoadingState(LoadingState.IDLE, "");
                 }
                 try {
                     if (br != null)
@@ -2292,7 +2308,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
                             m_ipIndicator.setData(m_arLogInfoFiltered,
                                     m_hmMarkedInfoFiltered, m_hmErrorFiltered);
                             // updateTable(-1);
-                            setStatus("Parsing");
+                            setLoadingState(LoadingState.LOADING, "filtering");
 
                             int nRowCount = m_arLogInfoAll.size();
                             LogInfo logInfo;
@@ -2379,7 +2395,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
                                 } else {
                                     updateLogTable(m_arLogInfoFiltered.size() - 1, true);
                                 }
-                                setStatus("Complete");
+                                setLoadingState(LoadingState.IDLE, "");
                             }
                         }
                     }
@@ -3641,6 +3657,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
 
     /**
      * 自己从tabpane中被移除
+     *
      * @param index
      */
     @Override
@@ -3659,6 +3676,11 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
 
     enum FileType {
         LOG, MODE
+    }
+
+    enum LoadingState {
+        IDLE,
+        LOADING,
     }
 
     private static class TargetDevice {
