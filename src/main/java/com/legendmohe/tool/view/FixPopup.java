@@ -42,7 +42,7 @@ public class FixPopup extends JPanel {
 
     private static final int TOOLBAR_PANEL_PADDING = 4;
 
-    private static final int BORDER_THICKNESS = 1;
+    private static final int BORDER_THICKNESS = Constant.TABLE_POPUP_BORDER_THICKNESS;
 
     private Popup mInternalPopup;
 
@@ -65,8 +65,8 @@ public class FixPopup extends JPanel {
         mContext = context;
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, BORDER_THICKNESS, true));
-        setBackground(new Color(Constant.COLOR_LOG_TABLE_POPUP_BACKGROUND));
+        setBorder(BorderFactory.createLineBorder(Constant.COLOR_LOG_TABLE_POPUP_BORDER, BORDER_THICKNESS, true));
+        setBackground(Constant.COLOR_LOG_TABLE_POPUP_BACKGROUND);
 
         JPanel btnPanel = new JPanel(new BorderLayout());
         setupToolBar(btnPanel);

@@ -354,7 +354,6 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         mUIStateSaver.load();
 
         loadUI();
-        loadColor();
         loadCmd();
         initDiffService();
         initLogFlow();
@@ -664,8 +663,6 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         if (m_thFilterParse != null)
             m_thFilterParse.interrupt();
 
-        saveColor();
-
         if (mLogSplitPane.getDividerLocation() > 1) {
             mLogSplitPaneDividerLocation = mLogSplitPane.getDividerLocation();
         }
@@ -724,83 +721,6 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         switchToLogParser(m_parserType);
     }
 
-    void loadColor() {
-        try {
-            Properties p = new Properties();
-
-            p.load(new FileInputStream(Constant.INI_FILE_COLOR));
-
-            Constant.COLOR_0 = Integer.parseInt(p.getProperty(Constant.INI_COLOR_0)
-                    .replace("0x", ""), 16);
-            Constant.COLOR_1 = Integer.parseInt(p.getProperty(Constant.INI_COLOR_1)
-                    .replace("0x", ""), 16);
-            Constant.COLOR_2 = Integer.parseInt(p.getProperty(Constant.INI_COLOR_2)
-                    .replace("0x", ""), 16);
-            Constant.COLOR_ERROR = Constant.COLOR_3 = Integer.parseInt(p
-                    .getProperty(Constant.INI_COLOR_3).replace("0x", ""), 16);
-            Constant.COLOR_WARN = Constant.COLOR_4 = Integer.parseInt(p
-                    .getProperty(Constant.INI_COLOR_4).replace("0x", ""), 16);
-            Constant.COLOR_5 = Integer.parseInt(p.getProperty(Constant.INI_COLOR_5)
-                    .replace("0x", ""), 16);
-            Constant.COLOR_INFO = Constant.COLOR_6 = Integer.parseInt(p
-                    .getProperty(Constant.INI_COLOR_6).replace("0x", ""), 16);
-            Constant.COLOR_DEBUG = Constant.COLOR_7 = Integer.parseInt(p
-                    .getProperty(Constant.INI_COLOR_7).replace("0x", ""), 16);
-            Constant.COLOR_FATAL = Constant.COLOR_8 = Integer.parseInt(p
-                    .getProperty(Constant.INI_COLOR_8).replace("0x", ""), 16);
-
-            int nCount = Integer.parseInt(p.getProperty(Constant.INI_HIGILIGHT_COUNT,
-                    "0"));
-            if (nCount > 0) {
-                Constant.COLOR_HIGHLIGHT = new String[nCount];
-                for (int nIndex = 0; nIndex < nCount; nIndex++)
-                    Constant.COLOR_HIGHLIGHT[nIndex] = p.getProperty(
-                            Constant.INI_HIGILIGHT_ + nIndex).replace("0x", "");
-            } else {
-                Constant.COLOR_HIGHLIGHT = new String[1];
-                Constant.COLOR_HIGHLIGHT[0] = "ffff";
-            }
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-    }
-
-    void saveColor() {
-        try {
-            Properties p = new Properties();
-
-            p.setProperty(Constant.INI_COLOR_0,
-                    "0x" + Integer.toHexString(Constant.COLOR_0).toUpperCase());
-            p.setProperty(Constant.INI_COLOR_1,
-                    "0x" + Integer.toHexString(Constant.COLOR_1).toUpperCase());
-            p.setProperty(Constant.INI_COLOR_2,
-                    "0x" + Integer.toHexString(Constant.COLOR_2).toUpperCase());
-            p.setProperty(Constant.INI_COLOR_3,
-                    "0x" + Integer.toHexString(Constant.COLOR_3).toUpperCase());
-            p.setProperty(Constant.INI_COLOR_4,
-                    "0x" + Integer.toHexString(Constant.COLOR_4).toUpperCase());
-            p.setProperty(Constant.INI_COLOR_5,
-                    "0x" + Integer.toHexString(Constant.COLOR_5).toUpperCase());
-            p.setProperty(Constant.INI_COLOR_6,
-                    "0x" + Integer.toHexString(Constant.COLOR_6).toUpperCase());
-            p.setProperty(Constant.INI_COLOR_7,
-                    "0x" + Integer.toHexString(Constant.COLOR_7).toUpperCase());
-            p.setProperty(Constant.INI_COLOR_8,
-                    "0x" + Integer.toHexString(Constant.COLOR_8).toUpperCase());
-
-            if (Constant.COLOR_HIGHLIGHT != null) {
-                p.setProperty(Constant.INI_HIGILIGHT_COUNT, ""
-                        + Constant.COLOR_HIGHLIGHT.length);
-                for (int nIndex = 0; nIndex < Constant.COLOR_HIGHLIGHT.length; nIndex++)
-                    p.setProperty(Constant.INI_HIGILIGHT_ + nIndex, "0x"
-                            + Constant.COLOR_HIGHLIGHT[nIndex].toUpperCase());
-            }
-
-            p.store(new FileOutputStream(Constant.INI_FILE_COLOR), "done.");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     /*
             // F2 上一个标签 F3 下一个标签

@@ -25,6 +25,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -59,7 +60,7 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
     private final Border SELECTED_BORDER_PADDING;
 
     private final int BORDER_WIDTH = 1;
-    private final Color BORDER_COLOR = new Color(Constant.COLOR_LOG_CELL_BORDER);
+    private final Color BORDER_COLOR = Constant.COLOR_LOG_CELL_BORDER;
 
     private JTable mTable;
     private ILogRenderResolver mResolver;
@@ -90,7 +91,7 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
         SELECTED_BORDER_TOTAL = BorderFactory.createCompoundBorder(SELECTED_BORDER_TOP_LEFT, SELECTED_BORDER_BOTTOM_RIGHT);
         SELECTED_BORDER_NONE = BorderFactory.createEmptyBorder(0, 0, 0, 0);
 
-        SELECTED_BORDER_PADDING = BorderFactory.createEmptyBorder(0, Constant.LOG_TABLE_CELL_CONTENT_PADDING, 0, Constant.LOG_TABLE_CELL_CONTENT_PADDING);
+        SELECTED_BORDER_PADDING = BorderFactory.createEmptyBorder(0, Constant.LOG_TABLE_CELL_CONTENT_PADDING_LEFT, 0, Constant.LOG_TABLE_CELL_CONTENT_PADDING_RIGHT);
 
         this.mTable = table;
         this.mResolver = resolver;
@@ -131,6 +132,9 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
                 value = buildCellContent(column, String.valueOf(targetContent));
             }
         }
+        if (value instanceof String && ((String) value).length() > 0) {
+            value = formatValue(logInfo, row, column, (String) value, dimLine);
+        }
         Component c = super.getTableCellRendererComponent(table,
                 value,
                 isSelected,
@@ -145,6 +149,17 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
             renderLogFlow(isSelected, logInfo, column, c);
         }
         return c;
+    }
+
+    private String formatValue(LogInfo logInfo, int row, int column, String value, boolean dimLine) {
+        if (column == LogFilterTableModel.COLUMN_TAG) {
+            if (dimLine) {
+                return value + "   ";
+            } else {
+                return value + " --";
+            }
+        }
+        return value;
     }
 
     private void renderBorder(int row, int column, Component c) {
@@ -238,10 +253,10 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
         if (isSelected) {
             c.setFont(getFont().deriveFont(mResolver.getFontSize() + 1));
             if (logInfo.isMarked()) {
-                c.setBackground(new Color(Constant.COLOR_BOOKMARK2));
+                c.setBackground(Constant.COLOR_BOOKMARK2);
             }
         } else if (logInfo.isMarked()) {
-            c.setBackground(new Color(Constant.COLOR_BOOKMARK));
+            c.setBackground(Constant.COLOR_BOOKMARK);
         } else {
             c.setBackground(Color.WHITE);
         }
@@ -252,6 +267,9 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
             c.setFont(getFont().deriveFont(Font.BOLD, mResolver.getFontSize()));
         } else {
             c.setFont(getFont().deriveFont(Font.PLAIN, mResolver.getFontSize()));
+        }
+        if (column == LogFilterTableModel.COLUMN_TAG) {
+            ((JLabel) c).setHorizontalAlignment(SwingConstants.RIGHT);
         }
     }
 
@@ -448,17 +466,17 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
             if (flowResults != null && flowResults.size() > 0) {
                 if (mResolver.getMinShownColumn() == column) {
                     if (logInfo.hasErrorFlowResult()) {
-                        label.setIcon(Utils.createImageIcon(new Color(Constant.COLOR_LOG_FLOW_ERROR), 14, 14));
+                        label.setIcon(Utils.createImageIcon(Constant.COLOR_LOG_FLOW_ERROR, 14, 14));
                     } else {
-                        label.setIcon(Utils.createImageIcon(new Color(Constant.COLOR_LOG_FLOW_NORMAL), 14, 14));
+                        label.setIcon(Utils.createImageIcon(Constant.COLOR_LOG_FLOW_NORMAL, 14, 14));
                     }
                 }
                 // 需要高亮的
                 if (mFlowHighLightLines.contains(logInfo.getLine())) {
                     if (logInfo.hasErrorFlowResult()) {
-                        label.setBackground(new Color(Constant.COLOR_LOG_FLOW_ERROR_LINE));
+                        label.setBackground(Constant.COLOR_LOG_FLOW_ERROR_LINE);
                     } else {
-                        label.setBackground(new Color(Constant.COLOR_LOG_FLOW_NORMAL_LINE));
+                        label.setBackground(Constant.COLOR_LOG_FLOW_NORMAL_LINE);
                     }
                 }
                 return;
