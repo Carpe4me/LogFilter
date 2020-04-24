@@ -155,7 +155,7 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
             if (dimLine) {
                 return value + "  ";
             } else {
-                return value + " >";
+                return value + " :";
             }
         }
         return value;
