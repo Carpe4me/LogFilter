@@ -2,6 +2,7 @@ package com.legendmohe.tool.view;
 
 import com.legendmohe.tool.LogInfo;
 import com.legendmohe.tool.T;
+import com.legendmohe.tool.config.Constant;
 import com.legendmohe.tool.logflow.LogFlowManager;
 
 import java.awt.BorderLayout;
@@ -181,9 +182,9 @@ public class LogFlowDialog {
                     contentLabel.setToolTipText(result.resultLine.desc);
                 }
                 if (!result.isCompleted) {
-                    contentLabel.setBackground(Color.RED);
+                    contentLabel.setForeground(Constant.COLOR_LOG_FLOW_FONT_ERROR);
                 } else {
-                    contentLabel.setBackground(Color.WHITE);
+                    contentLabel.setForeground(Constant.COLOR_LOG_FLOW_FONT_NORMAL);
                 }
             }
         };
@@ -253,8 +254,9 @@ public class LogFlowDialog {
         resultTable.setRowHeight(20);
         resultTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         resultTable.getTableHeader().setReorderingAllowed(false);
-        resultTable.setOpaque(false);
+        resultTable.setOpaque(true);
         resultTable.setAutoscrolls(false);
+        resultTable.setSelectionBackground(Constant.TABLE_LOG_FLOW_SELECTION_BG_COLOR);
 
         // pack all columns
         EventQueue.invokeLater(new Runnable() {

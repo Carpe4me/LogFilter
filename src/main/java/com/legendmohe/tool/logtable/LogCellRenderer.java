@@ -119,21 +119,18 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
             LogInfo lastLogInfo = tableModel.getRow(row - 1);
             if ((!logInfo.isSingleMsgLine() && lastLogInfo.isSingleMsgLine()) || !lastLogInfo.getContentByColumn(column).equals(targetContent)) {
                 dimLine = false;
-                value = buildCellContent(column, String.valueOf(targetContent));
             } else {
                 dimLine = true;
-                value = String.valueOf(targetContent);
             }
+            targetContent = addSuffixOrPrefixToInfoText(logInfo, row, column, (String) targetContent, dimLine);
+            value = buildCellContent(column, String.valueOf(targetContent), dimLine);
         } else {
             // 分行log单独处理
             if (logInfo.isSingleMsgLine() && !(column == LogFilterTableModel.COLUMN_MESSAGE || column == LogFilterTableModel.COLUMN_LINE)) {
                 value = "";
             } else {
-                value = buildCellContent(column, String.valueOf(targetContent));
+                value = buildCellContent(column, String.valueOf(targetContent), dimLine);
             }
-        }
-        if (value instanceof String && ((String) value).length() > 0) {
-            value = formatValue(logInfo, row, column, (String) value, dimLine);
         }
         Component c = super.getTableCellRendererComponent(table,
                 value,
@@ -151,12 +148,14 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
         return c;
     }
 
-    private String formatValue(LogInfo logInfo, int row, int column, String value, boolean dimLine) {
+    // 添加前缀，后缀
+    // 目前用于为tag column添加后缀
+    private String addSuffixOrPrefixToInfoText(LogInfo logInfo, int row, int column, String value, boolean dimLine) {
         if (column == LogFilterTableModel.COLUMN_TAG) {
             if (dimLine) {
-                return value + "   ";
+                return value + "  ";
             } else {
-                return value + " --";
+                return value + " >";
             }
         }
         return value;
@@ -281,16 +280,20 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
     2. 根据优先级对逐个字符进行染色
     3. 根据染色结果，分区间进行处理
      */
-    private String buildCellContent(int columnIndex, String strText) {
+    private String buildCellContent(int columnIndex, String strText, boolean dimLine) {
         if (Utils.isEmpty(strText)) {
             return strText;
         }
+        // dim的行不能有html
+        if (dimLine) {
+            return strText;
+        }
+        // html里面的空格会被压缩成一个
+        strText = strText.replaceAll(" ", "\u00A0");
+
         // 1. 收集匹配区间
         List<List<HighLightItem>> resultList = new ArrayList<>();
         int resultCount = 0;
-
-        // html里面的空格会被压缩成一个
-        strText = strText.replaceAll(" ", "\u00A0");
         // render filter
         if (columnIndex == LogFilterTableModel.COLUMN_MESSAGE || columnIndex == LogFilterTableModel.COLUMN_TAG) {
             String strFind = columnIndex == LogFilterTableModel.COLUMN_MESSAGE ? mResolver.GetFilterFind() : mResolver.GetFilterShowTag();
@@ -322,7 +325,7 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
         }
         if (resultCount > 0) {
             strText = transformHighItemToString(strText, resultList);
-            strText = "<html><nobr>" + strText + "</nobr></html>";
+            strText = "<html><nobr >" + strText + "</nobr></html>";
         }
 
         return strText.replace("\t", "    ");

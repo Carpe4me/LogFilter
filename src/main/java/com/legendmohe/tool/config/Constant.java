@@ -69,6 +69,8 @@ public class Constant {
     public static Color COLOR_1 = new Color(0x00000000);
     public static Color COLOR_2 = new Color(0x00000000);
     public static Color COLOR_5 = new Color(0x00000000);
+    public static Color COLOR_LOG_FLOW_FONT_NORMAL = new Color(0x000000);
+    public static Color COLOR_LOG_FLOW_FONT_ERROR = new Color(0x00FF0000);
     public static Color COLOR_LOG_FLOW_NORMAL = new Color(0x0000ccff);
     public static Color COLOR_LOG_FLOW_NORMAL_LINE = new Color(0x00cce6ff);
     public static Color COLOR_LOG_FLOW_ERROR = new Color(0x00FF0000);
@@ -76,6 +78,7 @@ public class Constant {
     public static Color COLOR_LOG_FLOW_TEXT = new Color(0x00484848);
     public static String[] COLOR_HIGHLIGHT;
     public static final Color TABLE_SELECTION_BG_COLOR = new Color(219, 219, 219);
+    public static final Color TABLE_LOG_FLOW_SELECTION_BG_COLOR = new Color(208, 226, 255);
     public static final Color COLOR_INDICATOR_BOOKMARK = new Color(64, 131, 201);
     public static final Color COLOR_INDICATOR_ERROR = COLOR_ERROR;
 
