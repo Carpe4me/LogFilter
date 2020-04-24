@@ -250,7 +250,6 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
             }
         }
         if (isSelected) {
-            c.setFont(getFont().deriveFont(mResolver.getFontSize()));
             if (logInfo.isMarked()) {
                 c.setBackground(Constant.COLOR_BOOKMARK2);
             }
