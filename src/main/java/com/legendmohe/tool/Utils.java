@@ -29,10 +29,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
+import javax.swing.KeyStroke;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.event.UndoableEditListener;
-import javax.swing.text.DefaultEditorKit;
 import javax.swing.text.JTextComponent;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
@@ -69,21 +71,6 @@ public class Utils {
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
-    }
-
-    public static String runCmdAndGetOutput(String[] cmd) throws IOException {
-        ProcessBuilder builder = new ProcessBuilder(cmd);
-        builder.redirectErrorStream(true);
-        Process p = builder.start();
-        BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
-        String line;
-        while (true) {
-            line = r.readLine();
-            if (line == null) {
-                break;
-            }
-        }
-        return line;
     }
 
     public static void runCmd(String[] cmd) throws IOException {
@@ -326,5 +313,50 @@ public class Utils {
     public static boolean isAltKeyPressed(KeyEvent e) {
         int keyMask = InputEvent.ALT_MASK;
         return (e.getModifiers() & keyMask) == keyMask;
+    }
+
+    public static List<String> processCmd(String[] cmd) throws IOException {
+        try {
+            ProcessBuilder processBuilder = new ProcessBuilder(cmd);
+            processBuilder.redirectErrorStream(true);
+            Process oProcess = processBuilder.start();
+
+            BufferedReader stdOut = new BufferedReader(new InputStreamReader(
+                    oProcess.getInputStream()));
+
+            String s;
+            ArrayList<String> sb = new ArrayList<>();
+            while ((s = stdOut.readLine()) != null) {
+                if (s.trim().length() != 0)
+                    sb.add(s);
+            }
+            return sb;
+        } catch (IOException e) {
+            T.e("e = " + e);
+            throw e;
+        }
+    }
+
+    public static String joinString(List<String> result, boolean appendNewLine) {
+        if (result == null) {
+            return "null";
+        }
+        StringBuilder sb = new StringBuilder();
+        for (String s : result) {
+            sb.append(s);
+            if (appendNewLine)
+                sb.append("\n");
+        }
+        return sb.toString();
+    }
+
+    public static String[] getRunnableCmdByPlatform(String customCmd) {
+        String[] cmd;
+        if (isWindows()) {
+            cmd = new String[]{"cmd.exe", "/C", customCmd};
+        } else {
+            cmd = new String[]{"/bin/bash", "-l", "-c", customCmd};
+        }
+        return cmd;
     }
 }

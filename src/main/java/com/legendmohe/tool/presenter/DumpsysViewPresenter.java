@@ -6,12 +6,9 @@ import com.legendmohe.tool.logtable.model.DumpsysViewTableModel;
 import com.legendmohe.tool.view.DumpsysViewDialog;
 
 import java.awt.Rectangle;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JTable;
@@ -51,7 +48,7 @@ public class DumpsysViewPresenter {
                 try {
                     T.d("run dumpsys cmd: " + DumpsysViewPresenter.this.mCmd);
                     String[] getDumpsysCmd = getADBValidCmd(DumpsysViewPresenter.this.mCmd);
-                    List<String> dumpsysResult = processCmd(getDumpsysCmd);
+                    List<String> dumpsysResult = Utils.processCmd(getDumpsysCmd);
                     if (dumpsysResult != null) {
                         for (String item : dumpsysResult) {
                             DumpsysViewTableModel.DumpsysInfo newInfo = new DumpsysViewTableModel.DumpsysInfo();
@@ -75,35 +72,8 @@ public class DumpsysViewPresenter {
         } else {
             customCmd = "adb shell \"" + customCmd + "\"";
         }
-        String[] cmd;
-        if (Utils.isWindows()) {
-            cmd = new String[]{"cmd.exe", "/C", customCmd};
-        } else {
-            cmd = new String[]{"/bin/bash", "-l", "-c", customCmd};
-        }
+        String[] cmd = Utils.getRunnableCmdByPlatform(customCmd);
         return cmd;
-    }
-
-    private List<String> processCmd(String[] cmd) {
-        try {
-            ProcessBuilder processBuilder = new ProcessBuilder(cmd);
-            processBuilder.redirectErrorStream(true);
-            Process oProcess = processBuilder.start();
-
-            BufferedReader stdOut = new BufferedReader(new InputStreamReader(
-                    oProcess.getInputStream()));
-
-            String s;
-            ArrayList<String> sb = new ArrayList<>();
-            while ((s = stdOut.readLine()) != null) {
-                if (s.trim().length() != 0)
-                    sb.add(s);
-            }
-            return sb;
-        } catch (Exception e) {
-            T.e("e = " + e);
-            return null;
-        }
     }
 
     public void saveDumpsysInfoToFile(File file) {

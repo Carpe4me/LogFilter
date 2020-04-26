@@ -41,6 +41,7 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetAdapter;
 import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetEvent;
@@ -1790,6 +1791,10 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         StringBuilder title = new StringBuilder();
         StringBuilder filePathBuilder = new StringBuilder();
         for (File file : files) {
+            if (file == null) {
+                T.e("parse null file");
+                return;
+            }
             filePathBuilder.append(file.getAbsolutePath()).append("|");
             title.append(file.getName()).append(" | ");
         }
@@ -1970,21 +1975,8 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
     }
 
     void setDnDListener() {
-
         new DropTarget(mMainSplitPane, DnDConstants.ACTION_COPY_OR_MOVE,
-                new DropTargetListener() {
-                    public void dropActionChanged(DropTargetDragEvent dtde) {
-                    }
-
-                    public void dragOver(DropTargetDragEvent dtde) {
-                    }
-
-                    public void dragExit(DropTargetEvent dte) {
-                    }
-
-                    public void dragEnter(DropTargetDragEvent event) {
-                    }
-
+                new DropTargetAdapter() {
                     public void drop(DropTargetDropEvent event) {
                         try {
                             event.acceptDrop(DnDConstants.ACTION_COPY);

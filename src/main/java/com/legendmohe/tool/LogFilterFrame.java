@@ -7,6 +7,7 @@ import com.legendmohe.tool.view.AddTabComponent;
 import com.legendmohe.tool.view.ButtonTabComponent;
 import com.legendmohe.tool.view.RecentFileMenu;
 import com.legendmohe.tool.view.TextConverterDialog;
+import com.legendmohe.tool.view.XLogDecoderDialog;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -22,6 +23,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
 import java.io.File;
+import java.util.Arrays;
 import java.util.Map;
 
 import javax.swing.JFrame;
@@ -48,6 +50,8 @@ public class LogFilterFrame extends JFrame {
     int m_nLastHeight;
     @FieldSaveState
     int mWindowState;
+    @FieldSaveState
+    String m_xLogDecoderPath = "";
     private JTabbedPane tabbedPane;
 
     ///////////////////////////////////init///////////////////////////////////
@@ -286,13 +290,7 @@ public class LogFilterFrame extends JFrame {
                 for (int i = 0; i < files.length; i++) {
                     recentFiles[i] = new File(files[i]);
                 }
-                withCurrentFilter(curFilter -> {
-                    if (curFilter.hasLoadLogFileOrRunLogcat()) {
-                        withNewFilter(filter -> filter.parseLogFile(recentFiles));
-                    } else {
-                        curFilter.parseLogFile(recentFiles);
-                    }
-                });
+                loadLogFiles(recentFiles);
             }
         };
 
@@ -309,12 +307,47 @@ public class LogFilterFrame extends JFrame {
             }
         });
 
+        JMenuItem xlogDecoderItem = new JMenuItem("xlog decoder");
+        xlogDecoderItem.setToolTipText("decode xlog files");
+        xlogDecoderItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                new XLogDecoderDialog(
+                        m_xLogDecoderPath,
+                        new XLogDecoderDialog.Listener() {
+                            @Override
+                            public void onClose(String decoderPath) {
+                                m_xLogDecoderPath = decoderPath;
+                            }
+
+                            @Override
+                            public void onLogDecoded(File[] decodedFiles) {
+                                if (decodedFiles != null && decodedFiles.length > 0) {
+                                    loadLogFiles(decodedFiles);
+                                }
+                            }
+                        }
+                ).show();
+            }
+        });
+
         toolsMenu.add(converterItem);
+        toolsMenu.add(xlogDecoderItem);
 
 
         menuBar.add(fileMenu);
         menuBar.add(toolsMenu);
         return menuBar;
+    }
+
+    private void loadLogFiles(File[] recentFiles) {
+        T.d("loadlogFiles=" + Arrays.toString(recentFiles));
+        withCurrentFilter(curFilter -> {
+            if (curFilter.hasLoadLogFileOrRunLogcat()) {
+                withNewFilter(filter -> filter.parseLogFile(recentFiles));
+            } else {
+                curFilter.parseLogFile(recentFiles);
+            }
+        });
     }
 
     //////////////////////////////////////////////////////////////////////
