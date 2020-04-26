@@ -99,14 +99,13 @@ public class ButtonTabComponent extends JPanel {
         //add more space to the top of the component
         setBorder(BorderFactory.createEmptyBorder(2, 0, 0, 0));
 
-        setupRightClickMenu();
+        setupRightClickMenu(label);
     }
 
-    private void setupRightClickMenu() {
-        addMouseListener(new MouseAdapter() {
+    private void setupRightClickMenu(JLabel label) {
+        label.addMouseListener(new MouseAdapter() {
 
             public void mouseReleased(MouseEvent e) {
-                Point p = e.getPoint();
                 if (SwingUtilities.isRightMouseButton(e)) {
                     if (listener != null) {
                         int i = pane.indexOfTabComponent(ButtonTabComponent.this);
