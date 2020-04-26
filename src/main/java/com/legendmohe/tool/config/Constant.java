@@ -57,13 +57,13 @@ public class Constant {
     ///////////////////////////////////颜色///////////////////////////////////
 
     //aarrggbb
-    public static Color COLOR_BOOKMARK = new Color(0x00DDDDDD);
+    public static Color COLOR_BOOKMARK = new Color(0xD9D9D9);
     public static Color COLOR_BOOKMARK2 = new Color(0x00DDDDFF);
     public static Color COLOR_DEBUG = new Color(0x000000AA);
-    public static Color COLOR_ERROR = new Color(229, 71, 0);
+    public static Color COLOR_ERROR = new Color(232, 71, 0);
     public static Color COLOR_FATAL = new Color(0x00FF0000);
     public static Color COLOR_INFO = new Color(0x00009A00);
-    public static Color COLOR_WARN = new Color(0x00FF9A00);
+    public static Color COLOR_WARN = new Color(0xDE8700);
     public static Color COLOR_UNKNOWN = Color.BLACK;
     public static Color COLOR_0 = new Color(0x00000000);
     public static Color COLOR_1 = new Color(0x00000000);
@@ -77,7 +77,7 @@ public class Constant {
     public static Color COLOR_LOG_FLOW_ERROR_LINE = new Color(0x00ffb3b3);
     public static Color COLOR_LOG_FLOW_TEXT = new Color(0x00484848);
     public static String[] COLOR_HIGHLIGHT;
-    public static final Color TABLE_SELECTION_BG_COLOR = new Color(219, 219, 219);
+    public static final Color TABLE_SELECTION_BG_COLOR = new Color(196, 196, 196);
     public static final Color TABLE_LOG_FLOW_SELECTION_BG_COLOR = new Color(208, 226, 255);
     public static final Color COLOR_INDICATOR_BOOKMARK = new Color(64, 131, 201);
     public static final Color COLOR_INDICATOR_ERROR = COLOR_ERROR;
