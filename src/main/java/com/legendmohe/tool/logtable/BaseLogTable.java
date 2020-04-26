@@ -17,6 +17,8 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -44,7 +46,7 @@ import javax.swing.table.TableModel;
 /**
  * Created by xinyu.he on 2016/1/28.
  */
-public abstract class BaseLogTable extends JTable implements FocusListener, ActionListener, ILogRenderResolver {
+public abstract class BaseLogTable extends JTable implements FocusListener, ActionListener, ILogRenderResolver, AdjustmentListener {
 
     BaseLogTableListener mBaseLogTableListener;
     String m_strSearchHighlight;
@@ -984,12 +986,10 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
     ///////////////////////////////////scroll///////////////////////////////////
 
     @Override
-    public void addNotify() {
-        super.addNotify();
-        if (getParent() instanceof JViewport) {
-            ((JViewport) getParent()).addChangeListener(e -> stopHoverTimer());
-        }
+    public void adjustmentValueChanged(AdjustmentEvent e) {
+        stopHoverTimer();
     }
+
 
     ///////////////////////////////////classes///////////////////////////////////
 

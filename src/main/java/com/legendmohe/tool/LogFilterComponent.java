@@ -1728,6 +1728,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         m_tmLogTableModel.setData(m_arLogInfoAll);
         m_tbLogTable = new LogTable(m_tmLogTableModel, this);
         m_logScrollVPane = new JScrollPane(m_tbLogTable);
+        m_logScrollVPane.getVerticalScrollBar().addAdjustmentListener(m_tbLogTable);
 
         JPanel tablePanel = new JPanel();
         tablePanel.setLayout(new OverlayLayout(tablePanel));
