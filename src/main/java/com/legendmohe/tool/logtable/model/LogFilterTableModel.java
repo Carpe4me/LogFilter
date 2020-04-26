@@ -57,7 +57,7 @@ public class LogFilterTableModel extends AbstractTableModel {
     }
 
     public synchronized LogInfo getRow(int row) {
-        return row < m_arData.size() ? m_arData.get(row) : null;
+        return (row >= 0 && row < m_arData.size()) ? m_arData.get(row) : null;
     }
 
     public synchronized void setData(ArrayList<LogInfo> arData) {
