@@ -12,6 +12,7 @@ import com.legendmohe.tool.view.XLogDecoderDialog;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
@@ -23,14 +24,17 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
 
+import javax.swing.AbstractAction;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
@@ -153,8 +157,52 @@ public class LogFilterFrame extends JFrame {
             public void onCloseClicked(int index) {
                 handleCloseTabClicked(index);
             }
+
+            @Override
+            public void onRightButtonClick(int index, int x, int y) {
+                handleRightButtonClick(index, x, y);
+            }
         }));
         return component;
+    }
+
+    private void handleRightButtonClick(int index, int x, int y) {
+        JPopupMenu popup = createRightClickPopUp(index);
+        if (popup != null) {
+            popup.show(tabbedPane.getTabComponentAt(index), x, y);
+        }
+    }
+
+    private JPopupMenu createRightClickPopUp(int index) {
+        JPopupMenu menuPopup = new JPopupMenu();
+        LogFilterComponent component = (LogFilterComponent) tabbedPane.getComponentAt(index);
+        File[] files = component.getLastParseredFiles();
+        if (files == null || files.length <= 0) {
+            return null;
+        }
+
+        JMenuItem openPath = new JMenuItem(new AbstractAction("Open in explorer") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                File targetFile = files[0];
+                try {
+                    Desktop.getDesktop().open(targetFile.getParentFile());
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+        JMenuItem copyPath = new JMenuItem(new AbstractAction("Copy full path to clipboard") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                File targetFile = files[0];
+                Utils.sendContentToClipboard(targetFile.getAbsolutePath());
+            }
+        });
+
+        menuPopup.add(openPath);
+        menuPopup.add(copyPath);
+        return menuPopup;
     }
 
     private void handleTabAddClicked(int addComponentIndex) {

@@ -2157,6 +2157,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
                     setTitleAndTips(m_strLogFileName, m_strLogFileName);
 
                     m_arLogInfoAll.clear();
+                    mLastParseredFiles = null;
 
                     boolean bEndLine;
                     int nSelectedIndex;
@@ -3512,6 +3513,10 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
 
     public LogTable getLogTable() {
         return m_tbLogTable;
+    }
+
+    public File[] getLastParseredFiles() {
+        return mLastParseredFiles;
     }
 
     public SubLogTable getSubTable() {

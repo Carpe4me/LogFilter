@@ -25,7 +25,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 /**
- * 进行一些文本转换
+ * 进行xlog解密
  */
 public class XLogDecoderDialog {
     private JDialog mDialog;

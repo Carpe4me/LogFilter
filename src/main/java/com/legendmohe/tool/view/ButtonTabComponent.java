@@ -31,6 +31,11 @@
 
 package com.legendmohe.tool.view;
 
+import com.legendmohe.tool.EventBus;
+import com.legendmohe.tool.LogInfo;
+import com.legendmohe.tool.T;
+import com.legendmohe.tool.logtable.model.LogFilterTableModel;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
@@ -38,6 +43,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -49,7 +55,9 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JTabbedPane;
+import javax.swing.SwingUtilities;
 import javax.swing.plaf.basic.BasicButtonUI;
 
 /**
@@ -90,6 +98,23 @@ public class ButtonTabComponent extends JPanel {
         add(button);
         //add more space to the top of the component
         setBorder(BorderFactory.createEmptyBorder(2, 0, 0, 0));
+
+        setupRightClickMenu();
+    }
+
+    private void setupRightClickMenu() {
+        addMouseListener(new MouseAdapter() {
+
+            public void mouseReleased(MouseEvent e) {
+                Point p = e.getPoint();
+                if (SwingUtilities.isRightMouseButton(e)) {
+                    if (listener != null) {
+                        int i = pane.indexOfTabComponent(ButtonTabComponent.this);
+                        listener.onRightButtonClick(i, e.getX(), e.getY());
+                    }
+                }
+            }
+        });
     }
 
     private class TabButton extends JButton implements ActionListener {
@@ -164,6 +189,7 @@ public class ButtonTabComponent extends JPanel {
 
     public interface Listener {
         void onCloseClicked(int index);
+        void onRightButtonClick(int index, int x, int y);
     }
 }
 
