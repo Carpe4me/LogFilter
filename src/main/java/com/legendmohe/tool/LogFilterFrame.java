@@ -184,12 +184,7 @@ public class LogFilterFrame extends JFrame {
         JMenuItem openPath = new JMenuItem(new AbstractAction("Open in explorer") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                File targetFile = files[0];
-                try {
-                    Desktop.getDesktop().open(targetFile.getParentFile());
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
+                Utils.openInExplorer(files[0]);
             }
         });
         JMenuItem copyPath = new JMenuItem(new AbstractAction("Copy full path to clipboard") {

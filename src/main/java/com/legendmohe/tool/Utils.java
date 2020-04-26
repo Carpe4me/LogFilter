@@ -73,6 +73,17 @@ public class Utils {
         }
     }
 
+    public static void openInExplorer(File file) {
+        try {
+            if (!file.isDirectory()) {
+                file = file.getParentFile();
+            }
+            Desktop.getDesktop().open(file);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
     public static void runCmd(String[] cmd) throws IOException {
         ProcessBuilder builder = new ProcessBuilder(cmd);
         builder.redirectErrorStream(true);
