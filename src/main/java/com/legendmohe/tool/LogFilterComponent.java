@@ -342,15 +342,15 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         add(createStatusPanel(), BorderLayout.SOUTH);
         add(jMenuBar, BorderLayout.NORTH);
 
-        // register state saver
-        mUIStateSaver = new UIStateSaver(this, Constant.INI_FILE_STATE);
-        mUIStateSaver.load();
-
         setDnDListener();
         addChangeListener();
         addUndoListener();
         bindRecentlyPopup();
         startFilterParse();
+
+        // register state saver
+        mUIStateSaver = new UIStateSaver(this, Constant.INI_FILE_STATE);
+        mUIStateSaver.load();
 
         loadUI();
         loadCmd();
