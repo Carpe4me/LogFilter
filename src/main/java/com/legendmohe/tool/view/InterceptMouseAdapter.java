@@ -18,7 +18,7 @@ public class InterceptMouseAdapter extends MouseAdapter {
         this.target = target;
     }
 
-    private MouseEvent convertEvent(MouseEvent e, JComponent target, JComponent eventHandler) {
+    private static MouseEvent convertEvent(MouseEvent e, JComponent target, JComponent eventHandler) {
         return SwingUtilities.convertMouseEvent(target, e, eventHandler);
     }
 

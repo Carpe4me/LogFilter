@@ -102,14 +102,22 @@ public class ButtonTabComponent extends JPanel {
             InterceptMouseAdapter mouseAdapter = new InterceptMouseAdapter(eventHandler, label) {
                 @Override
                 public void mouseReleased(MouseEvent e) {
-                    // 不切换tab
-//                    super.mouseReleased(e);
+                    super.mouseReleased(e);
                     if (SwingUtilities.isRightMouseButton(e)) {
                         if (listener != null) {
                             int i = pane.indexOfTabComponent(ButtonTabComponent.this);
                             listener.onRightButtonClick(i, e.getX(), e.getY());
                         }
                     }
+                }
+
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    // 不切换tab
+                    if (SwingUtilities.isRightMouseButton(e)) {
+                        return;
+                    }
+                    super.mousePressed(e);
                 }
             };
             label.addMouseListener(mouseAdapter);
