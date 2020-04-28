@@ -18,6 +18,7 @@ import com.legendmohe.tool.parser.DefaultLogParser;
 import com.legendmohe.tool.parser.ILogParser;
 import com.legendmohe.tool.parser.IMODevLogParser;
 import com.legendmohe.tool.parser.LogCatParser;
+import com.legendmohe.tool.thirdparty.Debouncer;
 import com.legendmohe.tool.view.DumpsysViewDialog;
 import com.legendmohe.tool.view.ListDialog;
 import com.legendmohe.tool.view.LogFlowDialog;
@@ -28,6 +29,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.FileDialog;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -89,6 +91,8 @@ import java.util.Random;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -117,6 +121,7 @@ import javax.swing.JToggleButton;
 import javax.swing.ListSelectionModel;
 import javax.swing.OverlayLayout;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
@@ -2249,36 +2254,43 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         m_thWatchFile.start();
     }
 
+    private Debouncer debouncer = new Debouncer();
+
     void runFilter() {
-        checkUseFilter();
-        while (mLogParsingState == Constant.PARSING_STATUS_PARSING)
-            try {
-                Thread.sleep(100);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        synchronized (FILTER_LOCK) {
-            FILTER_LOCK.notify();
-        }
+        debouncer.debounce(mCurTitle != null ? mCurTitle : LogFilterComponent.class,
+                () -> {
+                    checkUseFilter();
+                    while (mLogParsingState == Constant.PARSING_STATUS_PARSING)
+                        try {
+                            Thread.sleep(100);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    synchronized (FILTER_LOCK) {
+                        FILTER_LOCK.notify();
+                    }
+                },
+                300, TimeUnit.MILLISECONDS
+        );
     }
 
     void startFilterParse() {
-        m_thFilterParse = new Thread(new Runnable() {
-            public void run() {
-                try {
-                    while (true) {
-                        synchronized (FILTER_LOCK) {
-                            mLogParsingState = Constant.PARSING_STATUS_READY;
-                            FILTER_LOCK.wait();
+        m_thFilterParse = new Thread(() -> {
+            try {
+                while (true) {
+                    synchronized (FILTER_LOCK) {
+                        mLogParsingState = Constant.PARSING_STATUS_READY;
+                        FILTER_LOCK.wait();
 
-                            mLogParsingState = Constant.PARSING_STATUS_PARSING;
+                        mLogParsingState = Constant.PARSING_STATUS_PARSING;
 
-                            m_arLogInfoFiltered.clear();
-                            m_hmMarkedInfoFiltered.clear();
-                            m_hmErrorFiltered.clear();
-                            getLogTable().clearSelection();
-                            getSubTable().clearSelection();
+                        m_arLogInfoFiltered.clear();
+                        m_hmMarkedInfoFiltered.clear();
+                        m_hmErrorFiltered.clear();
+                        getLogTable().clearSelection();
+                        getSubTable().clearSelection();
 
+                        try {
                             if (mFilterEnabled == false) {
                                 m_tmLogTableModel.setData(m_arLogInfoAll);
                                 m_ipIndicator.setData(m_arLogInfoAll,
@@ -2392,16 +2404,21 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
                                 }
                                 setLoadingState(LoadingState.IDLE, "");
                             }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            setLoadingState(LoadingState.IDLE, "");
+                            System.out.println("m_thFilterParse current filter loop error ex=" + ex);
                         }
                     }
-                } catch (InterruptedException e) {
-                    System.out.println("m_thFilterParse exit normal");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    T.e(e);
                 }
-                System.out.println("End m_thFilterParse thread");
+            } catch (InterruptedException e) {
+                System.out.println("m_thFilterParse exit normal");
+            } catch (Exception e) {
+                e.printStackTrace();
+                T.e(e);
             }
+            setLoadingState(LoadingState.IDLE, "");
+            System.out.println("End m_thFilterParse thread");
         });
         m_thFilterParse.start();
     }
@@ -2413,43 +2430,43 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         // 自动切换到logcatparser
         switchToLogParser(Constant.PARSER_TYPE_LOGCAT);
 
-        m_thProcess = new Thread(new Runnable() {
-            public void run() {
-                try {
-                    String s;
-                    m_Process = null;
+        m_thProcess = new Thread(() -> {
+            try {
+                String s;
+                m_Process = null;
 
-                    T.d("getProcessCmd() = " + getProcessCmd());
-                    m_Process = Runtime.getRuntime().exec(getProcessCmd());
-                    BufferedReader stdOut = new BufferedReader(
-                            new InputStreamReader(m_Process.getInputStream(),
-                                    StandardCharsets.UTF_8));
-                    Writer fileOut = new BufferedWriter(new OutputStreamWriter(
-                            new FileOutputStream(m_strLogFileName), StandardCharsets.UTF_8));
+                T.d("getProcessCmd() = " + getProcessCmd());
+                m_Process = Runtime.getRuntime().exec(getProcessCmd());
+                BufferedReader stdOut = new BufferedReader(
+                        new InputStreamReader(m_Process.getInputStream(),
+                                StandardCharsets.UTF_8));
+                Writer fileOut = new BufferedWriter(new OutputStreamWriter(
+                        new FileOutputStream(m_strLogFileName), StandardCharsets.UTF_8));
 
-                    startLogcatParse();
+                startLogcatParse();
 
-                    while ((s = stdOut.readLine()) != null) {
-                        if (s != null && !"".equals(s.trim())) {
-                            synchronized (FILE_LOCK) {
-                                fileOut.write(s);
-                                fileOut.write("\r\n");
-                                // fileOut.newLine();
-                                fileOut.flush();
-                            }
+                while ((s = stdOut.readLine()) != null) {
+                    if (s != null && !"".equals(s.trim())) {
+                        synchronized (FILE_LOCK) {
+                            fileOut.write(s);
+                            fileOut.write("\r\n");
+                            // fileOut.newLine();
+                            fileOut.flush();
                         }
                     }
-                    fileOut.close();
-                    // T.d("Exit Code: " + m_Process.exitValue());
-                } catch (Exception e) {
-                    T.e("e = " + e);
                 }
-                stopLogcatParserProcess();
+                fileOut.close();
+                // T.d("Exit Code: " + m_Process.exitValue());
+            } catch (Exception e) {
+                T.e("e = " + e);
             }
+            stopLogcatParserProcess();
         });
         m_thProcess.start();
         setProcessBtn(true);
     }
+
+    ///////////////////////////////////filter///////////////////////////////////
 
     boolean checkLogLVFilter(LogInfo logInfo) {
         if (m_nFilterLogLV == LogInfo.LOG_LV_ALL)
@@ -2476,114 +2493,45 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
     boolean checkPidFilter(LogInfo logInfo) {
         if (getLogTable().GetFilterShowPid().length() <= 0)
             return true;
-
-        StringTokenizer stk = new StringTokenizer(
-                getLogTable().GetFilterShowPid(), "|", false);
-
-        while (stk.hasMoreElements()) {
-            if (logInfo.getPid().toLowerCase().contains(
-                    stk.nextToken().toLowerCase()))
-                return true;
-        }
-
-        return false;
+        return checkFilterContains(getLogTable().GetFilterShowPid(), logInfo.getPid());
     }
 
     boolean checkTidFilter(LogInfo logInfo) {
         if (getLogTable().GetFilterShowTid().length() <= 0)
             return true;
-
-        StringTokenizer stk = new StringTokenizer(
-                getLogTable().GetFilterShowTid(), "|", false);
-
-        while (stk.hasMoreElements()) {
-            if (logInfo.getThread().toLowerCase().contains(
-                    stk.nextToken().toLowerCase()))
-                return true;
-        }
-
-        return false;
+        return checkFilterContains(getLogTable().GetFilterShowTid(), logInfo.getThread());
     }
 
     boolean checkFindFilter(LogInfo logInfo) {
         if (getLogTable().GetFilterFind().length() <= 0)
             return true;
-
-        StringTokenizer stk = new StringTokenizer(getLogTable().GetFilterFind(),
-                "|", false);
-
-        while (stk.hasMoreElements()) {
-            if (logInfo.getMessage().toLowerCase().contains(
-                    stk.nextToken().toLowerCase()))
-                return true;
-        }
-
-        return false;
+        return checkFilterContains(getLogTable().GetFilterFind(), logInfo.getMessage());
     }
 
     boolean checkRemoveFilter(LogInfo logInfo) {
         if (getLogTable().GetFilterRemove().length() <= 0)
             return true;
-
-        StringTokenizer stk = new StringTokenizer(
-                getLogTable().GetFilterRemove(), "|", false);
-
-        while (stk.hasMoreElements()) {
-            if (logInfo.getMessage().toLowerCase().contains(
-                    stk.nextToken().toLowerCase()))
-                return false;
-        }
-
-        return true;
+        return checkFilterNotContains(getLogTable().GetFilterRemove(), logInfo.getMessage());
     }
 
     boolean checkShowTagFilter(LogInfo logInfo) {
         if (getLogTable().GetFilterShowTag().length() <= 0)
             return true;
-
-        StringTokenizer stk = new StringTokenizer(
-                getLogTable().GetFilterShowTag(), "|", false);
-
-        while (stk.hasMoreElements()) {
-            if (logInfo.getTag().toLowerCase().contains(
-                    stk.nextToken().toLowerCase()))
-                return true;
-        }
-
-        return false;
+        return checkFilterContains(getLogTable().GetFilterShowTag(), logInfo.getTag());
     }
 
     boolean checkRemoveTagFilter(LogInfo logInfo) {
         if (getLogTable().GetFilterRemoveTag().length() <= 0)
             return true;
-
-        StringTokenizer stk = new StringTokenizer(
-                getLogTable().GetFilterRemoveTag(), "|", false);
-
-        while (stk.hasMoreElements()) {
-            if (logInfo.getTag().toLowerCase().contains(
-                    stk.nextToken().toLowerCase()))
-                return false;
-        }
-
-        return true;
+        return checkFilterNotContains(getLogTable().GetFilterRemoveTag(), logInfo.getTag());
     }
 
     boolean checkBookmarkFilter(LogInfo logInfo) {
         if (getLogTable().GetFilterBookmarkTag().length() <= 0 && logInfo.getBookmark().length() <= 0)
             return true;
-
-        StringTokenizer stk = new StringTokenizer(
-                getLogTable().GetFilterBookmarkTag(), "|", false);
-
-        while (stk.hasMoreElements()) {
-            if (logInfo.getBookmark().toLowerCase().contains(
-                    stk.nextToken().toLowerCase()))
-                return true;
-        }
-
-        return false;
+        return checkFilterContains(getLogTable().GetFilterBookmarkTag(), logInfo.getBookmark());
     }
+
 
     boolean checkLogFlowFilter(LogInfo logInfo) {
         if (!getLogTable().isFilterLogFlow()) {
@@ -2622,6 +2570,15 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
 
 //        T.d("checkFromTimeFilter:" + logInfo.getTime() + " | " + logInfo.getTimestamp() + " | " + getLogTable().GetFilterFromTime());
         return logInfo.getTimestamp() >= getLogTable().GetFilterFromTime();
+    }
+
+    private boolean checkFilterContains(String filter, String src) {
+        Pattern pattern = Utils.findPatternOrCreate(filter);
+        return pattern.matcher(src).find();
+    }
+
+    private boolean checkFilterNotContains(String src, String filter) {
+        return !checkFilterContains(src, filter);
     }
 
     boolean checkUseFilter() {

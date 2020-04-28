@@ -37,8 +37,6 @@ public class LogInfo {
     private List<LogFlowManager.FlowResultLine> mFlowResults;
     private boolean isSingleMsgLine = false;
 
-    private static Map<String, Pattern> sPatternCache = new HashMap<>();
-
     public void display() {
         T.d("=============================================");
         T.d("m_bMarked      = " + isMarked());
@@ -94,11 +92,7 @@ public class LogInfo {
     }
 
     public boolean findText(String src) {
-        Pattern pattern = sPatternCache.get(src);
-        if (pattern == null) {
-            pattern = Pattern.compile(src, Pattern.CASE_INSENSITIVE);
-            sPatternCache.put(src, pattern);
-        }
+        Pattern pattern = Utils.findPatternOrCreate(src);
 
         if (!Utils.isEmpty(getMessage()) && pattern.matcher(getMessage()).find()) {
             return true;

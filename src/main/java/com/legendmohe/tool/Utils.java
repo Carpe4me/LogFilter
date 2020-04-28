@@ -27,7 +27,10 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
@@ -369,5 +372,17 @@ public class Utils {
             cmd = new String[]{"/bin/bash", "-l", "-c", customCmd};
         }
         return cmd;
+    }
+
+    ///////////////////////////////////regex///////////////////////////////////
+
+    private static Map<String, Pattern> sPatternCache = new HashMap<>();
+
+    public static Map<String, Pattern> getsPatternCache() {
+        return sPatternCache;
+    }
+
+    public static Pattern findPatternOrCreate(String strFind) {
+        return sPatternCache.computeIfAbsent(strFind, s -> Pattern.compile("(" + s + ")", Pattern.CASE_INSENSITIVE));
     }
 }

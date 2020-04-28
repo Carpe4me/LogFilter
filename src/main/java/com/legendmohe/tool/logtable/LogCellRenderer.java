@@ -394,8 +394,6 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
         return end;
     }
 
-    private static Map<String, Pattern> sPatternCache = new HashMap<>();
-
     /*
      * 收集高亮结果
      */
@@ -403,7 +401,7 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
         if (strFind == null || strFind.length() <= 0 || strText == null || strText.length() <= 0)
             return Collections.emptyList();
         // pattern cache
-        Pattern pattern = sPatternCache.computeIfAbsent(strFind, s -> Pattern.compile("(" + s + ")", Pattern.CASE_INSENSITIVE));
+        Pattern pattern = Utils.findPatternOrCreate(strFind);
         Matcher matcher = pattern.matcher(strText);
 
         List<HighLightItem> resultItems = new ArrayList<>();
