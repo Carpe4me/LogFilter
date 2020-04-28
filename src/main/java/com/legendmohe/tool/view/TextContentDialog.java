@@ -14,9 +14,9 @@ import javax.swing.text.JTextComponent;
 /**
  * Created by xinyu.he on 2016/2/5.
  */
-public class RowsContentDialog extends JDialog {
+public class TextContentDialog extends JDialog {
 
-    public RowsContentDialog(JFrame frame, String title, String content) {
+    public TextContentDialog(JFrame frame, String title, String content) {
         super(frame, title, true);
 
         Container c = getContentPane();

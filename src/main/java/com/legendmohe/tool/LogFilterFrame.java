@@ -6,6 +6,7 @@ import com.legendmohe.tool.config.Constant;
 import com.legendmohe.tool.view.AddTabComponent;
 import com.legendmohe.tool.view.ButtonTabComponent;
 import com.legendmohe.tool.view.RecentFileMenu;
+import com.legendmohe.tool.view.TextContentDialog;
 import com.legendmohe.tool.view.TextConverterDialog;
 import com.legendmohe.tool.view.XLogDecoderDialog;
 
@@ -373,8 +374,15 @@ public class LogFilterFrame extends JFrame {
             }
         });
 
+        JMenuItem logItem = new JMenuItem("Application Log");
+        logItem.setToolTipText("Show LogFilter Logs");
+        logItem.addActionListener(event -> new TextContentDialog(
+                LogFilterFrame.this, "Log", T.getLogBuffer()
+        ).show());
+
         toolsMenu.add(converterItem);
         toolsMenu.add(xlogDecoderItem);
+        toolsMenu.add(logItem);
 
 
         menuBar.add(fileMenu);

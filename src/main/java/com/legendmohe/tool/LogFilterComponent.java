@@ -23,13 +23,12 @@ import com.legendmohe.tool.view.DumpsysViewDialog;
 import com.legendmohe.tool.view.ListDialog;
 import com.legendmohe.tool.view.LogFlowDialog;
 import com.legendmohe.tool.view.PackageViewDialog;
-import com.legendmohe.tool.view.RowsContentDialog;
+import com.legendmohe.tool.view.TextContentDialog;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.FileDialog;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -44,10 +43,7 @@ import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetAdapter;
-import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
-import java.awt.dnd.DropTargetEvent;
-import java.awt.dnd.DropTargetListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.AdjustmentEvent;
@@ -89,7 +85,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
 import java.util.Set;
-import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
@@ -121,7 +116,6 @@ import javax.swing.JToggleButton;
 import javax.swing.ListSelectionModel;
 import javax.swing.OverlayLayout;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
@@ -717,7 +711,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
                 m_comboCmd.addItem(p.getProperty(Constant.INI_CMD + nIndex));
             }
         } catch (Exception e) {
-            System.out.println(e);
+            T.e(e.getMessage());
         }
     }
 
@@ -2248,7 +2242,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
                 } catch (Exception e) {
                     T.e(e);
                 }
-                System.out.println("End m_thWatchFile thread");
+                T.w("End m_thWatchFile thread");
             }
         });
         m_thWatchFile.start();
@@ -2407,18 +2401,18 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
                         } catch (Exception ex) {
                             ex.printStackTrace();
                             setLoadingState(LoadingState.IDLE, "");
-                            System.out.println("m_thFilterParse current filter loop error ex=" + ex);
+                            T.e("m_thFilterParse current filter loop error ex=" + ex);
                         }
                     }
                 }
             } catch (InterruptedException e) {
-                System.out.println("m_thFilterParse exit normal");
+                T.e("m_thFilterParse exit normal");
             } catch (Exception e) {
                 e.printStackTrace();
                 T.e(e);
             }
             setLoadingState(LoadingState.IDLE, "");
-            System.out.println("End m_thFilterParse thread");
+            T.w("End m_thFilterParse thread");
         });
         m_thFilterParse.start();
     }
@@ -2664,11 +2658,8 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
     }
 
     void updateLogTable(int nRow, boolean bMove) {
-        // System.out.println("updateTable nRow:" + nRow + " | " + bMove);
         m_tmLogTableModel.fireTableDataChanged();
         m_logScrollVPane.validate();
-        // if(nRow >= 0)
-        // m_tbLogTable.changeSelection(nRow, 0, false, false);
         getLogTable().invalidate();
         getLogTable().repaint();
         if (nRow >= 0)
@@ -2678,7 +2669,6 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
     }
 
     void updateSubTable(int nRow) {
-//        System.out.println("updateSubTable nRow:" + nRow + " | " + bMove);
         m_tSubLogTableModel.fireTableDataChanged();
         m_subLogScrollVPane.validate();
         getSubTable().invalidate();
@@ -3244,7 +3234,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
             return;
         }
         String title = "Selected Rows";
-        RowsContentDialog contentDialog = new RowsContentDialog(frameInfoProvider.getContainerFrame(), title, content);
+        TextContentDialog contentDialog = new TextContentDialog(frameInfoProvider.getContainerFrame(), title, content);
         contentDialog.setModal(false);
         contentDialog.setVisible(true);
     }
@@ -3382,7 +3372,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
 //        LogFlowManager.getInstance().check(logInfo6);
 //
 //        List<LogFlowManager.FlowResult> currentResult = LogFlowManager.getInstance().getCurrentResult();
-//        System.out.println(currentResult);
+//        T.d(currentResult);
     }
 
     private void showAllFlow() {
@@ -3629,6 +3619,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
             }
         }
         mFloatingFrameInfos.clear();
+        debouncer.shutdown();
     }
 
     ///////////////////////////////////interface///////////////////////////////////

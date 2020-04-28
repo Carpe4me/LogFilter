@@ -1,7 +1,9 @@
 package com.legendmohe.tool;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /*
 ***************************************************************************
@@ -21,8 +23,10 @@ import java.util.Date;
 
 public class T {
     //	private final static String PREFIX = "LogFilter";
-    private final static String POSTFIX = "[iookill]";
+    private final static String POSTFIX = "[LogFilter]";
     private static Boolean misEnabled = true;
+
+    private static StringBuilder sSavedLogs = new StringBuilder(100);
 
     public static void enable(Boolean isEnable) {
         misEnabled = isEnable;
@@ -32,11 +36,13 @@ public class T {
         if (misEnabled) {
             Exception e = new Exception();
             StackTraceElement callerElement = e.getStackTrace()[1];
-            System.out.println(getCurrentTime() +
+            String log = getCurrentTime() +
                     POSTFIX + "[" +
                     callerElement.getFileName() + ":" +
                     callerElement.getMethodName() + ":" +
-                    callerElement.getLineNumber() + "]");
+                    callerElement.getLineNumber() + "]";
+            System.out.println(log);
+            sSavedLogs.append(log).append("\n");
         }
     }
 
@@ -44,12 +50,14 @@ public class T {
         if (misEnabled) {
             Exception e = new Exception();
             StackTraceElement callerElement = e.getStackTrace()[1];
-            System.out.println(getCurrentTime() +
+            String log = getCurrentTime() +
                     POSTFIX + "[" +
                     callerElement.getFileName() + ":" +
                     callerElement.getMethodName() + ":" +
                     callerElement.getLineNumber() + "]" +
-                    strMsg);
+                    strMsg;
+            System.out.println(log);
+            sSavedLogs.append(log).append("\n");
         }
     }
 
@@ -57,11 +65,13 @@ public class T {
         if (misEnabled) {
             Exception e = new Exception();
             StackTraceElement callerElement = e.getStackTrace()[1];
-            System.out.println(getCurrentTime() +
+            String log = getCurrentTime() +
                     POSTFIX + "[" +
                     callerElement.getFileName() + ":" +
                     callerElement.getMethodName() + ":" +
-                    callerElement.getLineNumber() + "]");
+                    callerElement.getLineNumber() + "]";
+            System.out.println(log);
+            sSavedLogs.append(log).append("\n");
         }
     }
 
@@ -69,12 +79,14 @@ public class T {
         if (misEnabled) {
             Exception e = new Exception();
             StackTraceElement callerElement = e.getStackTrace()[1];
-            System.out.println(getCurrentTime() +
+            String log = getCurrentTime() +
                     POSTFIX + "[" +
                     callerElement.getFileName() + ":" +
                     callerElement.getMethodName() + ":" +
                     callerElement.getLineNumber() + "]" +
-                    strMsg);
+                    strMsg;
+            System.out.println(log);
+            sSavedLogs.append(log).append("\n");
         }
     }
 
@@ -82,11 +94,13 @@ public class T {
         if (misEnabled) {
             Exception e = new Exception();
             StackTraceElement callerElement = e.getStackTrace()[1];
-            System.out.println(getCurrentTime() +
+            String log = getCurrentTime() +
                     POSTFIX + "[" +
                     callerElement.getFileName() + ":" +
                     callerElement.getMethodName() + ":" +
-                    callerElement.getLineNumber() + "]");
+                    callerElement.getLineNumber() + "]";
+            System.out.println(log);
+            sSavedLogs.append(log).append("\n");
         }
     }
 
@@ -94,12 +108,14 @@ public class T {
         if (misEnabled) {
             Exception e = new Exception();
             StackTraceElement callerElement = e.getStackTrace()[1];
-            System.out.println(getCurrentTime() +
+            String log = getCurrentTime() +
                     POSTFIX + "[" +
                     callerElement.getFileName() + ":" +
                     callerElement.getMethodName() + ":" +
                     callerElement.getLineNumber() + "]" +
-                    strMsg);
+                    strMsg;
+            System.out.println(log);
+            sSavedLogs.append(log).append("\n");
         }
     }
 
@@ -107,11 +123,13 @@ public class T {
         if (misEnabled) {
             Exception e = new Exception();
             StackTraceElement callerElement = e.getStackTrace()[1];
-            System.out.println(getCurrentTime() +
+            String log = getCurrentTime() +
                     POSTFIX + "[" +
                     callerElement.getFileName() + ":" +
                     callerElement.getMethodName() + ":" +
-                    callerElement.getLineNumber() + "]");
+                    callerElement.getLineNumber() + "]";
+            System.out.println(log);
+            sSavedLogs.append(log).append("\n");
         }
     }
 
@@ -119,28 +137,24 @@ public class T {
         if (misEnabled) {
             Exception e = new Exception();
             StackTraceElement callerElement = e.getStackTrace()[1];
-            System.out.println(getCurrentTime() +
+            String log = getCurrentTime() +
                     POSTFIX + "[" +
                     callerElement.getFileName() + ":" +
                     callerElement.getMethodName() + ":" +
                     callerElement.getLineNumber() + "]" +
-                    strMsg);
+                    strMsg;
+            System.out.println(log);
+            sSavedLogs.append(log).append("\n");
         }
     }
 
-    public static String concat(String... msgs) {
-        StringBuilder sb = new StringBuilder();
-        for (String msg : msgs) {
-            sb.append(msg).append(" | ");
-        }
-        return sb.toString();
+    public static String getLogBuffer() {
+        return sSavedLogs.toString();
     }
 
     public static String getCurrentTime() {
         long time = System.currentTimeMillis();
-
         SimpleDateFormat dayTime = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss.SSS");
-
         return dayTime.format(new Date(time));
 
     }
