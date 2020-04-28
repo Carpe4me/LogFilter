@@ -403,7 +403,7 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
         if (strFind == null || strFind.length() <= 0 || strText == null || strText.length() <= 0)
             return Collections.emptyList();
         // pattern cache
-        Pattern pattern = sPatternCache.computeIfAbsent(strFind, s -> Pattern.compile("(" + Pattern.quote(s) + ")", Pattern.CASE_INSENSITIVE));
+        Pattern pattern = sPatternCache.computeIfAbsent(strFind, s -> Pattern.compile("(" + s + ")", Pattern.CASE_INSENSITIVE));
         Matcher matcher = pattern.matcher(strText);
 
         List<HighLightItem> resultItems = new ArrayList<>();
