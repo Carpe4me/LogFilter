@@ -1855,6 +1855,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
                             }
                         }
                     } catch (Exception ioe) {
+                        ioe.printStackTrace();
                         T.e(ioe);
                     }
                     try {
@@ -3640,8 +3641,11 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
 
     private void switchToLogParser(int parserType) {
         m_iLogParser = sTypeToParserMap.get(parserType);
-        m_parserType = parserType;
         m_tfParserType.setText(sTypeToParserNameMap.get(parserType));
+        if (parserType == m_parserType) {
+            return;
+        }
+        m_parserType = parserType;
         loadTableColumnState();
 
         if (parserType != Constant.PARSER_TYPE_LOGCAT
