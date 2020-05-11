@@ -70,6 +70,11 @@ public class LogFilterFrame extends JFrame {
             }
 
             @Override
+            public boolean enableFloatingWindow() {
+                return true;
+            }
+
+            @Override
             public void onViewPortChanged(LogFilterComponent logFilterComponent, ChangeEvent e) {
                 LogFilterFrame.this.onViewPortChanged(logFilterComponent, e);
             }
@@ -405,6 +410,8 @@ public class LogFilterFrame extends JFrame {
 
     public interface FrameInfoProvider {
         JFrame getContainerFrame();
+
+        boolean enableFloatingWindow();
 
         void onViewPortChanged(LogFilterComponent logFilterComponent, ChangeEvent e);
 

@@ -84,7 +84,9 @@ public class DiffService {
     }
 
     public void disconnectDiffClient() {
-        mDiffClient.cleanup();
+        if (mDiffClient != null) {
+            mDiffClient.cleanup();
+        }
     }
 
     private void setupDiffServer(int port) {

@@ -353,7 +353,6 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
 
         loadUI();
         loadCmd();
-        initDiffService();
         initLogFlow();
 
         loadParser();
@@ -400,9 +399,27 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
 
         JMenu diffMenu = new JMenu("Diff Service");
 
+        JCheckBoxMenuItem enableDiffServer = new JCheckBoxMenuItem("enable diff server");
+        enableDiffServer.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
+                if (enableDiffServer.getState()) {
+                    mConnectDiffMenuItem.setEnabled(true);
+                    if (mDiffService == null) {
+                        initDiffService();
+                    }
+                } else {
+                    LogFilterComponent.this.mDiffService.disconnectDiffClient();
+                    mConnectDiffMenuItem.setEnabled(false);
+                    mDisconnectDiffMenuItem.setEnabled(false);
+                }
+            }
+        });
+        enableDiffServer.setState(false);
+
         mDisconnectDiffMenuItem = new JMenuItem("disconnect");
         mDisconnectDiffMenuItem.setEnabled(false);
         mConnectDiffMenuItem = new JMenuItem("connect to diff server");
+        mConnectDiffMenuItem.setEnabled(false);
 
         mDisconnectDiffMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
@@ -431,6 +448,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
             }
         });
 
+        diffMenu.add(enableDiffServer);
         diffMenu.add(mConnectDiffMenuItem);
         diffMenu.add(mDisconnectDiffMenuItem);
 
@@ -1518,7 +1536,10 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
     }
 
     // 提供floating 功能
-    private JPanel wrapWithFloatingPanel(JComponent target) {
+    private JComponent wrapWithFloatingPanel(JComponent target) {
+        if (frameInfoProvider.getContainerFrame() == null || !frameInfoProvider.enableFloatingWindow()) {
+            return target;
+        }
         JPanel floatingPanel = new JPanel(new BorderLayout());
         floatingPanel.add(target, BorderLayout.CENTER);
         floatingPanel.add(createFloatingBtnHeader(() -> floatingPanel), BorderLayout.NORTH);
