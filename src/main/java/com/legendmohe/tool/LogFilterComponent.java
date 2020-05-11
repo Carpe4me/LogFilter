@@ -414,16 +414,18 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         mConnectDiffMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String serverPort = JOptionPane.showInputDialog(
-                        frameInfoProvider.getContainerFrame(),
-                        "Enter Server Port",
-                        "",
-                        JOptionPane.QUESTION_MESSAGE
-                );
-                if (serverPort != null && serverPort.length() != 0) {
-                    if (LogFilterComponent.this.mDiffService.setupDiffClient(serverPort)) {
-                        mConnectDiffMenuItem.setEnabled(false);
-                        mDisconnectDiffMenuItem.setEnabled(true);
+                if (frameInfoProvider.getContainerFrame() != null) {
+                    String serverPort = JOptionPane.showInputDialog(
+                            frameInfoProvider.getContainerFrame(),
+                            "Enter Server Port",
+                            "",
+                            JOptionPane.QUESTION_MESSAGE
+                    );
+                    if (serverPort != null && serverPort.length() != 0) {
+                        if (LogFilterComponent.this.mDiffService.setupDiffClient(serverPort)) {
+                            mConnectDiffMenuItem.setEnabled(false);
+                            mDisconnectDiffMenuItem.setEnabled(true);
+                        }
                     }
                 }
             }
@@ -3159,6 +3161,9 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
     ///////////////////////////////////对话框///////////////////////////////////
 
     public void openFileBrowserToLoad(FileType type) {
+        if (frameInfoProvider.getContainerFrame() == null) {
+            return;
+        }
         FileDialog fd = new FileDialog(frameInfoProvider.getContainerFrame(), "File open", FileDialog.LOAD);
         if (type == FileType.LOG) {
             fd.setDirectory(m_strLastDir);
@@ -3179,6 +3184,9 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
     }
 
     private void openPackagesView() {
+        if (frameInfoProvider.getContainerFrame() == null) {
+            return;
+        }
         String title = "packages";
         String deviceID = null;
         if (m_selectedDevice != null) {
@@ -3206,6 +3214,9 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
     }
 
     private void openDumpsysView(String cmd) {
+        if (frameInfoProvider.getContainerFrame() == null) {
+            return;
+        }
         String title = "Running Tasks";
         String deviceID = null;
         if (m_selectedDevice != null) {
@@ -3230,6 +3241,9 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
     }
 
     private void openShowRowContentDialog(String content) {
+        if (frameInfoProvider.getContainerFrame() == null) {
+            return;
+        }
         if (content == null || content.length() <= 0) {
             return;
         }
@@ -3240,6 +3254,9 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
     }
 
     private void openFileBrowserToSave(FileType type) {
+        if (frameInfoProvider.getContainerFrame() == null) {
+            return;
+        }
         FileDialog fd = new FileDialog(frameInfoProvider.getContainerFrame(), "File save", FileDialog.SAVE);
         if (type != FileType.MODE) {
             return;
