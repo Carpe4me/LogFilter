@@ -329,7 +329,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
 
     ///////////////////////////////////constructor///////////////////////////////////
 
-    LogFilterComponent(LogFilterFrame.FrameInfoProvider frameInfoProvider) {
+    public LogFilterComponent(LogFilterFrame.FrameInfoProvider frameInfoProvider) {
         super();
         this.frameInfoProvider = frameInfoProvider;
         initValue();
