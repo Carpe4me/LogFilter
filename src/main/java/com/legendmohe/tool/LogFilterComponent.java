@@ -555,10 +555,12 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         flowMenu.add(showFlowInLogTable);
         flowMenu.add(showAllFlow);
 
-        menuBar.add(fileMenu);
-        menuBar.add(toolsMenu);
+        if (frameInfoProvider.getContainerFrame() != null) {
+            menuBar.add(fileMenu);
+            menuBar.add(toolsMenu);
+            menuBar.add(flowMenu);
+        }
         menuBar.add(parserMenu);
-        menuBar.add(flowMenu);
         return menuBar;
     }
 
