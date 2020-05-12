@@ -49,7 +49,7 @@ public class Main {
 
     private static void configByPlatform() {
         try {
-            UIManager.setLookAndFeel("com.formdev.flatlaf.FlatDarculaLaf");
+            UIManager.setLookAndFeel("com.formdev.flatlaf.FlatLightLaf");
         } catch (UnsupportedLookAndFeelException | IllegalAccessException | InstantiationException | ClassNotFoundException e) {
             e.printStackTrace();
 

@@ -27,7 +27,7 @@ public class ThemeConstant {
     public static Color COLOR_LOG_TABLE_CELL_BG_BOOKMARK = new Color(0xD9D9D9);
     public static Color COLOR_LOG_TABLE_CELL_BG_BOOKMARK_SELECTED = new Color(0x00DDDDFF);
 
-    public static Color COLOR_LOG_TABLE_CELL_BG_NORMAL = Color.WHITE;
+    public static Color COLOR_LOG_TABLE_CELL_BG_NORMAL = new Color(0,0,0,0);
     public static Color COLOR_LOG_TABLE_TEXT_DEFAULT = Color.BLACK;
 
     public static Color COLOR_INDICATOR_ERROR = COLOR_LOG_TABLE_TEXT_ERROR;
