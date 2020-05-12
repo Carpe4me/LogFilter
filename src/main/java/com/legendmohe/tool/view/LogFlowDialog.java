@@ -183,7 +183,7 @@ public class LogFlowDialog {
                 if (!result.isCompleted) {
                     contentLabel.setForeground(ThemeConstant.COLOR_LOG_FLOW_FONT_ERROR);
                 } else {
-                    contentLabel.setForeground(ThemeConstant.COLOR_LOG_FLOW_FONT_NORMAL);
+                    contentLabel.setForeground(ThemeConstant.getColorLogFlowFontNormal());
                 }
             }
         };
@@ -255,7 +255,7 @@ public class LogFlowDialog {
         resultTable.getTableHeader().setReorderingAllowed(false);
         resultTable.setOpaque(true);
         resultTable.setAutoscrolls(false);
-        resultTable.setSelectionBackground(ThemeConstant.COLOR_TABLE_LOG_FLOW_SELECTION_BG);
+        resultTable.setSelectionBackground(ThemeConstant.getColorTableLogFlowSelectionBg());
 
         // pack all columns
         EventQueue.invokeLater(new Runnable() {

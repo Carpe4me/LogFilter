@@ -889,6 +889,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         final DefaultListModel<TargetDevice> listModel = new DefaultListModel<>();
         m_lDeviceList = new JList<>(listModel);
         JScrollPane vbar = new JScrollPane(m_lDeviceList);
+        vbar.setBorder(BorderFactory.createEmptyBorder());
         vbar.setPreferredSize(new Dimension(100, 50));
         m_lDeviceList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         m_lDeviceList.addListSelectionListener(new ListSelectionListener() {
@@ -1708,6 +1709,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
 
     Component createOptionPanel() {
         JScrollPane scrollPane = new JScrollPane(createOptionFilter());
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
         return scrollPane;
     }
 
@@ -1753,6 +1755,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         m_tmLogTableModel.setData(m_arLogInfoAll);
         m_tbLogTable = new LogTable(m_tmLogTableModel, this);
         m_logScrollVPane = new JScrollPane(m_tbLogTable);
+        m_logScrollVPane.setBorder(BorderFactory.createEmptyBorder());
         m_logScrollVPane.getVerticalScrollBar().addAdjustmentListener(m_tbLogTable);
 
         JPanel tablePanel = new JPanel();
@@ -1766,6 +1769,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         m_tSubLogTableModel.setData(m_arSubLogInfoAll);
         m_tSublogTable = new SubLogTable(m_tSubLogTableModel, this);
         m_subLogScrollVPane = new JScrollPane(m_tSublogTable);
+        m_subLogScrollVPane.setBorder(BorderFactory.createEmptyBorder());
 
         mLogSplitPane = new JSplitPane(
                 JSplitPane.VERTICAL_SPLIT,

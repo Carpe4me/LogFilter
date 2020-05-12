@@ -60,7 +60,7 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
     private final Border SELECTED_BORDER_PADDING;
 
     private final int BORDER_WIDTH = 1;
-    private final Color BORDER_COLOR = ThemeConstant.COLOR_LOG_TABLE_CELL_BORDER;
+    private final Color BORDER_COLOR = ThemeConstant.getColorLogTableCellBorder();
 
     private JTable mTable;
     private ILogRenderResolver mResolver;
@@ -249,16 +249,16 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
                 c.setForeground(logInfo.getTextColor());
             }
         } else {
-            c.setForeground(ThemeConstant.COLOR_LOG_TABLE_TEXT_DEFAULT);
+            c.setForeground(ThemeConstant.getColorLogTableTextDefault());
         }
         if (isSelected) {
             if (logInfo.isMarked()) {
-                c.setBackground(ThemeConstant.COLOR_LOG_TABLE_CELL_BG_BOOKMARK_SELECTED);
+                c.setBackground(ThemeConstant.getColorLogTableCellBgBookmarkSelected());
             }
         } else if (logInfo.isMarked()) {
-            c.setBackground(ThemeConstant.COLOR_LOG_TABLE_CELL_BG_BOOKMARK);
+            c.setBackground(ThemeConstant.getColorLogTableCellBgBookmark());
         } else {
-            c.setBackground(ThemeConstant.COLOR_LOG_TABLE_CELL_BG_NORMAL);
+            c.setBackground(ThemeConstant.getColorLogTableCellBgNormal());
         }
     }
 

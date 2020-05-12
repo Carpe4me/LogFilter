@@ -10,7 +10,6 @@ import com.legendmohe.tool.logflow.LogFlowManager;
 import com.legendmohe.tool.logtable.model.LogFilterTableModel;
 import com.legendmohe.tool.parser.LogCatParser;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
@@ -110,8 +109,8 @@ public abstract class BaseLogTable extends JTable implements FocusListener, Acti
         setAutoscrolls(false);
         setIntercellSpacing(new Dimension(0, 0));
         setShowGrid(false);
-        setSelectionBackground(ThemeConstant.COLOR_TABLE_SELECTION_BG);
-        setBackground(ThemeConstant.COLOR_TABLE_BG);
+        setSelectionBackground(ThemeConstant.getColorTableSelectionBg());
+        setBackground(ThemeConstant.getColorTableBg());
 
         for (int iIndex = 0; iIndex < getColumnCount(); iIndex++) {
             getColumnModel().getColumn(iIndex).setCellRenderer(new LogCellRenderer(this, this, getEnableGroupTag()));

@@ -66,7 +66,7 @@ public class FixPopup extends JPanel {
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBorder(BorderFactory.createLineBorder(ThemeConstant.COLOR_FIX_POPUP_BORDER, BORDER_THICKNESS, true));
-        setBackground(ThemeConstant.COLOR_FIX_POPUP_BACKGROUND);
+        setBackground(ThemeConstant.getColorFixPopupBackground());
 
         JPanel btnPanel = new JPanel(new BorderLayout());
         setupToolBar(btnPanel);
@@ -207,7 +207,7 @@ public class FixPopup extends JPanel {
         copyBtn.setContentAreaFilled(false);
         copyBtn.setOpaque(false);
         copyBtn.setText("copy");
-        copyBtn.setForeground(ThemeConstant.COLOR_FIX_POPUP_BUTTON_BG);
+        copyBtn.setForeground(ThemeConstant.getColorFixPopupButtonBg());
         copyBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 Utils.sendContentToClipboard(mMessage);
@@ -221,7 +221,7 @@ public class FixPopup extends JPanel {
         goButton.setBorderPainted(false);
         goButton.setContentAreaFilled(false);
         goButton.setOpaque(false);
-        goButton.setForeground(ThemeConstant.COLOR_FIX_POPUP_BUTTON_BG);
+        goButton.setForeground(ThemeConstant.getColorFixPopupButtonBg());
         goButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (mListener != null) {
@@ -233,7 +233,7 @@ public class FixPopup extends JPanel {
 
     private void syncPinBtnState(JButton pinBtn) {
         pinBtn.setText(mIsPinned ? "unpin" : "pin");
-        pinBtn.setForeground(mIsPinned ? ThemeConstant.COLOR_FIX_POPUP_BTN_PINNED : ThemeConstant.COLOR_FIX_POPUP_BUTTON_BG);
+        pinBtn.setForeground(mIsPinned ? ThemeConstant.getColorFixPopupBtnPinned() : ThemeConstant.getColorFixPopupButtonBg());
     }
 
     private void setupTextArea(JTextArea textArea, int width, int minWidth) {

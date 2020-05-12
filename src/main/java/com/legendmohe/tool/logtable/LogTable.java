@@ -356,7 +356,7 @@ public class LogTable extends BaseLogTable {
             button.setBorderPainted(false);
             button.setContentAreaFilled(false);
             button.setOpaque(false);
-            button.setForeground(ThemeConstant.COLOR_FIX_POPUP_BUTTON_BG);
+            button.setForeground(ThemeConstant.getColorFixPopupButtonBg());
             button.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     LogInfo logInfo = ((LogFilterTableModel) getModel()).getRow(row);

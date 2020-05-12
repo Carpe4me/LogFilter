@@ -13,7 +13,7 @@ public abstract class AbstractLogParser implements ILogParser {
 
     @Override
     public Color getFontColor(LogInfo logInfo) {
-        if (logInfo.getLogLV() == null) return ThemeConstant.COLOR_LOG_TABLE_TEXT_DEFAULT;
+        if (logInfo.getLogLV() == null) return ThemeConstant.getColorLogTableTextDefault();
 
         if (logInfo.getLogLV().equals("FATAL") || logInfo.getLogLV().equals("F"))
             return ThemeConstant.COLOR_LOG_TABLE_TEXT_FATAL;
@@ -24,9 +24,9 @@ public abstract class AbstractLogParser implements ILogParser {
         else if (logInfo.getLogLV().equals("INFO") || logInfo.getLogLV().equals("I") || logInfo.getLogLV().equals("6"))
             return ThemeConstant.COLOR_LOG_TABLE_TEXT_INFO;
         else if (logInfo.getLogLV().equals("DEBUG") || logInfo.getLogLV().equals("D") || logInfo.getLogLV().equals("7"))
-            return ThemeConstant.COLOR_LOG_TABLE_TEXT_DEBUG;
+            return ThemeConstant.getColorLogTableTextDebug();
         else
-            return ThemeConstant.COLOR_LOG_TABLE_TEXT_DEFAULT;
+            return ThemeConstant.getColorLogTableTextDefault();
     }
 
     public static final int[] gDefColumns = new int[LogFilterTableModel.COLUMN_MAX];
