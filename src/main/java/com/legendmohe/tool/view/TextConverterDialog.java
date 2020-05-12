@@ -100,7 +100,7 @@ public class TextConverterDialog {
                     sb.append(((ResultLine) item).getPrintableOutput()).append("\n");
                 }
                 if (sb.length() > 0) {
-                    sb.delete(sb.length() - 2, sb.length());
+                    sb.delete(sb.length() - 1, sb.length());
                     Utils.sendContentToClipboard(sb.toString());
                 }
             }
