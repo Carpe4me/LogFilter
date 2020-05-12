@@ -1707,7 +1707,8 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
     }
 
     Component createOptionPanel() {
-        return createOptionFilter();
+        JScrollPane scrollPane = new JScrollPane(createOptionFilter());
+        return scrollPane;
     }
 
     Component createStatusPanel() {
