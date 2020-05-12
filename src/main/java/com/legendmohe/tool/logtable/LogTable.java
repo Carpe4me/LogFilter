@@ -3,13 +3,13 @@ package com.legendmohe.tool.logtable;
 import com.legendmohe.tool.EventBus;
 import com.legendmohe.tool.LogInfo;
 import com.legendmohe.tool.T;
+import com.legendmohe.tool.config.ThemeConstant;
 import com.legendmohe.tool.diff.DiffService;
 import com.legendmohe.tool.logflow.LogFlowManager;
 import com.legendmohe.tool.logtable.model.LogFilterTableModel;
 import com.legendmohe.tool.view.FixPopup;
 import com.legendmohe.tool.view.LogFlowDialog;
 
-import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.MouseInfo;
 import java.awt.Point;
@@ -356,7 +356,7 @@ public class LogTable extends BaseLogTable {
             button.setBorderPainted(false);
             button.setContentAreaFilled(false);
             button.setOpaque(false);
-            button.setForeground(Color.GRAY);
+            button.setForeground(ThemeConstant.COLOR_FIX_POPUP_BUTTON_BG);
             button.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     LogInfo logInfo = ((LogFilterTableModel) getModel()).getRow(row);

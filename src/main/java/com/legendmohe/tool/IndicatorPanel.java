@@ -1,6 +1,7 @@
 package com.legendmohe.tool;
 
 import com.legendmohe.tool.config.Constant;
+import com.legendmohe.tool.config.ThemeConstant;
 
 import java.awt.Graphics;
 import java.awt.Point;
@@ -140,7 +141,7 @@ public class IndicatorPanel extends JPanel {
                     nY2 = nY1 + MIN_HEIGHT;
                 if (nY2 > m_rcBookmark.y + m_rcBookmark.height)
                     nY2 = m_rcBookmark.y + m_rcBookmark.height;
-                g.setColor(Constant.COLOR_INDICATOR_BOOKMARK);
+                g.setColor(ThemeConstant.COLOR_INDICATOR_BOOKMARK);
                 g.fillRect(m_rcBookmark.x, nY1, m_rcBookmark.width, nY2 - nY1);
             }
 
@@ -155,19 +156,19 @@ public class IndicatorPanel extends JPanel {
                     nY2 = nY1 + MIN_HEIGHT;
                 if (nY2 > m_rcError.y + m_rcError.height)
                     nY2 = m_rcError.y + m_rcError.height;
-                g.setColor(Constant.COLOR_INDICATOR_ERROR);
+                g.setColor(ThemeConstant.COLOR_INDICATOR_ERROR);
                 g.fillRect(m_rcError.x, nY1, m_rcError.width, nY2 - nY1);
             }
         }
     }
 
     void drawBookmark(Graphics g) {
-        g.setColor(Constant.COLOR_INDICATOR_BOOKMARK);
+        g.setColor(ThemeConstant.COLOR_INDICATOR_BOOKMARK);
         g.drawRect(m_rcBookmark.x, m_rcBookmark.y, m_rcBookmark.width, m_rcBookmark.height);
     }
 
     void drawError(Graphics g) {
-        g.setColor(Constant.COLOR_INDICATOR_ERROR);
+        g.setColor(ThemeConstant.COLOR_INDICATOR_ERROR);
         g.drawRect(m_rcError.x, m_rcError.y, m_rcError.width, m_rcError.height);
     }
 

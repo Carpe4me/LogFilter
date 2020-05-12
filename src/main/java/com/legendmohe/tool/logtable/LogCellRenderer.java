@@ -3,7 +3,7 @@ package com.legendmohe.tool.logtable;
 import com.legendmohe.tool.ILogRenderResolver;
 import com.legendmohe.tool.LogInfo;
 import com.legendmohe.tool.Utils;
-import com.legendmohe.tool.config.Constant;
+import com.legendmohe.tool.config.ThemeConstant;
 import com.legendmohe.tool.logflow.LogFlowManager;
 import com.legendmohe.tool.logtable.model.LogFilterTableModel;
 
@@ -60,7 +60,7 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
     private final Border SELECTED_BORDER_PADDING;
 
     private final int BORDER_WIDTH = 1;
-    private final Color BORDER_COLOR = Constant.COLOR_LOG_CELL_BORDER;
+    private final Color BORDER_COLOR = ThemeConstant.COLOR_LOG_CELL_BORDER;
 
     private JTable mTable;
     private ILogRenderResolver mResolver;
@@ -91,7 +91,7 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
         SELECTED_BORDER_TOTAL = BorderFactory.createCompoundBorder(SELECTED_BORDER_TOP_LEFT, SELECTED_BORDER_BOTTOM_RIGHT);
         SELECTED_BORDER_NONE = BorderFactory.createEmptyBorder(0, 0, 0, 0);
 
-        SELECTED_BORDER_PADDING = BorderFactory.createEmptyBorder(0, Constant.LOG_TABLE_CELL_CONTENT_PADDING_LEFT, 0, Constant.LOG_TABLE_CELL_CONTENT_PADDING_RIGHT);
+        SELECTED_BORDER_PADDING = BorderFactory.createEmptyBorder(0, ThemeConstant.LOG_TABLE_CELL_CONTENT_PADDING_LEFT, 0, ThemeConstant.LOG_TABLE_CELL_CONTENT_PADDING_RIGHT);
 
         this.mTable = table;
         this.mResolver = resolver;
@@ -249,16 +249,16 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
                 c.setForeground(logInfo.getTextColor());
             }
         } else {
-            c.setForeground(Constant.COLOR_UNKNOWN);
+            c.setForeground(ThemeConstant.COLOR_LOG_TABLE_TEXT_DEFAULT);
         }
         if (isSelected) {
             if (logInfo.isMarked()) {
-                c.setBackground(Constant.COLOR_BOOKMARK2);
+                c.setBackground(ThemeConstant.COLOR_LOG_TABLE_CELL_BG_BOOKMARK_SELECTED);
             }
         } else if (logInfo.isMarked()) {
-            c.setBackground(Constant.COLOR_BOOKMARK);
+            c.setBackground(ThemeConstant.COLOR_LOG_TABLE_CELL_BG_BOOKMARK);
         } else {
-            c.setBackground(Color.WHITE);
+            c.setBackground(ThemeConstant.COLOR_LOG_TABLE_CELL_BG_NORMAL);
         }
     }
 
@@ -438,9 +438,9 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
     private static Map<Integer, HighLightConfig> sHighConfig = new HashMap<>();
 
     static {
-        sHighConfig.put(HIGH_LIGHT_TYPE_FILTER, new HighLightConfig(HIGH_LIGHT_TYPE_FILTER, Constant.COLOR_HIGH_LIGHT_TYPE_FILTER, false));
-        sHighConfig.put(HIGH_LIGHT_TYPE_HIGH_LIGHT, new HighLightConfig(HIGH_LIGHT_TYPE_HIGH_LIGHT, Constant.COLOR_HIGH_LIGHT_TYPE_HIGH_LIGHT, true));
-        sHighConfig.put(HIGH_LIGHT_TYPE_SEARCH, new HighLightConfig(HIGH_LIGHT_TYPE_SEARCH, Constant.COLOR_HIGH_LIGHT_TYPE_SEARCH, true));
+        sHighConfig.put(HIGH_LIGHT_TYPE_FILTER, new HighLightConfig(HIGH_LIGHT_TYPE_FILTER, ThemeConstant.COLOR_HIGH_LIGHT_TYPE_FILTER, false));
+        sHighConfig.put(HIGH_LIGHT_TYPE_HIGH_LIGHT, new HighLightConfig(HIGH_LIGHT_TYPE_HIGH_LIGHT, ThemeConstant.COLOR_HIGH_LIGHT_TYPE_HIGH_LIGHT, true));
+        sHighConfig.put(HIGH_LIGHT_TYPE_SEARCH, new HighLightConfig(HIGH_LIGHT_TYPE_SEARCH, ThemeConstant.COLOR_HIGH_LIGHT_TYPE_SEARCH, true));
     }
 
     // 高亮配置
@@ -468,17 +468,17 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
             if (flowResults != null && flowResults.size() > 0) {
                 if (mResolver.getMinShownColumn() == column) {
                     if (logInfo.hasErrorFlowResult()) {
-                        label.setIcon(Utils.createImageIcon(Constant.COLOR_LOG_FLOW_ERROR, 14, 14));
+                        label.setIcon(Utils.createImageIcon(ThemeConstant.COLOR_LOG_FLOW_ERROR, 14, 14));
                     } else {
-                        label.setIcon(Utils.createImageIcon(Constant.COLOR_LOG_FLOW_NORMAL, 14, 14));
+                        label.setIcon(Utils.createImageIcon(ThemeConstant.COLOR_LOG_FLOW_NORMAL, 14, 14));
                     }
                 }
                 // 需要高亮的
                 if (mFlowHighLightLines.contains(logInfo.getLine())) {
                     if (logInfo.hasErrorFlowResult()) {
-                        label.setBackground(Constant.COLOR_LOG_FLOW_ERROR_LINE);
+                        label.setBackground(ThemeConstant.COLOR_LOG_FLOW_ERROR_LINE);
                     } else {
-                        label.setBackground(Constant.COLOR_LOG_FLOW_NORMAL_LINE);
+                        label.setBackground(ThemeConstant.COLOR_LOG_FLOW_NORMAL_LINE);
                     }
                 }
                 return;

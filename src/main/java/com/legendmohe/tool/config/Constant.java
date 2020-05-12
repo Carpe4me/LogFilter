@@ -54,46 +54,4 @@ public class Constant {
     public static final String INI_CMD_COUNT = "CMD_COUNT";
     public static final String INI_CMD = "CMD_";
 
-    ///////////////////////////////////颜色///////////////////////////////////
-
-    //aarrggbb
-    public static Color COLOR_BOOKMARK = new Color(0xD9D9D9);
-    public static Color COLOR_BOOKMARK2 = new Color(0x00DDDDFF);
-    public static Color COLOR_DEBUG = new Color(0x000000AA);
-    public static Color COLOR_ERROR = new Color(232, 71, 0);
-    public static Color COLOR_FATAL = new Color(0x00FF0000);
-    public static Color COLOR_INFO = new Color(0x00009A00);
-    public static Color COLOR_WARN = new Color(0xDE8700);
-    public static Color COLOR_UNKNOWN = Color.BLACK;
-    public static Color COLOR_0 = new Color(0x00000000);
-    public static Color COLOR_1 = new Color(0x00000000);
-    public static Color COLOR_2 = new Color(0x00000000);
-    public static Color COLOR_5 = new Color(0x00000000);
-    public static Color COLOR_LOG_FLOW_FONT_NORMAL = new Color(0x000000);
-    public static Color COLOR_LOG_FLOW_FONT_ERROR = new Color(0x00FF0000);
-    public static Color COLOR_LOG_FLOW_NORMAL = new Color(0x0000ccff);
-    public static Color COLOR_LOG_FLOW_NORMAL_LINE = new Color(0x00cce6ff);
-    public static Color COLOR_LOG_FLOW_ERROR = new Color(0x00FF0000);
-    public static Color COLOR_LOG_FLOW_ERROR_LINE = new Color(0x00ffb3b3);
-    public static Color COLOR_LOG_FLOW_TEXT = new Color(0x00484848);
-    public static String[] COLOR_HIGHLIGHT;
-    public static final Color TABLE_SELECTION_BG_COLOR = new Color(196, 196, 196);
-    public static final Color TABLE_LOG_FLOW_SELECTION_BG_COLOR = new Color(208, 226, 255);
-    public static final Color COLOR_INDICATOR_BOOKMARK = new Color(64, 131, 201);
-    public static final Color COLOR_INDICATOR_ERROR = COLOR_ERROR;
-
-    public static final String COLOR_HIGH_LIGHT_TYPE_FILTER = "FF0000";
-    public static final String COLOR_HIGH_LIGHT_TYPE_HIGH_LIGHT = "00FF00";
-    public static final String COLOR_HIGH_LIGHT_TYPE_SEARCH = "FFFF00";
-
-    public static final Color COLOR_LOG_CELL_BORDER = new Color(0x00000000);
-    public static final Color COLOR_LOG_TABLE_POPUP_BACKGROUND = new Color(242, 242, 242);
-    public static final Color COLOR_LOG_TABLE_POPUP_BORDER= new Color(64, 131, 201);
-    public static final int TABLE_POPUP_BORDER_THICKNESS= 1;
-
-    ///////////////////////////////////style///////////////////////////////////
-
-    public static final int LOG_TABLE_ROW_PADDING = 9;
-    public static final int LOG_TABLE_CELL_CONTENT_PADDING_LEFT = 4;
-    public static final int LOG_TABLE_CELL_CONTENT_PADDING_RIGHT = 8;
 }

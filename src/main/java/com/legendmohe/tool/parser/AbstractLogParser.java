@@ -1,7 +1,7 @@
 package com.legendmohe.tool.parser;
 
 import com.legendmohe.tool.LogInfo;
-import com.legendmohe.tool.config.Constant;
+import com.legendmohe.tool.config.ThemeConstant;
 import com.legendmohe.tool.logtable.model.LogFilterTableModel;
 
 import java.awt.Color;
@@ -13,28 +13,20 @@ public abstract class AbstractLogParser implements ILogParser {
 
     @Override
     public Color getFontColor(LogInfo logInfo) {
-        if (logInfo.getLogLV() == null) return Color.BLACK;
+        if (logInfo.getLogLV() == null) return ThemeConstant.COLOR_LOG_TABLE_TEXT_DEFAULT;
 
         if (logInfo.getLogLV().equals("FATAL") || logInfo.getLogLV().equals("F"))
-            return Constant.COLOR_FATAL;
+            return ThemeConstant.COLOR_LOG_TABLE_TEXT_FATAL;
         if (logInfo.getLogLV().equals("ERROR") || logInfo.getLogLV().equals("E") || logInfo.getLogLV().equals("3"))
-            return Constant.COLOR_ERROR;
+            return ThemeConstant.COLOR_LOG_TABLE_TEXT_ERROR;
         else if (logInfo.getLogLV().equals("WARN") || logInfo.getLogLV().equals("W") || logInfo.getLogLV().equals("4"))
-            return Constant.COLOR_WARN;
+            return ThemeConstant.COLOR_LOG_TABLE_TEXT_WARN;
         else if (logInfo.getLogLV().equals("INFO") || logInfo.getLogLV().equals("I") || logInfo.getLogLV().equals("6"))
-            return Constant.COLOR_INFO;
+            return ThemeConstant.COLOR_LOG_TABLE_TEXT_INFO;
         else if (logInfo.getLogLV().equals("DEBUG") || logInfo.getLogLV().equals("D") || logInfo.getLogLV().equals("7"))
-            return Constant.COLOR_DEBUG;
-        else if (logInfo.getLogLV().equals("0"))
-            return Constant.COLOR_0;
-        else if (logInfo.getLogLV().equals("1"))
-            return Constant.COLOR_1;
-        else if (logInfo.getLogLV().equals("2"))
-            return Constant.COLOR_2;
-        else if (logInfo.getLogLV().equals("5"))
-            return Constant.COLOR_5;
+            return ThemeConstant.COLOR_LOG_TABLE_TEXT_DEBUG;
         else
-            return Constant.COLOR_UNKNOWN;
+            return ThemeConstant.COLOR_LOG_TABLE_TEXT_DEFAULT;
     }
 
     public static final int[] gDefColumns = new int[LogFilterTableModel.COLUMN_MAX];

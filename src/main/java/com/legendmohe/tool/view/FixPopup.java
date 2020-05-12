@@ -1,11 +1,10 @@
 package com.legendmohe.tool.view;
 
 import com.legendmohe.tool.Utils;
-import com.legendmohe.tool.config.Constant;
+import com.legendmohe.tool.config.ThemeConstant;
 
 import java.applet.Applet;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.ComponentOrientation;
 import java.awt.Container;
@@ -43,7 +42,7 @@ public class FixPopup extends JPanel {
 
     private static final int TOOLBAR_PANEL_PADDING = 4;
 
-    private static final int BORDER_THICKNESS = Constant.TABLE_POPUP_BORDER_THICKNESS;
+    private static final int BORDER_THICKNESS = ThemeConstant.TABLE_POPUP_BORDER_THICKNESS;
 
     private Popup mInternalPopup;
 
@@ -66,8 +65,8 @@ public class FixPopup extends JPanel {
         mContext = context;
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        setBorder(BorderFactory.createLineBorder(Constant.COLOR_LOG_TABLE_POPUP_BORDER, BORDER_THICKNESS, true));
-        setBackground(Constant.COLOR_LOG_TABLE_POPUP_BACKGROUND);
+        setBorder(BorderFactory.createLineBorder(ThemeConstant.COLOR_LOG_TABLE_POPUP_BORDER, BORDER_THICKNESS, true));
+        setBackground(ThemeConstant.COLOR_LOG_TABLE_POPUP_BACKGROUND);
 
         JPanel btnPanel = new JPanel(new BorderLayout());
         setupToolBar(btnPanel);
@@ -207,7 +206,7 @@ public class FixPopup extends JPanel {
         copyBtn.setContentAreaFilled(false);
         copyBtn.setOpaque(false);
         copyBtn.setText("copy");
-        copyBtn.setForeground(Color.GRAY);
+        copyBtn.setForeground(ThemeConstant.COLOR_FIX_POPUP_BUTTON_BG);
         copyBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 Utils.sendContentToClipboard(mMessage);
@@ -221,7 +220,7 @@ public class FixPopup extends JPanel {
         goButton.setBorderPainted(false);
         goButton.setContentAreaFilled(false);
         goButton.setOpaque(false);
-        goButton.setForeground(Color.GRAY);
+        goButton.setForeground(ThemeConstant.COLOR_FIX_POPUP_BUTTON_BG);
         goButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (mListener != null) {
@@ -233,7 +232,7 @@ public class FixPopup extends JPanel {
 
     private void syncPinBtnState(JButton pinBtn) {
         pinBtn.setText(mIsPinned ? "unpin" : "pin");
-        pinBtn.setForeground(mIsPinned ? Color.DARK_GRAY : Color.GRAY);
+        pinBtn.setForeground(mIsPinned ? ThemeConstant.COLOR_FIX_POPUP_BTN_PINNED : ThemeConstant.COLOR_FIX_POPUP_BUTTON_BG);
     }
 
     private void setupTextArea(JTextArea textArea, int width, int minWidth) {
