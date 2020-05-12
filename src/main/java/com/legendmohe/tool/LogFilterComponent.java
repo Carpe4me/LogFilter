@@ -654,7 +654,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         }
     }
 
-    void restoreSplitPane() {
+    public void restoreSplitPane() {
         mLogSplitPane.setResizeWeight(1.0);
         mLogSplitPane.setOneTouchExpandable(true);
         if (mLogSplitPaneDividerLocation > 0) {
@@ -674,7 +674,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         return Constant.OUTPUT_LOG_DIR + File.separator + "LogFilter_" + format.format(now) + ".txt";
     }
 
-    void exit() {
+    public void exit() {
         if (m_Process != null)
             m_Process.destroy();
         if (m_thProcess != null)
