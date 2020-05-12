@@ -13,7 +13,6 @@ import com.legendmohe.tool.view.XLogDecoderDialog;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
@@ -25,9 +24,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
 import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
-import java.util.Map;
 
 import javax.swing.AbstractAction;
 import javax.swing.JFrame;
@@ -221,7 +218,7 @@ public class LogFilterFrame extends JFrame {
             if (tabCount > 2) {
                 Component componentAt = tabbedPane.getComponentAt(index);
                 if (componentAt instanceof CloseableTab) {
-                    ((CloseableTab)componentAt).onCloseTab(index);
+                    ((CloseableTab) componentAt).onCloseTab(index);
                 }
                 tabbedPane.remove(index);
                 if (index == tabCount - 2) {
@@ -278,7 +275,7 @@ public class LogFilterFrame extends JFrame {
             withAllFilter(LogFilterComponent::restoreSplitPane);
             setMinimumSize(new Dimension(Constant.MIN_WIDTH, Constant.MIN_HEIGHT));
             setExtendedState(mWindowState);
-            setPreferredSize(new Dimension(m_nWinWidth, m_nWinHeight));
+            setSize(new Dimension(m_nWinWidth, m_nWinHeight));
         });
     }
 
