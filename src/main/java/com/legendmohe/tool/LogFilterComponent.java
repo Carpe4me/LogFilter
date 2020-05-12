@@ -1693,7 +1693,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         JScrollPane scrollPane = new JScrollPane(optionMenu);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-        return optionMenu;
+        return scrollPane;
     }
 
     Component createMainSplitPane() {
