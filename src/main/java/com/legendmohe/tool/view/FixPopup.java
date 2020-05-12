@@ -65,8 +65,7 @@ public class FixPopup extends JPanel {
         mContext = context;
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        setBorder(BorderFactory.createLineBorder(ThemeConstant.COLOR_LOG_TABLE_POPUP_BORDER, BORDER_THICKNESS, true));
-        setBackground(ThemeConstant.COLOR_LOG_TABLE_POPUP_BACKGROUND);
+        setBackground(ThemeConstant.COLOR_FIX_POPUP_BACKGROUND);
 
         JPanel btnPanel = new JPanel(new BorderLayout());
         setupToolBar(btnPanel);
@@ -77,6 +76,7 @@ public class FixPopup extends JPanel {
 
         JScrollPane scrollPane = new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setPreferredSize(new Dimension(maxWidth, (int) Math.min(textArea.getPreferredSize().getHeight(), maxHeight) + 10));
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
         add(scrollPane);
 
         mBottomPanel = createBottomPanel();
@@ -153,7 +153,7 @@ public class FixPopup extends JPanel {
         textArea.setCursor(null);
         textArea.setOpaque(false);
         textArea.setFocusable(true);
-        textArea.setFont(getFont().deriveFont(getFont().getSize()));
+        textArea.setBorder(BorderFactory.createEmptyBorder());
         textArea.setWrapStyleWord(false); // 高度会计算错误
         textArea.setLineWrap(true);
         return textArea;

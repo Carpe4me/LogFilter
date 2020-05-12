@@ -60,7 +60,7 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
     private final Border SELECTED_BORDER_PADDING;
 
     private final int BORDER_WIDTH = 1;
-    private final Color BORDER_COLOR = ThemeConstant.COLOR_LOG_CELL_BORDER;
+    private final Color BORDER_COLOR = ThemeConstant.COLOR_LOG_TABLE_CELL_BORDER;
 
     private JTable mTable;
     private ILogRenderResolver mResolver;
