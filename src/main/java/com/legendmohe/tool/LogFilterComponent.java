@@ -13,6 +13,7 @@ import com.legendmohe.tool.logtable.SubLogTable;
 import com.legendmohe.tool.logtable.model.LogFilterTableModel;
 import com.legendmohe.tool.parser.AbstractLogParser;
 import com.legendmohe.tool.parser.BigoDevLogParser;
+import com.legendmohe.tool.parser.BigoIOSDevLogParser;
 import com.legendmohe.tool.parser.BigoXLogParser;
 import com.legendmohe.tool.parser.DefaultLogParser;
 import com.legendmohe.tool.parser.ILogParser;
@@ -144,12 +145,14 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         sTypeToParserMap.put(Constant.PARSER_TYPE_BIGO_DEV_LOG, new BigoDevLogParser());
         sTypeToParserMap.put(Constant.PARSER_TYPE_BIGO_XLOG, new BigoXLogParser());
         sTypeToParserMap.put(Constant.PARSER_TYPE_IMO_DEV_LOG, new IMODevLogParser());
+        sTypeToParserMap.put(Constant.PARSER_TYPE_IOS_DEV_LOG, new BigoIOSDevLogParser());
         sTypeToParserMap.put(Constant.PARSER_TYPE_DEFAULT_LOG, new DefaultLogParser());
 
         sTypeToParserNameMap.put(Constant.PARSER_TYPE_LOGCAT, "logcat");
         sTypeToParserNameMap.put(Constant.PARSER_TYPE_BIGO_DEV_LOG, "bigo dev log");
         sTypeToParserNameMap.put(Constant.PARSER_TYPE_BIGO_XLOG, "bigo xlog");
         sTypeToParserNameMap.put(Constant.PARSER_TYPE_IMO_DEV_LOG, "imo dev log");
+        sTypeToParserNameMap.put(Constant.PARSER_TYPE_IOS_DEV_LOG, "ios dev log");
         sTypeToParserNameMap.put(Constant.PARSER_TYPE_DEFAULT_LOG, "default");
     }
 
@@ -529,6 +532,17 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         });
         parserMenu.add(imoDevLogParserMenu);
 
+        JRadioButtonMenuItem iosDevLogParserMenu = new JRadioButtonMenuItem("IOSDevLog Parser", LogFilterComponent.this.m_parserType == Constant.PARSER_TYPE_IOS_DEV_LOG);
+        iosDevLogParserMenu.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    LogFilterComponent.this.switchToLogParser(Constant.PARSER_TYPE_IOS_DEV_LOG);
+                }
+            }
+        });
+        parserMenu.add(iosDevLogParserMenu);
+
         // 就这样放进去就可以了。。。
         ButtonGroup parserBG = new ButtonGroup();
         parserBG.add(defaultLogParserMenu);
@@ -536,6 +550,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         parserBG.add(bigoParserMenu);
         parserBG.add(bigoXLogParserMenu);
         parserBG.add(imoDevLogParserMenu);
+        parserBG.add(iosDevLogParserMenu);
 
         JMenu flowMenu = new JMenu("Flow");
         JMenuItem showAllFlow = new JMenuItem("show all log flow");
