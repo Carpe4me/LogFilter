@@ -39,7 +39,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 public class LogCellRenderer extends DefaultTableCellRenderer {
     private static final long serialVersionUID = 1L;
 
-    public static final int DIM_CONTENT_APLHA = 0x1e;
+    public static final int DIM_CONTENT_APLHA = 0x2e;
 
     private final Border SELECTED_BORDER_TOP_LEFT;
     private final Border SELECTED_BORDER_TOP_RIGHT;

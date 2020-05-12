@@ -65,6 +65,7 @@ public class FixPopup extends JPanel {
         mContext = context;
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setBorder(BorderFactory.createLineBorder(ThemeConstant.COLOR_FIX_POPUP_BORDER, BORDER_THICKNESS, true));
         setBackground(ThemeConstant.COLOR_FIX_POPUP_BACKGROUND);
 
         JPanel btnPanel = new JPanel(new BorderLayout());
