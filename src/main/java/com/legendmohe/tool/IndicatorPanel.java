@@ -24,7 +24,7 @@ import javax.swing.border.EmptyBorder;
 
 /**
  * logtable左边的两条东西
- */
+ * */
 public class IndicatorPanel extends JPanel {
     private static final long serialVersionUID = 1L;
 

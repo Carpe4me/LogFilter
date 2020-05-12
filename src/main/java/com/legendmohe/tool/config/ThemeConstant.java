@@ -42,7 +42,14 @@ public class ThemeConstant {
     }
 
     public static Color getColorTableSelectionBg() {
-        return UIManager.getColor("Label.background");
+        Color color = UIManager.getColor("Table.selectionBackground");
+        return new Color(
+                color.getRed(),
+                color.getGreen(),
+                color.getBlue(),
+                0x3a
+        );
+//        return UIManager.getColor("Label.background");
     }
 
     public static Color getColorFixPopupBackground() {

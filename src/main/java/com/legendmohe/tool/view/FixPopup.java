@@ -5,6 +5,7 @@ import com.legendmohe.tool.config.ThemeConstant;
 
 import java.applet.Applet;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.ComponentOrientation;
 import java.awt.Container;
@@ -192,6 +193,7 @@ public class FixPopup extends JPanel {
         pinBtn.setBorderPainted(false);
         pinBtn.setContentAreaFilled(false);
         pinBtn.setOpaque(false);
+        pinBtn.setBackground(new Color(0,0,0,0));
         pinBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 mIsPinned = !mIsPinned;
@@ -204,6 +206,7 @@ public class FixPopup extends JPanel {
     private void setupCopyButton(JButton copyBtn) {
         copyBtn.setBorder(null);
         copyBtn.setBorderPainted(false);
+        copyBtn.setBackground(new Color(0,0,0,0));
         copyBtn.setContentAreaFilled(false);
         copyBtn.setOpaque(false);
         copyBtn.setText("copy");
@@ -220,6 +223,7 @@ public class FixPopup extends JPanel {
         goButton.setBorder(null);
         goButton.setBorderPainted(false);
         goButton.setContentAreaFilled(false);
+        goButton.setBackground(new Color(0,0,0,0));
         goButton.setOpaque(false);
         goButton.setForeground(ThemeConstant.getColorFixPopupButtonBg());
         goButton.addActionListener(new ActionListener() {

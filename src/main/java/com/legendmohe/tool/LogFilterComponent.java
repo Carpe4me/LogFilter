@@ -115,6 +115,7 @@ import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.ListSelectionModel;
 import javax.swing.OverlayLayout;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
@@ -1688,6 +1689,10 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         mSearchPanel.add(createSearchPanel());
         mSearchPanel.setVisible(false);
         optionMenu.add(mSearchPanel, BorderLayout.SOUTH);
+
+        JScrollPane scrollPane = new JScrollPane(optionMenu);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
+        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
         return optionMenu;
     }
 
