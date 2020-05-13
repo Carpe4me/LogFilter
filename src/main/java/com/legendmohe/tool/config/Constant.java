@@ -20,6 +20,7 @@ public class Constant {
     public static final int PARSER_TYPE_BIGO_DEV_LOG = 2;
     public static final int PARSER_TYPE_BIGO_XLOG = 3;
     public static final int PARSER_TYPE_IMO_DEV_LOG = 4;
+    public static final int PARSER_TYPE_IOS_DEV_LOG = 5;
     public static final int PARSING_STATUS_CHANGE_PENDING = 1;
     public static final int PARSING_STATUS_PARSING = 2;
     public static final int PARSING_STATUS_READY = 4;

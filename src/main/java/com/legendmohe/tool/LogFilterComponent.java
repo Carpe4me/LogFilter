@@ -5,6 +5,7 @@ import com.legendmohe.tool.annotation.FieldSaveState;
 import com.legendmohe.tool.annotation.TextFieldSaveState;
 import com.legendmohe.tool.annotation.UIStateSaver;
 import com.legendmohe.tool.config.Constant;
+import com.legendmohe.tool.config.ThemeConstant;
 import com.legendmohe.tool.diff.DiffService;
 import com.legendmohe.tool.logflow.LogFlowManager;
 import com.legendmohe.tool.logtable.BaseLogTable;
@@ -13,6 +14,7 @@ import com.legendmohe.tool.logtable.SubLogTable;
 import com.legendmohe.tool.logtable.model.LogFilterTableModel;
 import com.legendmohe.tool.parser.AbstractLogParser;
 import com.legendmohe.tool.parser.BigoDevLogParser;
+import com.legendmohe.tool.parser.BigoIOSDevLogParser;
 import com.legendmohe.tool.parser.BigoXLogParser;
 import com.legendmohe.tool.parser.DefaultLogParser;
 import com.legendmohe.tool.parser.ILogParser;
@@ -144,12 +146,14 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         sTypeToParserMap.put(Constant.PARSER_TYPE_BIGO_DEV_LOG, new BigoDevLogParser());
         sTypeToParserMap.put(Constant.PARSER_TYPE_BIGO_XLOG, new BigoXLogParser());
         sTypeToParserMap.put(Constant.PARSER_TYPE_IMO_DEV_LOG, new IMODevLogParser());
+        sTypeToParserMap.put(Constant.PARSER_TYPE_IOS_DEV_LOG, new BigoIOSDevLogParser());
         sTypeToParserMap.put(Constant.PARSER_TYPE_DEFAULT_LOG, new DefaultLogParser());
 
         sTypeToParserNameMap.put(Constant.PARSER_TYPE_LOGCAT, "logcat");
         sTypeToParserNameMap.put(Constant.PARSER_TYPE_BIGO_DEV_LOG, "bigo dev log");
         sTypeToParserNameMap.put(Constant.PARSER_TYPE_BIGO_XLOG, "bigo xlog");
         sTypeToParserNameMap.put(Constant.PARSER_TYPE_IMO_DEV_LOG, "imo dev log");
+        sTypeToParserNameMap.put(Constant.PARSER_TYPE_IOS_DEV_LOG, "ios dev log");
         sTypeToParserNameMap.put(Constant.PARSER_TYPE_DEFAULT_LOG, "default");
     }
 
@@ -262,7 +266,6 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
     @CheckBoxSaveState
     JCheckBox m_chkClmFile;
 
-    JComboBox<String> m_comboEncode;
     //    JComboBox m_jcFontType;
     JButton m_btnRun;
     JButton m_btnClear;
@@ -404,12 +407,14 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         enableDiffServer.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
                 if (enableDiffServer.getState()) {
+                    m_tfDiffPort.setVisible(true);
                     mConnectDiffMenuItem.setEnabled(true);
                     if (mDiffService == null) {
                         initDiffService();
                     }
                 } else {
                     LogFilterComponent.this.mDiffService.disconnectDiffClient();
+                    m_tfDiffPort.setVisible(false);
                     mConnectDiffMenuItem.setEnabled(false);
                     mDisconnectDiffMenuItem.setEnabled(false);
                 }
@@ -527,6 +532,17 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         });
         parserMenu.add(imoDevLogParserMenu);
 
+        JRadioButtonMenuItem iosDevLogParserMenu = new JRadioButtonMenuItem("IOSDevLog Parser", LogFilterComponent.this.m_parserType == Constant.PARSER_TYPE_IOS_DEV_LOG);
+        iosDevLogParserMenu.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    LogFilterComponent.this.switchToLogParser(Constant.PARSER_TYPE_IOS_DEV_LOG);
+                }
+            }
+        });
+        parserMenu.add(iosDevLogParserMenu);
+
         // 就这样放进去就可以了。。。
         ButtonGroup parserBG = new ButtonGroup();
         parserBG.add(defaultLogParserMenu);
@@ -534,6 +550,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         parserBG.add(bigoParserMenu);
         parserBG.add(bigoXLogParserMenu);
         parserBG.add(imoDevLogParserMenu);
+        parserBG.add(iosDevLogParserMenu);
 
         JMenu flowMenu = new JMenu("Flow");
         JMenuItem showAllFlow = new JMenuItem("show all log flow");
@@ -696,10 +713,12 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
 
         loadTableColumnState();
 
-        getLogTable().setFontSize(Integer.parseInt(m_tfFontSize
-                .getText()));
-        getSubTable().setFontSize(Integer.parseInt(m_tfFontSize
-                .getText()));
+        if (m_tfFontSize.getText().length() > 0) {
+            getLogTable().setFontSize(Integer.parseInt(m_tfFontSize
+                    .getText()));
+            getSubTable().setFontSize(Integer.parseInt(m_tfFontSize
+                    .getText()));
+        }
 
         updateLogTable(-1, false);
     }
@@ -858,8 +877,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
 
     Component createDevicePanel() {
         JPanel jpOptionDevice = new JPanel();
-        jpOptionDevice.setBorder(BorderFactory
-                .createTitledBorder("Device select"));
+        jpOptionDevice.setBorder(BorderFactory.createEmptyBorder(6,6,6,6));
         jpOptionDevice.setLayout(new BorderLayout());
 
         JPanel jpCmd = new JPanel();
@@ -1575,18 +1593,13 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         JPanel optionWest = new JPanel(new FlowLayout(FlowLayout.LEADING));
 
         JLabel jlFont = new JLabel("Font Size : ");
-        m_tfFontSize = new JTextField(2);
+        m_tfFontSize = new JTextField(4);
         m_tfFontSize.setHorizontalAlignment(SwingConstants.RIGHT);
         m_tfFontSize.setText("12");
 
         m_btnSetFont = new JButton("OK");
         m_btnSetFont.setMargin(new Insets(0, 0, 0, 0));
         m_btnSetFont.addActionListener(m_alButtonListener);
-
-        JLabel jlEncode = new JLabel("Text Encode : ");
-        m_comboEncode = new JComboBox<>();
-        m_comboEncode.addItem("UTF-8");
-        m_comboEncode.addItem("Local");
 
         JLabel jlGoto = new JLabel("Goto : ");
         m_tfGoto = new JTextField(6);
@@ -1610,6 +1623,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
                 enableSyncScroll(check.isSelected());
             }
         });
+        mSyncScrollCheckBox.setVisible(false);
 
         mSyncSelectedCheckBox = new JCheckBox("sync selected");
         mSyncSelectedCheckBox.setEnabled(false);
@@ -1620,6 +1634,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
                 enableSyncSelected(check.isSelected());
             }
         });
+        mSyncSelectedCheckBox.setVisible(false);
 
         JButton preHistoryButton = new JButton("<");
         preHistoryButton.setMargin(new Insets(0, 5, 0, 5));
@@ -1673,8 +1688,6 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         optionWest.add(jlFont);
         optionWest.add(m_tfFontSize);
         optionWest.add(m_btnSetFont);
-        optionWest.add(jlEncode);
-        optionWest.add(m_comboEncode);
         optionWest.add(jlGoto);
         optionWest.add(m_tfGoto);
         optionWest.add(preHistoryButton);
@@ -1712,9 +1725,12 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
     }
 
     Component createOptionPanel() {
-        JScrollPane scrollPane = new JScrollPane(createOptionFilter());
-        scrollPane.setBorder(BorderFactory.createEmptyBorder());
-        return scrollPane;
+        if (!frameInfoProvider.enableFloatingWindow()) {
+            JScrollPane scrollPane = new JScrollPane(createOptionFilter());
+            scrollPane.setBorder(BorderFactory.createEmptyBorder());
+            return scrollPane;
+        }
+        return createOptionFilter();
     }
 
     Component createStatusPanel() {
@@ -1724,13 +1740,16 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.weightx = 1.0;
         constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.insets = new Insets(4, 4, 4, 4);
 
-        Border border = BorderFactory.createCompoundBorder(new EmptyBorder(0, 4, 0, 0), new EtchedBorder());
+        Border border = BorderFactory.createCompoundBorder(new EtchedBorder(), new EmptyBorder(0, 4, 0, 4));
 
         m_tfDiffPort = new JLabel("not bind");
         m_tfDiffPort.setBorder(border);
+        m_tfDiffPort.setVisible(false);
         m_tfDiffState = new JLabel("disconnected");
         m_tfDiffState.setBorder(border);
+        m_tfDiffState.setVisible(false);
         m_tfParserType = new JLabel("");
         m_tfParserType.setBorder(border);
 
@@ -1852,11 +1871,8 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
                     try {
                         fstream = new FileInputStream(file);
                         in = new DataInputStream(fstream);
-                        if (m_comboEncode.getSelectedItem().equals("UTF-8"))
-                            br = new BufferedReader(new InputStreamReader(in,
-                                    StandardCharsets.UTF_8));
-                        else
-                            br = new BufferedReader(new InputStreamReader(in));
+                        br = new BufferedReader(new InputStreamReader(in,
+                                StandardCharsets.UTF_8));
 
                         String strLine;
                         while ((strLine = br.readLine()) != null) {
@@ -2181,11 +2197,8 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
                     setLoadingState(LoadingState.LOADING, "dumping");
                     fstream = new FileInputStream(m_strLogFileName);
                     in = new DataInputStream(fstream);
-                    if (m_comboEncode.getSelectedItem().equals("UTF-8"))
-                        br = new BufferedReader(new InputStreamReader(in,
-                                StandardCharsets.UTF_8));
-                    else
-                        br = new BufferedReader(new InputStreamReader(in));
+                    br = new BufferedReader(new InputStreamReader(in,
+                            StandardCharsets.UTF_8));
 
                     String strLine;
 
@@ -3308,7 +3321,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
             T.e("mode file == null");
             return;
         }
-        mUIStateSaver.save(file.getAbsolutePath());
+        mUIStateSaver.save(new UIStateSaver.DefaultPersistenceHelper(file.getAbsolutePath()));
     }
 
     private void loadModeFile(File file) {
@@ -3316,7 +3329,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
             T.e("mode file == null");
             return;
         }
-        mUIStateSaver.load(file.getAbsolutePath());
+        mUIStateSaver.load(new UIStateSaver.DefaultPersistenceHelper(file.getAbsolutePath()));
     }
 
     ///////////////////////////////////diff///////////////////////////////////
@@ -3339,11 +3352,17 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         if (!mDiffService.isDiffConnected()) {
             mSyncScrollCheckBox.setEnabled(false);
             mSyncSelectedCheckBox.setEnabled(false);
+            mSyncScrollCheckBox.setVisible(false);
+            mSyncSelectedCheckBox.setVisible(false);
+            m_tfDiffState.setVisible(false);
             m_tfDiffState.setBackground(null);
             m_tfDiffState.setText("disconnected");
         } else {
             mSyncScrollCheckBox.setEnabled(true);
             mSyncSelectedCheckBox.setEnabled(true);
+            mSyncScrollCheckBox.setVisible(true);
+            mSyncSelectedCheckBox.setVisible(true);
+            m_tfDiffState.setVisible(true);
             m_tfDiffState.setBackground(Color.GREEN);
             switch (mDiffService.getDiffServiceType()) {
                 case AS_CLIENT:
