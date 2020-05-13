@@ -265,7 +265,6 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
     @CheckBoxSaveState
     JCheckBox m_chkClmFile;
 
-    JComboBox<String> m_comboEncode;
     //    JComboBox m_jcFontType;
     JButton m_btnRun;
     JButton m_btnClear;
@@ -712,10 +711,12 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
 
         loadTableColumnState();
 
-        getLogTable().setFontSize(Integer.parseInt(m_tfFontSize
-                .getText()));
-        getSubTable().setFontSize(Integer.parseInt(m_tfFontSize
-                .getText()));
+        if (m_tfFontSize.getText().length() > 0) {
+            getLogTable().setFontSize(Integer.parseInt(m_tfFontSize
+                    .getText()));
+            getSubTable().setFontSize(Integer.parseInt(m_tfFontSize
+                    .getText()));
+        }
 
         updateLogTable(-1, false);
     }
@@ -1591,18 +1592,13 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         JPanel optionWest = new JPanel(new FlowLayout(FlowLayout.LEADING));
 
         JLabel jlFont = new JLabel("Font Size : ");
-        m_tfFontSize = new JTextField(2);
+        m_tfFontSize = new JTextField(4);
         m_tfFontSize.setHorizontalAlignment(SwingConstants.RIGHT);
         m_tfFontSize.setText("12");
 
         m_btnSetFont = new JButton("OK");
         m_btnSetFont.setMargin(new Insets(0, 0, 0, 0));
         m_btnSetFont.addActionListener(m_alButtonListener);
-
-        JLabel jlEncode = new JLabel("Text Encode : ");
-        m_comboEncode = new JComboBox<>();
-        m_comboEncode.addItem("UTF-8");
-        m_comboEncode.addItem("Local");
 
         JLabel jlGoto = new JLabel("Goto : ");
         m_tfGoto = new JTextField(6);
@@ -1689,8 +1685,6 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         optionWest.add(jlFont);
         optionWest.add(m_tfFontSize);
         optionWest.add(m_btnSetFont);
-        optionWest.add(jlEncode);
-        optionWest.add(m_comboEncode);
         optionWest.add(jlGoto);
         optionWest.add(m_tfGoto);
         optionWest.add(preHistoryButton);
@@ -1868,11 +1862,8 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
                     try {
                         fstream = new FileInputStream(file);
                         in = new DataInputStream(fstream);
-                        if (m_comboEncode.getSelectedItem().equals("UTF-8"))
-                            br = new BufferedReader(new InputStreamReader(in,
-                                    StandardCharsets.UTF_8));
-                        else
-                            br = new BufferedReader(new InputStreamReader(in));
+                        br = new BufferedReader(new InputStreamReader(in,
+                                StandardCharsets.UTF_8));
 
                         String strLine;
                         while ((strLine = br.readLine()) != null) {
@@ -2197,11 +2188,8 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
                     setLoadingState(LoadingState.LOADING, "dumping");
                     fstream = new FileInputStream(m_strLogFileName);
                     in = new DataInputStream(fstream);
-                    if (m_comboEncode.getSelectedItem().equals("UTF-8"))
-                        br = new BufferedReader(new InputStreamReader(in,
-                                StandardCharsets.UTF_8));
-                    else
-                        br = new BufferedReader(new InputStreamReader(in));
+                    br = new BufferedReader(new InputStreamReader(in,
+                            StandardCharsets.UTF_8));
 
                     String strLine;
 
