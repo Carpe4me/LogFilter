@@ -5,6 +5,7 @@ import com.legendmohe.tool.annotation.FieldSaveState;
 import com.legendmohe.tool.annotation.TextFieldSaveState;
 import com.legendmohe.tool.annotation.UIStateSaver;
 import com.legendmohe.tool.config.Constant;
+import com.legendmohe.tool.config.ThemeConstant;
 import com.legendmohe.tool.diff.DiffService;
 import com.legendmohe.tool.logflow.LogFlowManager;
 import com.legendmohe.tool.logtable.BaseLogTable;
@@ -877,8 +878,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
 
     Component createDevicePanel() {
         JPanel jpOptionDevice = new JPanel();
-        jpOptionDevice.setBorder(BorderFactory
-                .createTitledBorder("Device select"));
+        jpOptionDevice.setBorder(BorderFactory.createEmptyBorder(6,6,6,6));
         jpOptionDevice.setLayout(new BorderLayout());
 
         JPanel jpCmd = new JPanel();
@@ -1591,6 +1591,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
 
     Component createOptionMenu() {
         JPanel optionMenu = new JPanel(new BorderLayout());
+        optionMenu.setBorder(BorderFactory.createLineBorder(ThemeConstant.getColorLogTableCellBorder(), 1));
         JPanel optionWest = new JPanel(new FlowLayout(FlowLayout.LEADING));
 
         JLabel jlFont = new JLabel("Font Size : ");
@@ -1726,9 +1727,12 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
     }
 
     Component createOptionPanel() {
-        JScrollPane scrollPane = new JScrollPane(createOptionFilter());
-        scrollPane.setBorder(BorderFactory.createEmptyBorder());
-        return scrollPane;
+        if (!frameInfoProvider.enableFloatingWindow()) {
+            JScrollPane scrollPane = new JScrollPane(createOptionFilter());
+            scrollPane.setBorder(BorderFactory.createEmptyBorder());
+            return scrollPane;
+        }
+        return createOptionFilter();
     }
 
     Component createStatusPanel() {
