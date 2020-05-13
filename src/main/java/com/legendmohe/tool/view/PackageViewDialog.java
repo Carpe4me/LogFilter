@@ -7,6 +7,7 @@ import com.legendmohe.tool.presenter.PackageViewPresenter;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.FlowLayout;
+import java.awt.Frame;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,7 +16,6 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
@@ -35,7 +35,7 @@ public class PackageViewDialog extends JDialog {
     private JButton mRefreshButton;
     private JProgressBar mProgressBar;
 
-    public PackageViewDialog(JFrame frame, String title, String deviceId, PackageViewDialogListener listener) {
+    public PackageViewDialog(Frame frame, String title, String deviceId, PackageViewDialogListener listener) {
         super(frame, title, true);
 
         mPackageViewPresenter = new PackageViewPresenter(this, deviceId);

@@ -432,18 +432,16 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         mConnectDiffMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (frameInfoProvider.getContainerFrame() != null) {
-                    String serverPort = JOptionPane.showInputDialog(
-                            frameInfoProvider.getContainerFrame(),
-                            "Enter Server Port",
-                            "",
-                            JOptionPane.QUESTION_MESSAGE
-                    );
-                    if (serverPort != null && serverPort.length() != 0) {
-                        if (LogFilterComponent.this.mDiffService.setupDiffClient(serverPort)) {
-                            mConnectDiffMenuItem.setEnabled(false);
-                            mDisconnectDiffMenuItem.setEnabled(true);
-                        }
+                String serverPort = JOptionPane.showInputDialog(
+                        LogFilterComponent.this,
+                        "Enter Server Port",
+                        "",
+                        JOptionPane.QUESTION_MESSAGE
+                );
+                if (serverPort != null && serverPort.length() != 0) {
+                    if (LogFilterComponent.this.mDiffService.setupDiffClient(serverPort)) {
+                        mConnectDiffMenuItem.setEnabled(false);
+                        mDisconnectDiffMenuItem.setEnabled(true);
                     }
                 }
             }
@@ -562,6 +560,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
             menuBar.add(flowMenu);
         }
         menuBar.add(parserMenu);
+        menuBar.setBackground(new Color(0,0,0,0));
         return menuBar;
     }
 

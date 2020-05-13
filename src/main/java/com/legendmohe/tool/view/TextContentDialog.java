@@ -4,9 +4,9 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Frame;
 
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.text.JTextComponent;
@@ -16,7 +16,7 @@ import javax.swing.text.JTextComponent;
  */
 public class TextContentDialog extends JDialog {
 
-    public TextContentDialog(JFrame frame, String title, String content) {
+    public TextContentDialog(Frame frame, String title, String content) {
         super(frame, title, true);
 
         Container c = getContentPane();

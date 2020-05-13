@@ -11,11 +11,11 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FileDialog;
 import java.awt.FlowLayout;
+import java.awt.Frame;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -27,7 +27,6 @@ import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -49,7 +48,7 @@ import javax.swing.table.TableColumnModel;
 
 /**
  * 运行各种adb命令
- *
+ * <p>
  * Created by xinyu.he on 2016/2/5.
  */
 public class DumpsysViewDialog extends JDialog implements ActionListener {
@@ -66,7 +65,7 @@ public class DumpsysViewDialog extends JDialog implements ActionListener {
     private DumpsysViewTableModel mDumpsysViewTableModel;
     private String mSearchTarget = "";
 
-    public DumpsysViewDialog(JFrame frame, String title, String deviceId, String cmd, DumpsysViewDialogListener listener) {
+    public DumpsysViewDialog(Frame frame, String title, String deviceId, String cmd, DumpsysViewDialogListener listener) {
         super(frame, title, true);
 
         mDumpsysViewPresenter = new DumpsysViewPresenter(this, deviceId, cmd);

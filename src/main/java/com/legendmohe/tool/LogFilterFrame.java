@@ -14,6 +14,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -62,7 +63,7 @@ public class LogFilterFrame extends JFrame {
         this.floatingWinListener = floatingWinListener;
         frameInfoProvider = new FrameInfoProvider() {
             @Override
-            public JFrame getContainerFrame() {
+            public Frame getContainerFrame() {
                 return LogFilterFrame.this;
             }
 
@@ -406,7 +407,7 @@ public class LogFilterFrame extends JFrame {
     //////////////////////////////////////////////////////////////////////
 
     public interface FrameInfoProvider {
-        JFrame getContainerFrame();
+        Frame getContainerFrame();
 
         boolean enableFloatingWindow();
 
