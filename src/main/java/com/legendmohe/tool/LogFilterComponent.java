@@ -3324,7 +3324,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
             T.e("mode file == null");
             return;
         }
-        mUIStateSaver.save(file.getAbsolutePath());
+        mUIStateSaver.save(new UIStateSaver.DefaultPersistenceHelper(file.getAbsolutePath()));
     }
 
     private void loadModeFile(File file) {
@@ -3332,7 +3332,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
             T.e("mode file == null");
             return;
         }
-        mUIStateSaver.load(file.getAbsolutePath());
+        mUIStateSaver.load(new UIStateSaver.DefaultPersistenceHelper(file.getAbsolutePath()));
     }
 
     ///////////////////////////////////diff///////////////////////////////////

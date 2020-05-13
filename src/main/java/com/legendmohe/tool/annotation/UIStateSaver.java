@@ -11,8 +11,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -28,15 +30,22 @@ public class UIStateSaver {
     };
 
     private ArrayList<Field> mFields = new ArrayList<>();
-    private HashMap<String, Serializable> mSerializableMap = new HashMap<>();
+    private Map<String, Serializable> mSerializableMap = new HashMap<>();
     private Object mContext;
-    private String mSavePath;
 
-    public UIStateSaver(Object target, String filePath) {
-        register(target, filePath);
+    private PersistenceHelper persistenceHelper;
+
+    public UIStateSaver(Object target, PersistenceHelper helper) {
+        persistenceHelper = helper;
+        register(target);
     }
 
-    private void register(Object context, String filePath) {
+    public UIStateSaver(Object target, String filePath) {
+        persistenceHelper = new DefaultPersistenceHelper(filePath);
+        register(target);
+    }
+
+    private void register(Object context) {
         if (context == null) {
             throw new NullPointerException();
         }
@@ -52,14 +61,13 @@ public class UIStateSaver {
             }
         }
         mContext = context;
-        mSavePath = filePath;
     }
 
     public void save() {
-        save(mSavePath);
+        save(persistenceHelper);
     }
 
-    public void save(String path) {
+    public void save(PersistenceHelper helper) {
         for (Field field : mFields) {
             for (Class stateClass : mSupportedSaveState) {
                 if (field.isAnnotationPresent(stateClass)) {
@@ -73,15 +81,16 @@ public class UIStateSaver {
                 }
             }
         }
-        serialize(path);
+        if (helper != null) {
+            helper.serialize(mSerializableMap);
+        }
     }
 
-    public void load() {
-        load(mSavePath);
-    }
-
-    public void load(String path) {
-        if (!deserialize(path) || mSerializableMap.size() == 0) {
+    public void load(PersistenceHelper helper) {
+        if (helper != null) {
+            mSerializableMap.putAll(helper.deserialize());
+        }
+        if (mSerializableMap.size() == 0) {
             return;
         }
         for (Field field : mFields) {
@@ -97,6 +106,10 @@ public class UIStateSaver {
                 }
             }
         }
+    }
+
+    public void load() {
+        load(persistenceHelper);
     }
 
     protected void processSave(Field field, Class stateClass) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
@@ -171,58 +184,6 @@ public class UIStateSaver {
         }
     }
 
-    private boolean serialize(String path) {
-        FileOutputStream fos = null;
-        ObjectOutputStream oos = null;
-        try {
-            fos = new FileOutputStream(path);
-            oos = new ObjectOutputStream(fos);
-            oos.writeObject(mSerializableMap);
-            oos.close();
-            return true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        } finally {
-            try {
-                if (fos != null) {
-                    fos.close();
-                }
-                if (oos != null) {
-                    oos.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return false;
-    }
-
-    private boolean deserialize(String path) {
-        FileInputStream fos = null;
-        ObjectInputStream oos = null;
-        try {
-            fos = new FileInputStream(path);
-            oos = new ObjectInputStream(fos);
-            mSerializableMap = (HashMap<String, Serializable>) oos.readObject();
-            oos.close();
-            return true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        } finally {
-            try {
-                if (fos != null) {
-                    fos.close();
-                }
-                if (oos != null) {
-                    oos.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return false;
-    }
-
     // ----------------------------------------------------------------------
 
     private static final Set<Class<?>> WRAPPER_TYPES;
@@ -242,5 +203,83 @@ public class UIStateSaver {
 
     private static boolean isWrapperType(Class<?> clazz) {
         return WRAPPER_TYPES.contains(clazz);
+    }
+
+    ///////////////////////////////////listener///////////////////////////////////
+
+    public interface PersistenceHelper {
+        Map<String, Serializable> deserialize();
+        void serialize(Map<String, Serializable> data);
+    }
+
+    public static class DefaultPersistenceHelper implements PersistenceHelper {
+
+        private String path;
+
+        public DefaultPersistenceHelper(String path) {
+            this.path = path;
+        }
+
+        @Override
+        public Map<String, Serializable> deserialize() {
+            return deserialize(path);
+        }
+
+        @Override
+        public void serialize(Map<String, Serializable> data) {
+            serialize(data, path);
+        }
+
+        private boolean serialize(Map<String, Serializable> data, String path) {
+            FileOutputStream fos = null;
+            ObjectOutputStream oos = null;
+            try {
+                fos = new FileOutputStream(path);
+                oos = new ObjectOutputStream(fos);
+                oos.writeObject(data);
+                oos.close();
+                return true;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            } finally {
+                try {
+                    if (fos != null) {
+                        fos.close();
+                    }
+                    if (oos != null) {
+                        oos.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return false;
+        }
+
+        private Map<String, Serializable> deserialize(String path) {
+            FileInputStream fos = null;
+            ObjectInputStream oos = null;
+            try {
+                fos = new FileInputStream(path);
+                oos = new ObjectInputStream(fos);
+                HashMap<String, Serializable> result = (HashMap<String, Serializable>) oos.readObject();
+                oos.close();
+                return result;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            } finally {
+                try {
+                    if (fos != null) {
+                        fos.close();
+                    }
+                    if (oos != null) {
+                        oos.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return Collections.emptyMap();
+        }
     }
 }
