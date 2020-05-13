@@ -406,12 +406,14 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         enableDiffServer.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
                 if (enableDiffServer.getState()) {
+                    m_tfDiffPort.setVisible(true);
                     mConnectDiffMenuItem.setEnabled(true);
                     if (mDiffService == null) {
                         initDiffService();
                     }
                 } else {
                     LogFilterComponent.this.mDiffService.disconnectDiffClient();
+                    m_tfDiffPort.setVisible(false);
                     mConnectDiffMenuItem.setEnabled(false);
                     mDisconnectDiffMenuItem.setEnabled(false);
                 }
@@ -1622,6 +1624,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
                 enableSyncScroll(check.isSelected());
             }
         });
+        mSyncScrollCheckBox.setVisible(false);
 
         mSyncSelectedCheckBox = new JCheckBox("sync selected");
         mSyncSelectedCheckBox.setEnabled(false);
@@ -1632,6 +1635,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
                 enableSyncSelected(check.isSelected());
             }
         });
+        mSyncSelectedCheckBox.setVisible(false);
 
         JButton preHistoryButton = new JButton("<");
         preHistoryButton.setMargin(new Insets(0, 5, 0, 5));
@@ -1734,13 +1738,16 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.weightx = 1.0;
         constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.insets = new Insets(4, 4, 4, 4);
 
-        Border border = BorderFactory.createCompoundBorder(new EmptyBorder(0, 4, 0, 0), new EtchedBorder());
+        Border border = BorderFactory.createCompoundBorder(new EtchedBorder(), new EmptyBorder(0, 4, 0, 4));
 
         m_tfDiffPort = new JLabel("not bind");
         m_tfDiffPort.setBorder(border);
+        m_tfDiffPort.setVisible(false);
         m_tfDiffState = new JLabel("disconnected");
         m_tfDiffState.setBorder(border);
+        m_tfDiffState.setVisible(false);
         m_tfParserType = new JLabel("");
         m_tfParserType.setBorder(border);
 
@@ -3343,11 +3350,17 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         if (!mDiffService.isDiffConnected()) {
             mSyncScrollCheckBox.setEnabled(false);
             mSyncSelectedCheckBox.setEnabled(false);
+            mSyncScrollCheckBox.setVisible(false);
+            mSyncSelectedCheckBox.setVisible(false);
+            m_tfDiffState.setVisible(false);
             m_tfDiffState.setBackground(null);
             m_tfDiffState.setText("disconnected");
         } else {
             mSyncScrollCheckBox.setEnabled(true);
             mSyncSelectedCheckBox.setEnabled(true);
+            mSyncScrollCheckBox.setVisible(true);
+            mSyncSelectedCheckBox.setVisible(true);
+            m_tfDiffState.setVisible(true);
             m_tfDiffState.setBackground(Color.GREEN);
             switch (mDiffService.getDiffServiceType()) {
                 case AS_CLIENT:
