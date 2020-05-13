@@ -1591,7 +1591,6 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
 
     Component createOptionMenu() {
         JPanel optionMenu = new JPanel(new BorderLayout());
-        optionMenu.setBorder(BorderFactory.createLineBorder(ThemeConstant.getColorLogTableCellBorder(), 1));
         JPanel optionWest = new JPanel(new FlowLayout(FlowLayout.LEADING));
 
         JLabel jlFont = new JLabel("Font Size : ");

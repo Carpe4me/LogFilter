@@ -81,7 +81,7 @@ public class ThemeConstant {
     }
 
     public static Color getColorLogTableCellBgBookmarkSelected() {
-        return getColorTableSelectionBg().darker();
+        return getColorTableSelectionBg().darker().darker();
     }
 
     public static Color getColorTableLogFlowSelectionBg() {
