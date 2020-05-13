@@ -422,6 +422,44 @@ public class LogFilterFrame extends JFrame {
         void beforeLogFileParse(String filename, LogFilterComponent filterComponent);
     }
 
+    public static class FrameInfoProviderAdapter implements FrameInfoProvider{
+
+        @Override
+        public Frame getContainerFrame() {
+            return null;
+        }
+
+        @Override
+        public boolean enableFloatingWindow() {
+            return false;
+        }
+
+        @Override
+        public void onViewPortChanged(LogFilterComponent logFilterComponent, ChangeEvent e) {
+
+        }
+
+        @Override
+        public void setTabTitle(LogFilterComponent filterComponent, String strTitle, String tips) {
+
+        }
+
+        @Override
+        public boolean isFrameFocused() {
+            return false;
+        }
+
+        @Override
+        public FloatingFrameInfo onFilterFloating(LogFilterComponent filter, Component component, String title) {
+            return null;
+        }
+
+        @Override
+        public void beforeLogFileParse(String filename, LogFilterComponent filterComponent) {
+
+        }
+    }
+
     private interface FilterLooper {
         void onLoop(LogFilterComponent filter);
     }

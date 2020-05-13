@@ -332,8 +332,11 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
 
 
     ///////////////////////////////////constructor///////////////////////////////////
-
     public LogFilterComponent(LogFilterFrame.FrameInfoProvider frameInfoProvider) {
+        this(frameInfoProvider, new UIStateSaver.DefaultPersistenceHelper(Constant.INI_FILE_STATE));
+    }
+
+    public LogFilterComponent(LogFilterFrame.FrameInfoProvider frameInfoProvider, UIStateSaver.PersistenceHelper persistenceHelper) {
         super();
         this.frameInfoProvider = frameInfoProvider;
         initValue();
@@ -352,7 +355,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         startFilterParse();
 
         // register state saver
-        mUIStateSaver = new UIStateSaver(this, Constant.INI_FILE_STATE);
+        mUIStateSaver = new UIStateSaver(this, persistenceHelper);
         mUIStateSaver.load();
 
         loadUI();
@@ -577,7 +580,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
             menuBar.add(flowMenu);
         }
         menuBar.add(parserMenu);
-        menuBar.setBackground(new Color(0,0,0,0));
+        menuBar.setBackground(ThemeConstant.getColorTableBg());
         return menuBar;
     }
 
@@ -877,7 +880,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
 
     Component createDevicePanel() {
         JPanel jpOptionDevice = new JPanel();
-        jpOptionDevice.setBorder(BorderFactory.createEmptyBorder(6,6,6,6));
+        jpOptionDevice.setBorder(BorderFactory.createEmptyBorder(6, 6, 6, 6));
         jpOptionDevice.setLayout(new BorderLayout());
 
         JPanel jpCmd = new JPanel();
@@ -907,7 +910,6 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         final DefaultListModel<TargetDevice> listModel = new DefaultListModel<>();
         m_lDeviceList = new JList<>(listModel);
         JScrollPane vbar = new JScrollPane(m_lDeviceList);
-        vbar.setBorder(BorderFactory.createEmptyBorder());
         vbar.setPreferredSize(new Dimension(100, 50));
         m_lDeviceList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         m_lDeviceList.addListSelectionListener(new ListSelectionListener() {
@@ -1206,7 +1208,12 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         JPanel jpMain = new JPanel(new BorderLayout());
 
         JPanel jpWordFilter = new JPanel();
-        jpWordFilter.setBorder(BorderFactory.createTitledBorder("Word filter"));
+        jpWordFilter.setBorder(
+                BorderFactory.createCompoundBorder(
+                        BorderFactory.createTitledBorder("Word filter"),
+                        BorderFactory.createEmptyBorder(4, 4, 4, 4)
+                )
+        );
         jpWordFilter.setLayout(new BoxLayout(jpWordFilter, BoxLayout.Y_AXIS));
 
         JPanel jpInclide = new JPanel(new BorderLayout());
@@ -1238,7 +1245,12 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
 
         JPanel jpTagFilter = new JPanel();
         jpTagFilter.setLayout(new BoxLayout(jpTagFilter, BoxLayout.Y_AXIS));
-        jpTagFilter.setBorder(BorderFactory.createTitledBorder("Tag filter"));
+        jpTagFilter.setBorder(
+                BorderFactory.createCompoundBorder(
+                        BorderFactory.createTitledBorder("Tag filter"),
+                        BorderFactory.createEmptyBorder(4, 4, 4, 4)
+                )
+        );
 
         JPanel jpPidTid = new JPanel(new GridLayout(1, 3));
 
@@ -1488,7 +1500,9 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
 
         JPanel jpLogFilter = new JPanel();
         jpLogFilter.setLayout(new GridLayout(3, 2));
-        jpLogFilter.setBorder(BorderFactory.createTitledBorder("Log filter"));
+        jpLogFilter.setBorder(
+                BorderFactory.createTitledBorder("Log filter")
+        );
         m_chkVerbose.setText("Verbose");
         m_chkVerbose.setSelected(true);
         m_chkDebug.setText("Debug");
@@ -1553,7 +1567,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         optionFilter.add(createDevicePanel());
         optionFilter.add(createFilterPanel());
         optionFilter.add(createCheckPanel());
-        return wrapWithFloatingPanel(optionFilter);
+        return optionFilter;
     }
 
     // 提供floating 功能
@@ -1725,12 +1739,9 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
     }
 
     Component createOptionPanel() {
-        if (!frameInfoProvider.enableFloatingWindow()) {
-            JScrollPane scrollPane = new JScrollPane(createOptionFilter());
-            scrollPane.setBorder(BorderFactory.createEmptyBorder());
-            return scrollPane;
-        }
-        return createOptionFilter();
+        JScrollPane scrollPane = new JScrollPane(createOptionFilter());
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
+        return wrapWithFloatingPanel(scrollPane);
     }
 
     Component createStatusPanel() {
