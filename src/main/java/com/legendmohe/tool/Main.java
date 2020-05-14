@@ -1,5 +1,6 @@
 package com.legendmohe.tool;
 
+import com.legendmohe.tool.config.AppSettings;
 import com.legendmohe.tool.thirdparty.util.OsCheck;
 
 import java.awt.Component;
@@ -29,6 +30,9 @@ public class Main {
         // You should always work with UI inside Event Dispatch Thread (EDT)
         // That includes installing L&F, creating any Swing components etc.
         SwingUtilities.invokeLater(() -> {
+            // load settings from file
+            AppSettings.install();
+            // setup platform spec
             configByPlatform();
 
             final LogFilterFrame main = new LogFilterFrame(new FloatingWinListener());
@@ -48,24 +52,7 @@ public class Main {
     }
 
     private static void configByPlatform() {
-        try {
-            UIManager.setLookAndFeel("com.formdev.flatlaf.FlatLightLaf");
-//            UIManager.setLookAndFeel("com.formdev.flatlaf.FlatDarculaLaf");
-        } catch (UnsupportedLookAndFeelException | IllegalAccessException | InstantiationException | ClassNotFoundException e) {
-            e.printStackTrace();
-
-            if (OsCheck.getOperatingSystemType() == OsCheck.OSType.Windows) {
-                setUIFont(new javax.swing.plaf.FontUIResource("微软雅黑", Font.PLAIN, 12));
-            } else {
-                setUIFont(new javax.swing.plaf.FontUIResource("Consoles", Font.PLAIN, 12));
-            }
-            try {
-                UIManager.setLookAndFeel(
-                        UIManager.getCrossPlatformLookAndFeelClassName());
-            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
-                ex.printStackTrace();
-            }
-        }
+        AppSettings.notifySettingsChanged(AppSettings.KEY_THEME, AppSettings.getTheme());
 
         if (OsCheck.getOperatingSystemType() == OsCheck.OSType.MacOS) {
             InputMap im = (InputMap) UIManager.get("TextField.focusInputMap");
