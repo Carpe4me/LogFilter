@@ -4,6 +4,7 @@ import com.legendmohe.tool.annotation.FieldSaveState;
 import com.legendmohe.tool.annotation.UIStateSaver;
 import com.legendmohe.tool.config.Constant;
 import com.legendmohe.tool.view.AddTabComponent;
+import com.legendmohe.tool.view.AppSettingsDialog;
 import com.legendmohe.tool.view.ButtonTabComponent;
 import com.legendmohe.tool.view.RecentFileMenu;
 import com.legendmohe.tool.view.TextContentDialog;
@@ -383,9 +384,13 @@ public class LogFilterFrame extends JFrame {
                 LogFilterFrame.this, "Log", T.getLogBuffer()
         ).show());
 
+        JMenuItem settingsItem = new JMenuItem("Settings");
+        settingsItem.addActionListener(event -> new AppSettingsDialog(LogFilterFrame.this).show());
+
         toolsMenu.add(converterItem);
         toolsMenu.add(xlogDecoderItem);
         toolsMenu.add(logItem);
+        toolsMenu.add(settingsItem);
 
 
         menuBar.add(fileMenu);

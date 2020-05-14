@@ -32,7 +32,7 @@ public class BigoDevLogParser extends AbstractLogParser {
     Group 4.	30-39	`160985949`
     Group 5.	41-79	`SplashFragment:## navigate to MainPage`
      */
-    final private Pattern mLogPattern = Pattern.compile("\\[(.+?)\\]\\[(\\w+)\\]\\[(.+?)\\((.+?)\\)\\](.+?):(.+)");
+    final private Pattern mLogPattern = Pattern.compile("\\[(.+?)\\]\\[(\\w+)\\]\\[(.+?)\\((?:.+?)\\)\\](.+?):(.+)");
 
     @Override
     public LogInfo parseLog(String strText) {
@@ -43,9 +43,8 @@ public class BigoDevLogParser extends AbstractLogParser {
                 String line = matcher.group(1);
                 String level = matcher.group(2);
                 String date = matcher.group(3);
-                String unknown = matcher.group(4);
-                String tag = matcher.group(5);
-                String msg = matcher.group(6);
+                String tag = matcher.group(4);
+                String msg = matcher.group(5);
 
                 logInfo.setLine(Integer.valueOf(line));
                 logInfo.setTime(date);

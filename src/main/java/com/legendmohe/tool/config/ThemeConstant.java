@@ -1,6 +1,8 @@
 package com.legendmohe.tool.config;
 
 import java.awt.Color;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.UIManager;
 
@@ -34,6 +36,18 @@ public class ThemeConstant {
     public static int LOG_TABLE_ROW_PADDING = 9;
     public static int LOG_TABLE_CELL_CONTENT_PADDING_LEFT = 4;
     public static int LOG_TABLE_CELL_CONTENT_PADDING_RIGHT = 8;
+
+    public static final String THEME_NAME_DEFAULT = "default";
+    public static final String THEME_NAME_DARK = "dark";
+    public static final String THEME_NAME_LIGHT = "light";
+
+    public static final Map<String, String> themeSettings = new HashMap<>();
+
+    static {
+        themeSettings.put(THEME_NAME_DEFAULT, "");
+        themeSettings.put(THEME_NAME_LIGHT, "com.formdev.flatlaf.FlatLightLaf");
+        themeSettings.put(THEME_NAME_DARK, "com.formdev.flatlaf.FlatDarculaLaf");
+    }
 
     //////////////////////////////////////////////////////////////////////
 
