@@ -28,6 +28,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
 import java.io.File;
+import java.nio.file.Paths;
 import java.util.Arrays;
 
 import javax.swing.AbstractAction;
@@ -64,7 +65,7 @@ public class LogFilterFrame extends JFrame {
 
     public LogFilterFrame(FloatingWinListener floatingWinListener) throws HeadlessException {
         this.floatingWinListener = floatingWinListener;
-        frameInfoProvider = new FrameInfoProvider() {
+        frameInfoProvider = new FrameInfoProviderAdapter() {
             @Override
             public Frame getContainerFrame() {
                 return LogFilterFrame.this;
@@ -72,6 +73,11 @@ public class LogFilterFrame extends JFrame {
 
             @Override
             public boolean enableFloatingWindow() {
+                return true;
+            }
+
+            @Override
+            public boolean enableLogFlow() {
                 return true;
             }
 
@@ -106,6 +112,11 @@ public class LogFilterFrame extends JFrame {
                 mRecentMenu.addEntry(filename);
             }
         };
+        File outputDir = new File(Paths.get(frameInfoProvider.getProjectRootPath(), Constant.OUTPUT_LOG_DIR).toString());
+        if (!outputDir.exists()) {
+            outputDir.mkdirs();
+            T.d("create log directory: " + outputDir.getAbsolutePath());
+        }
         initUI();
         restoreUIState();
     }
@@ -416,6 +427,8 @@ public class LogFilterFrame extends JFrame {
     public interface FrameInfoProvider {
         Frame getContainerFrame();
 
+        boolean enableLogFlow();
+
         boolean enableFloatingWindow();
 
         void onViewPortChanged(LogFilterComponent logFilterComponent, ChangeEvent e);
@@ -427,6 +440,8 @@ public class LogFilterFrame extends JFrame {
         FloatingFrameInfo onFilterFloating(LogFilterComponent filter, Component component, String title);
 
         void beforeLogFileParse(String filename, LogFilterComponent filterComponent);
+
+        String getProjectRootPath();
     }
 
     public static class FrameInfoProviderAdapter implements FrameInfoProvider{
@@ -438,6 +453,10 @@ public class LogFilterFrame extends JFrame {
 
         @Override
         public boolean enableFloatingWindow() {
+            return false;
+        }
+
+        public boolean enableLogFlow() {
             return false;
         }
 
@@ -464,6 +483,11 @@ public class LogFilterFrame extends JFrame {
         @Override
         public void beforeLogFileParse(String filename, LogFilterComponent filterComponent) {
 
+        }
+
+        @Override
+        public String getProjectRootPath() {
+            return "";
         }
     }
 

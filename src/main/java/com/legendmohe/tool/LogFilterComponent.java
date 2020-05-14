@@ -77,6 +77,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -123,6 +125,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.OverlayLayout;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
@@ -276,7 +279,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
     JToggleButton m_tbtnPause;
     JButton m_btnStop;
 
-    String m_strLogFileName;
+    String logcatOutputPath;
     TargetDevice m_selectedDevice;
     // String m_strProcessCmd;
     Process m_Process;
@@ -691,10 +694,18 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         }
     }
 
-    private String makeFilename() {
+    private String createLogcatOutputPath() {
         Date now = new Date();
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_HHmmss");
-        return Constant.OUTPUT_LOG_DIR + File.separator + "LogFilter_" + format.format(now) + ".txt";
+
+        String root = "";
+        if (frameInfoProvider != null
+                && frameInfoProvider.getProjectRootPath() != null
+                && frameInfoProvider.getProjectRootPath().length() > 0
+        ) {
+            root = frameInfoProvider.getProjectRootPath();
+        }
+        return Paths.get(root, Constant.OUTPUT_LOG_DIR, "LogFilter_" + format.format(now) + ".txt").toString();
     }
 
     public void exit() {
@@ -731,36 +742,11 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
     }
 
     void loadCmd() {
-        try {
-            Properties p = new Properties();
-
-            try {
-                p.load(new FileInputStream(Constant.INI_FILE_CMD));
-            } catch (FileNotFoundException e) {
-                T.d(Constant.INI_FILE_CMD + " not exist!");
-            }
-
-            if (p.getProperty(Constant.INI_CMD_COUNT) == null) {
-                p.setProperty(Constant.INI_CMD + "0", Constant.ANDROID_THREAD_CMD);
-                p.setProperty(Constant.INI_CMD + "1", Constant.ANDROID_DEFAULT_CMD);
-                p.setProperty(Constant.INI_CMD + "2", Constant.ANDROID_RADIO_CMD);
-                p.setProperty(Constant.INI_CMD + "3", Constant.ANDROID_EVENT_CMD);
-                p.setProperty(Constant.INI_CMD + "4", Constant.ANDROID_CUSTOM_CMD);
-                p.setProperty(Constant.INI_CMD_COUNT, "5");
-                p.store(new FileOutputStream(Constant.INI_FILE_CMD), null);
-            }
-
-            T.d("p.getProperty(INI_CMD_COUNT) = "
-                    + p.getProperty(Constant.INI_CMD_COUNT));
-            int nCount = Integer.parseInt(p.getProperty(Constant.INI_CMD_COUNT));
-            T.d("nCount = " + nCount);
-            for (int nIndex = 0; nIndex < nCount; nIndex++) {
-                T.d("CMD = " + Constant.INI_CMD + nIndex);
-                m_comboCmd.addItem(p.getProperty(Constant.INI_CMD + nIndex));
-            }
-        } catch (Exception e) {
-            T.e(e.getMessage());
-        }
+        m_comboCmd.addItem(Constant.ANDROID_THREAD_CMD);
+        m_comboCmd.addItem(Constant.ANDROID_DEFAULT_CMD);
+        m_comboCmd.addItem(Constant.ANDROID_RADIO_CMD);
+        m_comboCmd.addItem(Constant.ANDROID_EVENT_CMD);
+        m_comboCmd.addItem(Constant.ANDROID_CUSTOM_CMD);
     }
 
     private void loadParser() {
@@ -1832,18 +1818,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         m_hmErrorFiltered = new ConcurrentHashMap<Integer, Integer>();
         m_arSubLogInfoAll = new ArrayList<>();
 
-        File confDir = new File(Constant.CONFIG_BASE_DIR);
-        if (!confDir.exists()) {
-            confDir.mkdirs();
-            T.d("create conf directory: " + confDir.getAbsolutePath());
-        }
-        File outputDir = new File(Constant.OUTPUT_LOG_DIR);
-        if (!outputDir.exists()) {
-            outputDir.mkdirs();
-            T.d("create log directory: " + outputDir.getAbsolutePath());
-        }
-        m_strLogFileName = makeFilename();
-        // m_strProcessCmd = ANDROID_DEFAULT_CMD + m_strLogFileName;
+        logcatOutputPath = createLogcatOutputPath();
     }
 
     void parseLogFile(final File[] files) {
@@ -2177,7 +2152,9 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
 
     public void setTitleAndTips(String strTitle, String tips) {
         mCurTitle = strTitle;
-        frameInfoProvider.setTabTitle(LogFilterComponent.this, strTitle, tips);
+        SwingUtilities.invokeLater(() -> {
+            frameInfoProvider.setTabTitle(LogFilterComponent.this, strTitle, tips);
+        });
     }
 
     // 是否已经加载过log
@@ -2210,14 +2187,14 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
 
                 try {
                     setLoadingState(LoadingState.LOADING, "dumping");
-                    fstream = new FileInputStream(m_strLogFileName);
+                    fstream = new FileInputStream(logcatOutputPath);
                     in = new DataInputStream(fstream);
                     br = new BufferedReader(new InputStreamReader(in,
                             StandardCharsets.UTF_8));
 
                     String strLine;
 
-                    setTitleAndTips(m_strLogFileName, m_strLogFileName);
+                    setTitleAndTips(logcatOutputPath, logcatOutputPath);
 
                     m_arLogInfoAll.clear();
                     mLastParseredFiles = null;
@@ -2486,6 +2463,12 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         // 自动切换到logcatparser
         switchToLogParser(Constant.PARSER_TYPE_LOGCAT);
 
+        File outputDir = new File(Paths.get(frameInfoProvider.getProjectRootPath(), Constant.OUTPUT_LOG_DIR).toString());
+        if (!outputDir.exists()) {
+            outputDir.mkdirs();
+            T.d("create log directory: " + outputDir.getAbsolutePath());
+        }
+
         m_thProcess = new Thread(() -> {
             try {
                 String s;
@@ -2497,7 +2480,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
                         new InputStreamReader(m_Process.getInputStream(),
                                 StandardCharsets.UTF_8));
                 Writer fileOut = new BufferedWriter(new OutputStreamWriter(
-                        new FileOutputStream(m_strLogFileName), StandardCharsets.UTF_8));
+                        new FileOutputStream(logcatOutputPath), StandardCharsets.UTF_8));
 
                 startLogcatParse();
 
@@ -3406,7 +3389,10 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
     private boolean mShowFlowInLogTable;
 
     private void initLogFlow() {
-        File confDir = new File(Constant.LOG_FLOW_CONFIG_DIR);
+        if (frameInfoProvider == null || !frameInfoProvider.enableLogFlow()) {
+            return;
+        }
+        File confDir = new File(Paths.get(frameInfoProvider.getProjectRootPath(), Constant.LOG_FLOW_CONFIG_DIR).toString());
         if (!confDir.exists()) {
             confDir.mkdirs();
             T.d("create log flow config directory: " + confDir.getAbsolutePath());

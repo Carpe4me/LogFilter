@@ -49,7 +49,6 @@ public class Constant {
     public final static String INI_FILE_DUMP_SYS = CONFIG_BASE_DIR + File.separator + "LogFilterDumpsysCmd.ini";
     public final static String INI_FILE_STATE = CONFIG_BASE_DIR + File.separator + "LogFilterState.ser";
     public final static String INI_FILE_STATE_MAIN_FRAME = CONFIG_BASE_DIR + File.separator + "LogFilterState_mainframe.ser";
-    public final static String INI_FILE_CMD = CONFIG_BASE_DIR + File.separator + "LogFilterCmd.ini";
     public final static String INI_FILE_APP_SETTINGS = CONFIG_BASE_DIR + File.separator + "LogFilterSettings.ini";
 
     public static final String INI_CMD_COUNT = "CMD_COUNT";
