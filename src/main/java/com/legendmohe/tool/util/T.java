@@ -1,4 +1,4 @@
-package com.legendmohe.tool;
+package com.legendmohe.tool.util;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

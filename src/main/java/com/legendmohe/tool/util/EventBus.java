@@ -1,4 +1,4 @@
-package com.legendmohe.tool; /**
+package com.legendmohe.tool.util; /**
  *
  */
 
@@ -23,10 +23,10 @@ public interface EventBus {
     void postEvent(Event param);
 
     class Event {
-        TYPE type;
-        Object param1;
-        Object param2;
-        Object param3;
+        public TYPE type;
+        public Object param1;
+        public Object param2;
+        public Object param3;
 
         public Event(TYPE type) {
             this(type, null, null, null);

@@ -3,6 +3,8 @@ package com.legendmohe.tool;
 import com.legendmohe.tool.annotation.FieldSaveState;
 import com.legendmohe.tool.annotation.UIStateSaver;
 import com.legendmohe.tool.config.Constant;
+import com.legendmohe.tool.util.T;
+import com.legendmohe.tool.util.Utils;
 import com.legendmohe.tool.view.AddTabComponent;
 import com.legendmohe.tool.view.AppSettingsDialog;
 import com.legendmohe.tool.view.ButtonTabComponent;

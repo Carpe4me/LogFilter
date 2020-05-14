@@ -1,4 +1,4 @@
-package com.legendmohe.tool;
+package com.legendmohe.tool.util;
 
 /**
  * Created by hexinyu on 2018/11/8.

@@ -1,8 +1,8 @@
 package com.legendmohe.tool.diff;
 
-import com.legendmohe.tool.IDiffCmdHandler;
+import com.legendmohe.tool.util.IDiffCmdHandler;
 import com.legendmohe.tool.LogFilterComponent;
-import com.legendmohe.tool.T;
+import com.legendmohe.tool.util.T;
 import com.legendmohe.tool.thirdparty.json.JSONObject;
 
 import java.io.IOException;

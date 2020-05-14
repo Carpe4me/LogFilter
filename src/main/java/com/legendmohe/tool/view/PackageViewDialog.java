@@ -1,6 +1,6 @@
 package com.legendmohe.tool.view;
 
-import com.legendmohe.tool.T;
+import com.legendmohe.tool.util.T;
 import com.legendmohe.tool.logtable.model.PackageViewTableModel;
 import com.legendmohe.tool.presenter.PackageViewPresenter;
 

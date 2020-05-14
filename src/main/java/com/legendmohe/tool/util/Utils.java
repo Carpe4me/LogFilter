@@ -1,6 +1,7 @@
-package com.legendmohe.tool;
+package com.legendmohe.tool.util;
 
 import com.legendmohe.tool.thirdparty.util.OsCheck;
+import com.legendmohe.tool.util.T;
 
 import java.awt.Color;
 import java.awt.Component;

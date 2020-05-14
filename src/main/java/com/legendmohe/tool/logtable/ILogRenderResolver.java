@@ -1,4 +1,4 @@
-package com.legendmohe.tool;
+package com.legendmohe.tool.logtable;
 
 /**
  * Created by xinyu.he on 2016/1/22.

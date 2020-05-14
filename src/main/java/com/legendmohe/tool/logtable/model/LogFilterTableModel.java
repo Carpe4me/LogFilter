@@ -1,7 +1,7 @@
 package com.legendmohe.tool.logtable.model;
 
 import com.legendmohe.tool.LogInfo;
-import com.legendmohe.tool.T;
+import com.legendmohe.tool.util.T;
 
 import java.util.ArrayList;
 

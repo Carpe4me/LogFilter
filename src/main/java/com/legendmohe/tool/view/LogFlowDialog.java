@@ -1,7 +1,7 @@
 package com.legendmohe.tool.view;
 
 import com.legendmohe.tool.LogInfo;
-import com.legendmohe.tool.T;
+import com.legendmohe.tool.util.T;
 import com.legendmohe.tool.config.ThemeConstant;
 import com.legendmohe.tool.logflow.LogFlowManager;
 

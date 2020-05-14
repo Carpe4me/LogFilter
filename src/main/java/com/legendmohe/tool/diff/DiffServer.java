@@ -1,6 +1,6 @@
 package com.legendmohe.tool.diff;
 
-import com.legendmohe.tool.T;
+import com.legendmohe.tool.util.T;
 
 import java.io.BufferedReader;
 import java.io.IOException;

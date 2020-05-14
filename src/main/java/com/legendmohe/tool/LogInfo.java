@@ -2,11 +2,11 @@ package com.legendmohe.tool;
 
 import com.legendmohe.tool.logflow.LogFlowManager;
 import com.legendmohe.tool.logtable.model.LogFilterTableModel;
+import com.legendmohe.tool.util.T;
+import com.legendmohe.tool.util.Utils;
 
 import java.awt.Color;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 

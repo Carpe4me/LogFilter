@@ -1,6 +1,6 @@
 package com.legendmohe.tool.view;
 
-import com.legendmohe.tool.Utils;
+import com.legendmohe.tool.util.Utils;
 import com.legendmohe.tool.config.ThemeConstant;
 
 import java.applet.Applet;

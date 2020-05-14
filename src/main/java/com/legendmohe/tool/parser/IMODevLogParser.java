@@ -1,7 +1,7 @@
 package com.legendmohe.tool.parser;
 
 import com.legendmohe.tool.LogInfo;
-import com.legendmohe.tool.T;
+import com.legendmohe.tool.util.T;
 import com.legendmohe.tool.logtable.model.LogFilterTableModel;
 
 import java.text.DateFormat;
