@@ -31,6 +31,7 @@ public class Main {
         // That includes installing L&F, creating any Swing components etc.
         SwingUtilities.invokeLater(() -> {
             // load settings from file
+            AppSettings.setStoreHelper(new AppSettings.DefaultStoreHelper());
             AppSettings.install();
             // setup platform spec
             configByPlatform();

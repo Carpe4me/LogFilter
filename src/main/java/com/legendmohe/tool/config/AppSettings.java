@@ -1,12 +1,8 @@
 package com.legendmohe.tool.config;
 
-import com.legendmohe.tool.Main;
-import com.legendmohe.tool.annotation.UIStateSaver;
 import com.legendmohe.tool.util.T;
 
 import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -16,7 +12,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.swing.JMenuItem;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -26,6 +21,14 @@ public class AppSettings {
     public static final String KEY_THEME = "theme";
 
     private static final Map<String, String> settings = new HashMap<>();
+
+    private static StoreHelper storeHelper;
+
+    public static void setStoreHelper(StoreHelper storeHelper) {
+        AppSettings.storeHelper = storeHelper;
+    }
+
+    //////////////////////////////////////////////////////////////////////
 
     public static String getTheme() {
         return settings.getOrDefault(KEY_THEME, "");
@@ -44,6 +47,8 @@ public class AppSettings {
         return true;
     }
 
+    //////////////////////////////////////////////////////////////////////
+
     public static boolean notifySettingsChanged(String key, String value) {
         boolean success = false;
         switch (key) {
@@ -52,8 +57,8 @@ public class AppSettings {
                 break;
             }
         }
-        if (success) {
-            scheduleSave();
+        if (success && storeHelper != null) {
+            storeHelper.scheduleSave(settings);
         }
         return false;
     }
@@ -83,44 +88,61 @@ public class AppSettings {
         return true;
     }
 
-    ///////////////////////////////////persistence///////////////////////////////////
-
-    private static void scheduleSave() {
-        Properties p = new Properties();
-        try {
-            try {
-                p.load(new FileInputStream(Constant.INI_FILE_APP_SETTINGS));
-            } catch (FileNotFoundException ex) {
-                T.d(Constant.INI_FILE_APP_SETTINGS + " not exist!");
-            }
-            for (String key : settings.keySet()) {
-                p.setProperty(key, settings.get(key));
-            }
-            p.store(new FileOutputStream(Constant.INI_FILE_APP_SETTINGS), null);
-        } catch (FileNotFoundException e) {
-            T.d(Constant.INI_FILE_APP_SETTINGS + " not exist!");
-        } catch (IOException e) {
-            e.printStackTrace();
+    public static void install() {
+        if (storeHelper != null) {
+            storeHelper.install(settings);
         }
     }
 
-    public static void install() {
-        Properties p = new Properties();
-        try {
-            p.load(new FileInputStream(Constant.INI_FILE_APP_SETTINGS));
-        } catch (FileNotFoundException e) {
-            T.d(Constant.INI_FILE_APP_SETTINGS + " not exist!");
-            return;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
+    ///////////////////////////////////persistence///////////////////////////////////
+
+    public interface StoreHelper {
+        void scheduleSave(Map<String, String> data);
+
+        void install(Map<String, String> data);
+    }
+
+    public static class DefaultStoreHelper implements StoreHelper {
+
+        @Override
+        public void scheduleSave(Map<String, String> data) {
+            Properties p = new Properties();
+            try {
+                try {
+                    p.load(new FileInputStream(Constant.INI_FILE_APP_SETTINGS));
+                } catch (FileNotFoundException ex) {
+                    T.d(Constant.INI_FILE_APP_SETTINGS + " not exist!");
+                }
+                for (String key : data.keySet()) {
+                    p.setProperty(key, data.get(key));
+                }
+                p.store(new FileOutputStream(Constant.INI_FILE_APP_SETTINGS), null);
+            } catch (FileNotFoundException e) {
+                T.d(Constant.INI_FILE_APP_SETTINGS + " not exist!");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        Enumeration names = p.propertyNames();
-        while (names.hasMoreElements()) {
-            String name = (String) names.nextElement();
-            final String value = p.getProperty(name);
-            if (value != null) {
-                settings.put(name, value);
+
+        @Override
+        public void install(Map<String, String> data) {
+            Properties p = new Properties();
+            try {
+                p.load(new FileInputStream(Constant.INI_FILE_APP_SETTINGS));
+            } catch (FileNotFoundException e) {
+                T.d(Constant.INI_FILE_APP_SETTINGS + " not exist!");
+                return;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return;
+            }
+            Enumeration names = p.propertyNames();
+            while (names.hasMoreElements()) {
+                String name = (String) names.nextElement();
+                final String value = p.getProperty(name);
+                if (value != null) {
+                    data.put(name, value);
+                }
             }
         }
     }
