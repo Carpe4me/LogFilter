@@ -112,11 +112,12 @@ public class LogFilterFrame extends JFrame {
                 mRecentMenu.addEntry(filename);
             }
         };
-        File outputDir = new File(Paths.get(frameInfoProvider.getProjectRootPath(), Constant.OUTPUT_LOG_DIR).toString());
-        if (!outputDir.exists()) {
-            outputDir.mkdirs();
-            T.d("create log directory: " + outputDir.getAbsolutePath());
+        File confDir = new File(Constant.CONFIG_BASE_DIR);
+        if (!confDir.exists()) {
+            confDir.mkdirs();
+            T.d("create conf directory: " + confDir.getAbsolutePath());
         }
+
         initUI();
         restoreUIState();
     }
