@@ -1703,7 +1703,6 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         mSearchPanel = new JPanel(new GridLayout(1, 2));
         mSearchPanel.add(createHighlightPanel());
         mSearchPanel.add(createSearchPanel());
-        mSearchPanel.setVisible(false);
         optionMenu.add(mSearchPanel, BorderLayout.SOUTH);
 
         JScrollPane scrollPane = new JScrollPane(optionMenu);
