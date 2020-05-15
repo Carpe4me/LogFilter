@@ -1,6 +1,4 @@
-package com.legendmohe.tool.logflow;
-
-import com.legendmohe.tool.util.T;
+package com.legendmohe.tool.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;

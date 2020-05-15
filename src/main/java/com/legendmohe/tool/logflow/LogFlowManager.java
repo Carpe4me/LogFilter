@@ -1,6 +1,7 @@
 package com.legendmohe.tool.logflow;
 
 import com.legendmohe.tool.LogInfo;
+import com.legendmohe.tool.util.StateMachine;
 import com.legendmohe.tool.util.Utils;
 import com.legendmohe.tool.thirdparty.json.JSONArray;
 import com.legendmohe.tool.thirdparty.json.JSONException;
