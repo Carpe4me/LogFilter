@@ -22,7 +22,7 @@ public abstract class AbstractLogParser implements ILogParser {
         else if (logInfo.getLogLV().equals("WARN") || logInfo.getLogLV().equals("W") || logInfo.getLogLV().equals("4"))
             return ThemeConstant.COLOR_LOG_TABLE_TEXT_WARN;
         else if (logInfo.getLogLV().equals("INFO") || logInfo.getLogLV().equals("I") || logInfo.getLogLV().equals("6"))
-            return ThemeConstant.COLOR_LOG_TABLE_TEXT_INFO;
+            return ThemeConstant.getColorLogTableTextInfo();
         else if (logInfo.getLogLV().equals("DEBUG") || logInfo.getLogLV().equals("D") || logInfo.getLogLV().equals("7"))
             return ThemeConstant.getColorLogTableTextDebug();
         else

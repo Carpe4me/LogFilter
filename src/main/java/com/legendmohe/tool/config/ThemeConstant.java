@@ -23,7 +23,7 @@ public class ThemeConstant {
     //aarrggbb
     public static Color COLOR_LOG_TABLE_TEXT_ERROR = new Color(188, 63, 60);
     public static Color COLOR_LOG_TABLE_TEXT_FATAL = new Color(0x00FF0000);
-    public static Color COLOR_LOG_TABLE_TEXT_INFO = new Color(98, 151, 85);
+//    public static Color COLOR_LOG_TABLE_TEXT_INFO = new Color(98, 151, 85);
     public static Color COLOR_LOG_TABLE_TEXT_WARN = new Color(203, 119, 45);
 
     public static Color COLOR_LOG_FLOW_FONT_ERROR = COLOR_LOG_TABLE_TEXT_ERROR;
@@ -89,7 +89,11 @@ public class ThemeConstant {
     }
 
     public static Color getColorLogTableTextDebug() {
-        return getColorLogTableTextDefault().darker();
+        return getColorLogTableTextDefault();
+    }
+
+    public static Color getColorLogTableTextInfo() {
+        return getColorLogTableTextDefault();
     }
 
     public static Color getColorLogTableCellBgBookmark() {
