@@ -327,18 +327,25 @@ public class LogTable extends BaseLogTable {
         });
     }
 
-    private void hidePopups() {
+    private void hidePopups(boolean ignoreMouseEntered) {
         Iterator<FixPopup> iter = mMsgTipsPopups.iterator();
         while (iter.hasNext()) {
             FixPopup popup = iter.next();
-            if (popup != null && !popup.isMouseEntered() && !popup.isPinned()) {
+            if (popup != null && !popup.isPinned() && (ignoreMouseEntered || !popup.isMouseEntered())) {
                 popup.hidePopup();
                 iter.remove();
             }
         }
     }
 
+    private void hidePopups() {
+        hidePopups(false);
+    }
+
     private void showPopup(Object value, int row, int col) {
+        // 先隐藏上一个
+        hidePopups(true);
+
         Point location = MouseInfo.getPointerInfo().getLocation();
         Pair<String, Boolean> popupContent = getPopupContent(value, row, col);
         String content = popupContent.getKey();

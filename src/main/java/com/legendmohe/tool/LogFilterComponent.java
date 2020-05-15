@@ -77,7 +77,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -326,7 +325,6 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
     private LogFilterTableModel m_tSubLogTableModel;
     private JScrollPane m_subLogScrollVPane;
     ArrayList<LogInfo> m_arSubLogInfoAll;
-    private JPanel mSearchPanel;
 
     @FieldSaveState
     private final Set<String> mFilterTagHistory = new HashSet<>();
@@ -1195,7 +1193,13 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         m_tfFromTimeTag = new JTextField();
         m_tfToTimeTag = new JTextField();
 
-        JPanel jpMain = new JPanel(new BorderLayout());
+        JPanel jpMain = new JPanel();
+        jpMain.setLayout(new BoxLayout(jpMain, BoxLayout.Y_AXIS));
+
+        JPanel mSearchPanel = new JPanel(new GridLayout(2, 1));
+        mSearchPanel.add(createHighlightPanel());
+        mSearchPanel.add(createSearchPanel());
+        jpMain.add(mSearchPanel);
 
         JPanel jpWordFilter = new JPanel();
         jpWordFilter.setBorder(
@@ -1231,13 +1235,13 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         jpWordFilter.add(jpExclude);
         jpWordFilter.add(jpLFTag);
 
-        jpMain.add(jpWordFilter, BorderLayout.NORTH);
+        jpMain.add(jpWordFilter);
 
         JPanel jpTagFilter = new JPanel();
         jpTagFilter.setLayout(new BoxLayout(jpTagFilter, BoxLayout.Y_AXIS));
         jpTagFilter.setBorder(
                 BorderFactory.createCompoundBorder(
-                        BorderFactory.createTitledBorder("Tag filter"),
+                        BorderFactory.createTitledBorder("Column filter"),
                         BorderFactory.createEmptyBorder(4, 4, 4, 4)
                 )
         );
@@ -1325,7 +1329,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         jpTagFilter.add(jpTimeMainTag);
         jpTagFilter.add(jpFile);
 
-        jpMain.add(jpTagFilter, BorderLayout.CENTER);
+        jpMain.add(jpTagFilter);
 
         return jpMain;
     }
@@ -1435,13 +1439,13 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         });
 
         JPanel jpMain = new JPanel(new BorderLayout());
-        jpMain.setBorder(BorderFactory.createTitledBorder("Search"));
+        jpMain.setBorder(BorderFactory.createTitledBorder("Find"));
         jpMain.add(m_tfSearch, BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel(new GridLayout(1, 2));
         JButton preButton = new JButton();
         preButton.setMargin(new Insets(0, 0, 0, 0));
-        preButton.setText("<=");
+        preButton.setText("<");
         preButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -1452,7 +1456,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
 
         JButton nextButton = new JButton();
         nextButton.setMargin(new Insets(0, 0, 0, 0));
-        nextButton.setText("=>");
+        nextButton.setText(">");
         nextButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -1700,11 +1704,6 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
 
         optionMenu.add(optionWest, BorderLayout.CENTER);
 
-        mSearchPanel = new JPanel(new GridLayout(1, 2));
-        mSearchPanel.add(createHighlightPanel());
-        mSearchPanel.add(createSearchPanel());
-        optionMenu.add(mSearchPanel, BorderLayout.SOUTH);
-
         JScrollPane scrollPane = new JScrollPane(optionMenu);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
@@ -1714,7 +1713,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
     Component createMainSplitPane() {
         mMainSplitPane = new JSplitPane(
                 JSplitPane.HORIZONTAL_SPLIT,
-                createOptionPanel(),
+                createSidePanel(),
                 createLogPanel()
         );
         mMainSplitPane.setContinuousLayout(true);
@@ -1727,7 +1726,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         return mMainSplitPane;
     }
 
-    Component createOptionPanel() {
+    Component createSidePanel() {
         JScrollPane scrollPane = new JScrollPane(createOptionFilter());
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
         return wrapWithFloatingPanel(scrollPane);
@@ -1980,21 +1979,11 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
     }
 
     public void showPanelAndSetSearchFocus() {
-        if (!mSearchPanel.isVisible() || m_tfHighlight.hasFocus()) {
-            mSearchPanel.setVisible(true);
-            m_tfSearch.requestFocus();
-        } else {
-            mSearchPanel.setVisible(false);
-        }
+        m_tfSearch.requestFocus();
     }
 
     private void showPanelAndSetHighLightFocus() {
-        if (!mSearchPanel.isVisible() || m_tfSearch.hasFocus()) {
-            mSearchPanel.setVisible(true);
-            m_tfHighlight.requestFocus();
-        } else {
-            mSearchPanel.setVisible(false);
-        }
+        m_tfHighlight.requestFocus();
     }
 
     private void setWordIncludeFocus() {
