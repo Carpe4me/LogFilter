@@ -361,7 +361,7 @@ public class LogFilterFrame extends JFrame {
 
         JMenu toolsMenu = new JMenu("Extra");
 
-        JMenuItem converterItem = new JMenuItem("text converter");
+        JMenuItem converterItem = new JMenuItem("Text converter");
         converterItem.setToolTipText("convert all kinds of log msg");
         converterItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
@@ -369,7 +369,7 @@ public class LogFilterFrame extends JFrame {
             }
         });
 
-        JMenuItem xlogDecoderItem = new JMenuItem("xlog decoder");
+        JMenuItem xlogDecoderItem = new JMenuItem("Xlog decoder");
         xlogDecoderItem.setToolTipText("decode xlog files");
         xlogDecoderItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {

@@ -86,7 +86,7 @@ public class TextConverterDialog {
         optionPane.setOptions(new Object[]{
                 clearButton
         });
-        mDialog = optionPane.createDialog("text converter");
+        mDialog = optionPane.createDialog("Text converter");
     }
 
     private JList<ResultLine> buildListView() {

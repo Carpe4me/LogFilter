@@ -563,14 +563,14 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         parserBG.add(iosDevLogParserMenu);
 
         JMenu flowMenu = new JMenu("Flow");
-        JMenuItem showAllFlow = new JMenuItem("show all log flow");
+        JMenuItem showAllFlow = new JMenuItem("Show all log flow");
         showAllFlow.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 LogFilterComponent.this.showAllFlow();
             }
         });
 
-        JCheckBoxMenuItem showFlowInLogTable = new JCheckBoxMenuItem("show log flow in line");
+        JCheckBoxMenuItem showFlowInLogTable = new JCheckBoxMenuItem("Show log flow in line");
         showFlowInLogTable.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
                 handleShowFlowInLogTableStateChanged(showFlowInLogTable.getState());
@@ -587,7 +587,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
             menuBar.add(flowMenu);
         }
         menuBar.add(parserMenu);
-        menuBar.setBackground(ThemeConstant.getColorTableBg());
+//        menuBar.setBackground(ThemeConstant.getColorTableBg());
         return menuBar;
     }
 

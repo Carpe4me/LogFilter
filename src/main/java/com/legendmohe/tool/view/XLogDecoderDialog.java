@@ -59,7 +59,7 @@ public class XLogDecoderDialog {
 
         JOptionPane optionPane = new JOptionPane(panel);
         optionPane.setOptions(new Object[0]);
-        mDialog = optionPane.createDialog("xlog decoder");
+        mDialog = optionPane.createDialog("Xlog decoder");
         mDialog.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
