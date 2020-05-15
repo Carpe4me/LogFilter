@@ -9,6 +9,8 @@ import javax.swing.UIManager;
 public class ThemeConstant {
     ///////////////////////////////////颜色///////////////////////////////////
 
+    public static final Color COLOR_TRANSPARENT = new Color(0,0,0,0);
+
     public static String COLOR_HIGH_LIGHT_TYPE_FILTER = "FF0000";
     public static String COLOR_HIGH_LIGHT_TYPE_HIGH_LIGHT = "00FF00";
     public static String COLOR_HIGH_LIGHT_TYPE_SEARCH = "FFFF00";

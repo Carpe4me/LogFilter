@@ -587,7 +587,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
             menuBar.add(flowMenu);
         }
         menuBar.add(parserMenu);
-//        menuBar.setBackground(ThemeConstant.getColorTableBg());
+        menuBar.setBackground(ThemeConstant.COLOR_TRANSPARENT);
         return menuBar;
     }
 
