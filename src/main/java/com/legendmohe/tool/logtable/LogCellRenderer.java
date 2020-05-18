@@ -1,10 +1,11 @@
 package com.legendmohe.tool.logtable;
 
 import com.legendmohe.tool.LogInfo;
-import com.legendmohe.tool.util.Utils;
 import com.legendmohe.tool.config.ThemeConstant;
 import com.legendmohe.tool.logflow.LogFlowManager;
 import com.legendmohe.tool.logtable.model.LogFilterTableModel;
+import com.legendmohe.tool.util.T;
+import com.legendmohe.tool.util.Utils;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -112,23 +113,25 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
         // merge tag group
         boolean dimLine = false;
         logInfo = tableModel.getRow(row);
-        Object targetContent = logInfo.getContentByColumn(column);
-        if (mEnableGroupTag && row >= 0 && !logInfo.isSingleMsgLine() &&
-                (column == LogFilterTableModel.COLUMN_TAG || column == LogFilterTableModel.COLUMN_TIME || column == LogFilterTableModel.COLUMN_DATE)) {
-            LogInfo lastLogInfo = tableModel.getRow(row - 1);
-            if (lastLogInfo == null || (!logInfo.isSingleMsgLine() && lastLogInfo.isSingleMsgLine()) || !lastLogInfo.getContentByColumn(column).equals(targetContent)) {
-                dimLine = false;
-            } else {
-                dimLine = true;
-            }
-            targetContent = addSuffixOrPrefixToInfoText(logInfo, row, column, (String) targetContent, dimLine);
-            value = buildCellContent(column, String.valueOf(targetContent), dimLine);
-        } else {
-            // 分行log单独处理
-            if (logInfo.isSingleMsgLine() && !(column == LogFilterTableModel.COLUMN_MESSAGE || column == LogFilterTableModel.COLUMN_LINE)) {
-                value = "";
-            } else {
+        if (logInfo != null) {
+            Object targetContent = logInfo.getContentByColumn(column);
+            if (mEnableGroupTag && row >= 0 && !logInfo.isSingleMsgLine() &&
+                    (column == LogFilterTableModel.COLUMN_TAG || column == LogFilterTableModel.COLUMN_TIME || column == LogFilterTableModel.COLUMN_DATE)) {
+                LogInfo lastLogInfo = tableModel.getRow(row - 1);
+                if (lastLogInfo == null || (!logInfo.isSingleMsgLine() && lastLogInfo.isSingleMsgLine()) || !lastLogInfo.getContentByColumn(column).equals(targetContent)) {
+                    dimLine = false;
+                } else {
+                    dimLine = true;
+                }
+                targetContent = addSuffixOrPrefixToInfoText(logInfo, row, column, (String) targetContent, dimLine);
                 value = buildCellContent(column, String.valueOf(targetContent), dimLine);
+            } else {
+                // 分行log单独处理
+                if (logInfo.isSingleMsgLine() && !(column == LogFilterTableModel.COLUMN_MESSAGE || column == LogFilterTableModel.COLUMN_LINE)) {
+                    value = "";
+                } else {
+                    value = buildCellContent(column, String.valueOf(targetContent), dimLine);
+                }
             }
         }
         Component c = super.getTableCellRendererComponent(table,
@@ -138,11 +141,13 @@ public class LogCellRenderer extends DefaultTableCellRenderer {
                 row,
                 column);
 
-        if (c != null) {
+        if (c != null && logInfo != null) {
             renderFont(logInfo, row, column, c);
             renderBackground(isSelected, logInfo, c, dimLine);
             renderBorder(row, column, c);
             renderLogFlow(isSelected, logInfo, column, c);
+        } else {
+            T.e("c=" + c + " logInfo=" + logInfo + " row=" + row + " col=" + column);
         }
         return c;
     }

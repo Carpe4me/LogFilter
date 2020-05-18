@@ -1574,7 +1574,34 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         optionFilter.add(createDevicePanel());
         optionFilter.add(createFilterPanel());
         optionFilter.add(createCheckPanel());
+        optionFilter.add(createOperationPanel());
         return optionFilter;
+    }
+
+    private Component createOperationPanel() {
+        JPanel opPanel = new JPanel();
+        opPanel.setBorder(BorderFactory.createTitledBorder("operation"));
+        opPanel.setLayout(new GridLayout(2, 1, 4, 4));
+
+        JButton clearFilterBtn = new JButton("Clean Filter");
+        clearFilterBtn.setMargin(new Insets(0, 0, 0, 0));
+        clearFilterBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                m_tfIncludeWord.setText("");
+                m_tfExcludeWord.setText("");
+                m_tfShowTag.setText("");
+                m_tfRemoveTag.setText("");
+                m_tfShowPid.setText("");
+                m_tfShowFileName.setText("");
+                m_tfShowTid.setText("");
+                m_tfBookmarkTag.setText("");
+            }
+        });
+        opPanel.add(clearFilterBtn);
+        opPanel.add(createOptionMenu());
+
+        return opPanel;
     }
 
     // 提供floating 功能
@@ -1611,16 +1638,22 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
 
     Component createOptionMenu() {
         JPanel optionMenu = new JPanel(new BorderLayout());
-        JPanel optionWest = new JPanel(new FlowLayout(FlowLayout.LEADING));
+        optionMenu.setLayout(new BoxLayout(optionMenu, BoxLayout.Y_AXIS));
+
+        JPanel fontSizePanel = new JPanel();
+        fontSizePanel.setLayout(new BoxLayout(fontSizePanel, BoxLayout.X_AXIS));
 
         JLabel jlFont = new JLabel("Font Size : ");
         m_tfFontSize = new JTextField(4);
-        m_tfFontSize.setHorizontalAlignment(SwingConstants.RIGHT);
+        m_tfFontSize.setHorizontalAlignment(SwingConstants.LEADING);
         m_tfFontSize.setText("12");
 
         m_btnSetFont = new JButton("OK");
         m_btnSetFont.setMargin(new Insets(0, 0, 0, 0));
         m_btnSetFont.addActionListener(m_alButtonListener);
+
+        JPanel gotoPanel = new JPanel();
+        gotoPanel.setLayout(new BoxLayout(gotoPanel, BoxLayout.X_AXIS));
 
         JLabel jlGoto = new JLabel("Goto : ");
         m_tfGoto = new JTextField(6);
@@ -1634,6 +1667,27 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
                 }
             }
         });
+
+        JButton preHistoryButton = new JButton("<");
+        preHistoryButton.setMargin(new Insets(0, 5, 0, 5));
+        preHistoryButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                m_tbLogTable.historyBack();
+            }
+        });
+
+        JButton nextHistoryButton = new JButton(">");
+        nextHistoryButton.setMargin(new Insets(0, 5, 0, 5));
+        nextHistoryButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                m_tbLogTable.historyForward();
+            }
+        });
+
+        JPanel syncPanel = new JPanel();
+        syncPanel.setLayout(new BoxLayout(syncPanel, BoxLayout.X_AXIS));
 
         mSyncScrollCheckBox = new JCheckBox("sync scroll");
         mSyncScrollCheckBox.setEnabled(false);
@@ -1656,55 +1710,20 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
             }
         });
         mSyncSelectedCheckBox.setVisible(false);
+        syncPanel.add(mSyncScrollCheckBox);
+        syncPanel.add(mSyncSelectedCheckBox);
+        optionMenu.add(syncPanel);
 
-        JButton preHistoryButton = new JButton("<");
-        preHistoryButton.setMargin(new Insets(0, 5, 0, 5));
-        preHistoryButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                m_tbLogTable.historyBack();
-            }
-        });
+        fontSizePanel.add(jlFont);
+        fontSizePanel.add(m_tfFontSize);
+        fontSizePanel.add(m_btnSetFont);
+        optionMenu.add(fontSizePanel);
 
-        JButton nextHistoryButton = new JButton(">");
-        nextHistoryButton.setMargin(new Insets(0, 5, 0, 5));
-        nextHistoryButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                m_tbLogTable.historyForward();
-            }
-        });
-
-        JPanel jpActionPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
-        JButton clearFieldBtn = new JButton("Clean Filter");
-        clearFieldBtn.setMargin(new Insets(0, 0, 0, 0));
-        clearFieldBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                m_tfIncludeWord.setText("");
-                m_tfExcludeWord.setText("");
-                m_tfShowTag.setText("");
-                m_tfRemoveTag.setText("");
-                m_tfShowPid.setText("");
-                m_tfShowFileName.setText("");
-                m_tfShowTid.setText("");
-                m_tfBookmarkTag.setText("");
-            }
-        });
-        jpActionPanel.add(clearFieldBtn);
-
-        optionWest.add(mSyncScrollCheckBox);
-        optionWest.add(mSyncSelectedCheckBox);
-        optionWest.add(jlFont);
-        optionWest.add(m_tfFontSize);
-        optionWest.add(m_btnSetFont);
-        optionWest.add(jlGoto);
-        optionWest.add(m_tfGoto);
-        optionWest.add(preHistoryButton);
-        optionWest.add(nextHistoryButton);
-        optionWest.add(jpActionPanel);
-
-        optionMenu.add(optionWest, BorderLayout.CENTER);
+        gotoPanel.add(jlGoto);
+        gotoPanel.add(m_tfGoto);
+        gotoPanel.add(preHistoryButton);
+        gotoPanel.add(nextHistoryButton);
+        optionMenu.add(gotoPanel);
 
         JScrollPane scrollPane = new JScrollPane(optionMenu);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
@@ -1772,8 +1791,6 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
 
     Component createLogPanel() {
         JPanel mainLogPanel = new JPanel(new BorderLayout());
-
-        mainLogPanel.add(createOptionMenu(), BorderLayout.NORTH);
 
         m_tmLogTableModel = new LogFilterTableModel();
         m_tmLogTableModel.setData(m_arLogInfoAll);
