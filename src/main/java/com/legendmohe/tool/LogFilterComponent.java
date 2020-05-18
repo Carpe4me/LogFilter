@@ -277,6 +277,7 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
     JButton m_btnClear;
     JToggleButton m_tbtnPause;
     JButton m_btnStop;
+    JButton m_btnFollow;
 
     String logcatOutputPath;
     TargetDevice m_selectedDevice;
@@ -929,10 +930,22 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         m_btnClear.addActionListener(m_alButtonListener);
         m_tbtnPause.addActionListener(m_alButtonListener);
 
+        m_btnFollow = new JButton("Follow");
+        m_btnFollow.setMargin(new Insets(0, 0, 0, 0));
+        m_btnFollow.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int endLine = m_tmLogTableModel.getRowCount();
+                updateLogTable(endLine - 1, true);
+            }
+        });
+        m_btnFollow.setEnabled(false);
+
         funcPanel.add(m_btnClear);
         funcPanel.add(m_btnRun);
         funcPanel.add(m_btnStop);
         funcPanel.add(m_tbtnPause);
+        funcPanel.add(m_btnFollow);
         cmdPanel.add(funcPanel, BorderLayout.SOUTH);
 
         JPanel adbPanel = new JPanel();
@@ -1680,17 +1693,6 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         });
         jpActionPanel.add(clearFieldBtn);
 
-        JButton followBtn = new JButton("Follow");
-        followBtn.setMargin(new Insets(0, 0, 0, 0));
-        followBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int endLine = m_tmLogTableModel.getRowCount();
-                updateLogTable(endLine - 1, true);
-            }
-        });
-        jpActionPanel.add(followBtn);
-
         optionWest.add(mSyncScrollCheckBox);
         optionWest.add(mSyncSelectedCheckBox);
         optionWest.add(jlFont);
@@ -2099,11 +2101,13 @@ public class LogFilterComponent extends JComponent implements EventBus, BaseLogT
         if (bStart) {
             m_btnRun.setEnabled(false);
             m_btnStop.setEnabled(true);
+            m_btnFollow.setEnabled(true);
             m_btnClear.setEnabled(true);
             m_tbtnPause.setEnabled(true);
         } else {
             m_btnRun.setEnabled(true);
             m_btnStop.setEnabled(false);
+            m_btnFollow.setEnabled(false);
             m_btnClear.setEnabled(false);
             m_tbtnPause.setEnabled(false);
             m_tbtnPause.setSelected(false);
